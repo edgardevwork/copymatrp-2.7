@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:background="@drawable/spawnmenu_bg" android:clickable="true" android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
+        <TextView android:textColor="#ffffff" android:textSize="@dimen/_14sdp" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="@dimen/_29sdp" android:layout_marginBottom="@dimen/_18sdp" android:text="@string/spawn_menu_desc" android:fontFamily="@font/ttnorms_bold"/>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="@dimen/_96sdp" android:layout_marginLeft="@dimen/_29sdp" android:layout_marginRight="@dimen/_29sdp">
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/sm_button_0" android:background="@drawable/bankomat_main_item_bg" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginLeft="@dimen/_5sdp" android:layout_marginRight="@dimen/_5sdp" android:layout_weight="1">
+                <ImageView android:layout_gravity="center" android:id="@+id/sm_button_icon" android:background="@drawable/ic_spawnmenu_point" android:layout_width="@dimen/_19sdp" android:layout_height="@dimen/_19sdp" android:layout_marginBottom="@dimen/_4sdp"/>
+                <TextView android:textSize="@dimen/_11sdp" android:gravity="center" android:id="@+id/sm_button_text_0" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/at_the_exit_point" android:fontFamily="@font/ttnorms_medium"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sm_button_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:background="@drawable/bankomat_main_item_bg"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/sm_button_icon"
+                    android:layout_width="@dimen/_19sdp"
+                    android:layout_height="@dimen/_19sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/_4sdp"
+                    android:background="@drawable/ic_spawnmenu_station" />
+
+                <TextView
+                    android:id="@+id/sm_button_text_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ttnorms_medium"
+                    android:gravity="center"
+                    android:text="@string/at_the_train_station"
+                    android:textSize="@dimen/_11sdp" />
+            </LinearLayout>
+
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/sm_button_2" android:background="@drawable/bankomat_main_item_bg" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginLeft="@dimen/_5sdp" android:layout_marginRight="@dimen/_5sdp" android:layout_weight="1">
+                <ImageView android:layout_gravity="center" android:id="@+id/sm_button_icon" android:background="@drawable/ic_spawnmenu_family" android:layout_width="@dimen/_19sdp" android:layout_height="@dimen/_19sdp" android:layout_marginBottom="@dimen/_4sdp"/>
+                <TextView android:textSize="@dimen/_11sdp" android:gravity="center" android:id="@+id/sm_button_text_0" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/family_home" android:fontFamily="@font/ttnorms_medium"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="@dimen/_104sdp" android:layout_marginLeft="@dimen/_29sdp" android:layout_marginTop="@dimen/_10sdp" android:layout_marginRight="@dimen/_29sdp">
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/sm_button_3" android:background="@drawable/bankomat_main_item_bg" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginLeft="@dimen/_5sdp" android:layout_marginRight="@dimen/_5sdp" android:layout_weight="1">
+                <ImageView android:layout_gravity="center" android:id="@+id/sm_button_icon" android:background="@drawable/ic_spawbmenu_frac" android:layout_width="@dimen/_19sdp" android:layout_height="@dimen/_19sdp" android:layout_marginBottom="@dimen/_4sdp"/>
+                <TextView android:textSize="@dimen/_11sdp" android:gravity="center" android:id="@+id/sm_button_text_0" android:layout_width="@dimen/_93sdp" android:layout_height="wrap_content" android:text="@string/based_on_the_organization" android:fontFamily="@font/ttnorms_medium"/>
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/sm_button_4" android:background="@drawable/bankomat_main_item_bg" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginLeft="@dimen/_5sdp" android:layout_marginRight="@dimen/_5sdp" android:layout_weight="1">
+                <ImageView android:layout_gravity="center" android:id="@+id/sm_button_icon" android:background="@drawable/ic_spawnmenu_flat" android:layout_width="@dimen/_19sdp" android:layout_height="@dimen/_19sdp" android:layout_marginBottom="@dimen/_4sdp"/>
+                <TextView android:textSize="@dimen/_11sdp" android:gravity="center" android:id="@+id/sm_button_text_0" android:layout_width="@dimen/_93sdp" android:layout_height="wrap_content" android:text="@string/in_my_own_apartment" android:fontFamily="@font/ttnorms_medium"/>
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/sm_button_5" android:background="@drawable/bankomat_main_item_bg" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginLeft="@dimen/_5sdp" android:layout_marginRight="@dimen/_5sdp" android:layout_weight="1">
+                <ImageView android:layout_gravity="center" android:id="@+id/sm_button_icon" android:background="@drawable/ic_spawnmenu_home" android:layout_width="@dimen/_19sdp" android:layout_height="@dimen/_19sdp" android:layout_marginBottom="@dimen/_4sdp"/>
+                <TextView android:textSize="@dimen/_11sdp" android:gravity="center" android:id="@+id/sm_button_text_0" android:layout_width="@dimen/_93sdp" android:layout_height="wrap_content" android:text="@string/in_your_own_home" android:fontFamily="@font/ttnorms_medium"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sm_button_6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:background="@drawable/bankomat_main_item_bg"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/sm_button_icon"
+                    android:layout_width="@dimen/_19sdp"
+                    android:layout_height="@dimen/_19sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/_4sdp"
+                    android:background="@drawable/ic_spawnmenu_guest" />
+
+                <TextView
+                    android:id="@+id/sm_button_text_0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ttnorms_medium"
+                    android:gravity="center"
+                    android:text="@string/on_a_visit"
+                    android:textSize="@dimen/_11sdp" />
+
+                <TextView
+                    android:id="@+id/sm_button_text_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ttnorms_medium"
+                    android:gravity="center"
+                    android:text="@string/cohabitation"
+                    android:textSize="@dimen/_7sdp" />
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/sm_button_7" android:background="@drawable/bankomat_main_item_bg" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginLeft="@dimen/_5sdp" android:layout_marginRight="@dimen/_5sdp" android:layout_weight="1">
+                <ImageView android:layout_gravity="center" android:id="@+id/sm_button_icon" android:background="@drawable/ic_spawnmenu_yacht" android:layout_width="@dimen/_19sdp" android:layout_height="@dimen/_19sdp" android:layout_marginBottom="@dimen/_4sdp"/>
+                <TextView android:textSize="@dimen/_11sdp" android:gravity="center" android:id="@+id/sm_button_text_0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/in_your_own_yacht" android:fontFamily="@font/ttnorms_medium"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

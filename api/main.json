@@ -1,0 +1,12 @@
+{
+	"servers": "https://crmp.pro/files/matrp/old/Requests/Servers.php",
+	"stories": "https://crmp.pro/files/matrp/new/Requests/Stories.php",
+	"faq": "https://crmp.pro/files/matrp/new/Requests/Faq.php",
+	"createCharacter": "https://crmp.pro/files/matrp/new/Requests/CreateCharacter.php",
+    "verifyAuth": "https://crmp.pro/files/matrp/new/Requests/VerifyAuth.php",
+    "accountDetails": "https://crmp.pro/files/matrp/new/Requests/AccountDetails.php",
+    "isAcc": "https://crmp.pro/files/matrp/new/Requests/IsAcc.php",
+    "dannyUser": "https://crmp.pro/files/matrp/new/Requests/DannyUser.php",
+    "deleteAcc": "https://crmp.pro/files/matrp/new/Requests/DeleteAcc.php",
+    "skinsCDN": "https://crmp.pro/files/matrp/new/images/skin_"
+}

@@ -1,0 +1,5 @@
+./obj/local/arm64-v8a/objs/edgar/p7zip/CPP/Windows/System.o: \
+  jni/p7zip/CPP/Windows/System.cpp jni/p7zip/CPP/Common/MyTypes.h \
+  jni/p7zip/CPP/Common/../../C/7zTypes.h
+jni/p7zip/CPP/Common/MyTypes.h:
+jni/p7zip/CPP/Common/../../C/7zTypes.h:
