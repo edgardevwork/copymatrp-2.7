@@ -14,7 +14,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,6 +93,7 @@ public class MainScreenActivity  extends AppCompatActivity {
     private NotificationManager notifManager = null;
     private FullHeightVideoView mVideoView;
     public static boolean isAuth = false;
+    private ImageView lm_loadicon;
     private static MainScreenActivity instance;
     private FrameLayout mainScreen;
     private FirebaseAuth mAuth;
@@ -107,10 +110,11 @@ public class MainScreenActivity  extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         instance = this;
         hideUI();
+        lm_loadicon = (ImageView) findViewById(R.id.lm_loadicon);
         statusBar = (TextView) findViewById(R.id.lm_status);
         mainScreen = (FrameLayout) findViewById(R.id.mainscreen);
         mVideoView = (FullHeightVideoView) findViewById(R.id.videoView);
-        mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() +"/"+R.raw.loading));
+        mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading));
 
         mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
@@ -128,6 +132,8 @@ public class MainScreenActivity  extends AppCompatActivity {
                 mVideoView.start();
             }
         });
+
+        lm_loadicon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation));
 
         mVideoView.start();
 
