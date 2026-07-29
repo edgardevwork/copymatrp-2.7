@@ -13,8 +13,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="@dimen/_104sdp"
-        android:layout_height="@dimen/_72sdp"
-        android:visibility="visible"
+        android:layout_height="@dimen/_68sdp"
         app:srcCompat="@drawable/loading_logo" />
 
     <LinearLayout
