@@ -1,0 +1,237 @@
+./obj/local/arm64-v8a/objs/edgar/p7zip/CPP/7zip/UI/Console/Main.o: \
+  jni/p7zip/CPP/7zip/UI/Console/Main.cpp \
+  jni/p7zip/CPP/myWindows/StdAfx.h jni/p7zip/CPP/myWindows/config.h \
+  jni/p7zip/CPP/Common/Common.h jni/p7zip/CPP/Common/../../C/Compiler.h \
+  jni/p7zip/CPP/Common/MyWindows.h jni/p7zip/CPP/Common/MyGuidDef.h \
+  jni/p7zip/CPP/Common/MyTypes.h jni/p7zip/CPP/Common/../../C/7zTypes.h \
+  jni/p7zip/CPP/Common/NewHandler.h jni/p7zip/CPP/Common/MyString.h \
+  jni/p7zip/CPP/Common/MyVector.h \
+  jni/p7zip/CPP/include_windows/windows.h \
+  jni/p7zip/CPP/include_windows/basetyps.h \
+  jni/p7zip/CPP/include_windows/tchar.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyWindows.h \
+  jni/p7zip/CPP/myWindows/myPrivate.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../../C/CpuArch.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../../C/7zTypes.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyInitGuid.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyGuidDef.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/CommandLineParser.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyString.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/IntToString.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyTypes.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyException.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/StringConvert.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/StringToInt.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/UTFConvert.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Windows/ErrorMsg.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Windows/../Common/MyString.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Windows/TimeUtils.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Windows/../Common/MyTypes.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Windows/../Common/MyWindows.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/ArchiveCommandLine.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/CommandLineParser.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/Wildcard.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyString.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/Extract.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/FileFind.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/../Common/MyString.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/../Common/MyTypes.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/Defs.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/../Common/MyWindows.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/IArchive.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../IProgress.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../../Common/MyTypes.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../IDecl.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../../Common/MyUnknown.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../../Common/MyWindows.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../IStream.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../PropID.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/ArchiveExtractCallback.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyCom.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyWindows.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/NewHandler.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/FileDir.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/../Common/MyVector.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/FileIO.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../IPassword.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyTypes.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyUnknown.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../IDecl.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/FileStreams.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Common/MyString.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Windows/FileIO.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Common/MyCom.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../IStream.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/ProgressUtils.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../ICoder.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../IProgress.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/ExtractMode.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/IFileExtractCallback.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/LoadCodecs.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyBuffer.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/Defs.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/ComTry.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../ICoder.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/OpenArchive.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/PropVariant.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/ArchiveOpenCallback.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/Property.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/HashCalc.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/CreateCoder.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/MethodId.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Common/MyTypes.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/MethodProps.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Windows/PropVariant.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/DirItem.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/UniqBlocks.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Common/MyBuffer.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Common/MyVector.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/LoadCodecs.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/Update.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/UpdateAction.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/UpdateCallback.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/UpdatePair.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/DirItem.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/UpdateAction.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/../../Archive/IArchive.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/UpdateProduce.h \
+  jni/p7zip/CPP/7zip/UI/Console/../Common/ExitCode.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../Common/RegisterCodec.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../Common/../Common/MethodId.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../Common/../ICoder.h \
+  jni/p7zip/CPP/7zip/UI/Console/BenchCon.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../Common/CreateCoder.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../UI/Common/Property.h \
+  jni/p7zip/CPP/7zip/UI/Console/ConsoleClose.h \
+  jni/p7zip/CPP/7zip/UI/Console/ExtractCallbackConsole.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/StdOutStream.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../IPassword.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../Archive/IArchive.h \
+  jni/p7zip/CPP/7zip/UI/Console/PercentPrinter.h \
+  jni/p7zip/CPP/7zip/UI/Console/OpenCallbackConsole.h \
+  jni/p7zip/CPP/7zip/UI/Console/List.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../Common/Wildcard.h \
+  jni/p7zip/CPP/7zip/UI/Console/UpdateCallbackConsole.h \
+  jni/p7zip/CPP/7zip/UI/Console/HashCon.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../MyVersion.h \
+  jni/p7zip/CPP/7zip/UI/Console/../../../../C/7zVersion.h
+jni/p7zip/CPP/myWindows/StdAfx.h:
+jni/p7zip/CPP/myWindows/config.h:
+jni/p7zip/CPP/Common/Common.h:
+jni/p7zip/CPP/Common/../../C/Compiler.h:
+jni/p7zip/CPP/Common/MyWindows.h:
+jni/p7zip/CPP/Common/MyGuidDef.h:
+jni/p7zip/CPP/Common/MyTypes.h:
+jni/p7zip/CPP/Common/../../C/7zTypes.h:
+jni/p7zip/CPP/Common/NewHandler.h:
+jni/p7zip/CPP/Common/MyString.h:
+jni/p7zip/CPP/Common/MyVector.h:
+jni/p7zip/CPP/include_windows/windows.h:
+jni/p7zip/CPP/include_windows/basetyps.h:
+jni/p7zip/CPP/include_windows/tchar.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyWindows.h:
+jni/p7zip/CPP/myWindows/myPrivate.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../../C/CpuArch.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../../C/7zTypes.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyInitGuid.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyGuidDef.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/CommandLineParser.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyString.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/IntToString.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyTypes.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/MyException.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/StringConvert.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/StringToInt.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/UTFConvert.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Windows/ErrorMsg.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Windows/../Common/MyString.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Windows/TimeUtils.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Windows/../Common/MyTypes.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Windows/../Common/MyWindows.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/ArchiveCommandLine.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/CommandLineParser.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/Wildcard.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyString.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/Extract.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/FileFind.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/../Common/MyString.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/../Common/MyTypes.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/Defs.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/../Common/MyWindows.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/IArchive.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../IProgress.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../../Common/MyTypes.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../IDecl.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../../Common/MyUnknown.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../../Common/MyWindows.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../IStream.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Archive/../PropID.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/ArchiveExtractCallback.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyCom.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyWindows.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/NewHandler.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/FileDir.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/../Common/MyVector.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/FileIO.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../IPassword.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyTypes.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyUnknown.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../IDecl.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/FileStreams.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Common/MyString.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Windows/FileIO.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Common/MyCom.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../IStream.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/ProgressUtils.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../ICoder.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../IProgress.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/ExtractMode.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/IFileExtractCallback.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/LoadCodecs.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/MyBuffer.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/Defs.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Common/ComTry.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../ICoder.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/OpenArchive.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../../Windows/PropVariant.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/ArchiveOpenCallback.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/Property.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/HashCalc.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/CreateCoder.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/MethodId.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Common/MyTypes.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/MethodProps.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Windows/PropVariant.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/DirItem.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/UniqBlocks.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Common/MyBuffer.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../../Common/../../Common/MyVector.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/LoadCodecs.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/Update.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/UpdateAction.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/UpdateCallback.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/UpdatePair.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/DirItem.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/UpdateAction.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/../../Archive/IArchive.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/../Common/UpdateProduce.h:
+jni/p7zip/CPP/7zip/UI/Console/../Common/ExitCode.h:
+jni/p7zip/CPP/7zip/UI/Console/../../Common/RegisterCodec.h:
+jni/p7zip/CPP/7zip/UI/Console/../../Common/../Common/MethodId.h:
+jni/p7zip/CPP/7zip/UI/Console/../../Common/../ICoder.h:
+jni/p7zip/CPP/7zip/UI/Console/BenchCon.h:
+jni/p7zip/CPP/7zip/UI/Console/../../Common/CreateCoder.h:
+jni/p7zip/CPP/7zip/UI/Console/../../UI/Common/Property.h:
+jni/p7zip/CPP/7zip/UI/Console/ConsoleClose.h:
+jni/p7zip/CPP/7zip/UI/Console/ExtractCallbackConsole.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/StdOutStream.h:
+jni/p7zip/CPP/7zip/UI/Console/../../IPassword.h:
+jni/p7zip/CPP/7zip/UI/Console/../../Archive/IArchive.h:
+jni/p7zip/CPP/7zip/UI/Console/PercentPrinter.h:
+jni/p7zip/CPP/7zip/UI/Console/OpenCallbackConsole.h:
+jni/p7zip/CPP/7zip/UI/Console/List.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../Common/Wildcard.h:
+jni/p7zip/CPP/7zip/UI/Console/UpdateCallbackConsole.h:
+jni/p7zip/CPP/7zip/UI/Console/HashCon.h:
+jni/p7zip/CPP/7zip/UI/Console/../../MyVersion.h:
+jni/p7zip/CPP/7zip/UI/Console/../../../../C/7zVersion.h:
