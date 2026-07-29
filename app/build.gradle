@@ -24,7 +24,6 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'org.jetbrains.kotlin.android'
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // Добавьте эту строку
 }
 
 android {
@@ -115,11 +114,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-        //kotlinCompilerExtensionVersion = "1.5.10" // Соответствует compose-bom 2024.06.00
     }
     buildFeatures {
         prefab true
-        compose = true
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -150,7 +147,6 @@ dependencies {
     implementation 'com.github.smarteist:autoimageslider:1.4.0'
     implementation 'com.github.skydoves:colorpickerview:2.3.0'
 
-    // Firebase
     implementation platform('com.google.firebase:firebase-bom:32.4.0')
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-database'
@@ -161,45 +157,9 @@ dependencies {
     // VK
     implementation 'com.vk:android-sdk-core:3.0.0'
 
-    // Google Play Services
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
     implementation 'com.google.android.material:material:1.13.0'
 
     implementation "com.joom.paranoid:paranoid-gradle-plugin:0.3.14"
     implementation 'com.bytedance.android:shadowhook:2.0.0'
-
-    // ============================================
-    // === JETPACK COMPOSE (Android 11+) ==========
-    // ============================================
-
-    // Compose BOM (Bill of Materials) - управляет версиями всех Compose библиотек
-    implementation platform('androidx.compose:compose-bom:2024.06.00')
-
-    // Основные Compose библиотеки
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-graphics'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.compose.material:material-icons-core'
-    implementation 'androidx.compose.material:material-icons-extended'
-
-    // Compose для работы с Activity
-    implementation 'androidx.activity:activity-compose:1.8.2'
-
-    // Compose для работы с View (ComposeView)
-    implementation 'androidx.compose.ui:ui-viewbinding'
-
-    // Compose Animation
-    implementation 'androidx.compose.animation:animation'
-
-    // Compose Runtime (LiveData, State)
-    implementation 'androidx.compose.runtime:runtime'
-    implementation 'androidx.compose.runtime:runtime-livedata'
-
-    // Для поддержки старых версий Android (опционально)
-    // implementation 'androidx.compose.ui:ui-android-viewbinding'
-
-    // Для отладки (только для debug)
-    debugImplementation 'androidx.compose.ui:ui-tooling'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
 }
