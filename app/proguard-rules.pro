@@ -3,14 +3,14 @@
 
 -keep class com.wardrumstudios.utils.* { *; }
 
--keep class ru.edgar.launcher.network.** { *; }
+-keep class ru.edgar.nlremake.network.** { *; }
 
 -dontwarn javax.servlet.**
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
 
--keep class ru.edgar.launcher.model.** { *; }
+-keep class ru.edgar.nlremake.model.** { *; }
 -dontwarn androidx.datastore.**
 -keep class androidx.datastore.** { *; }
 -keep class com.google.firebase.** { *; }
@@ -24,7 +24,7 @@
 -keep class ru.edgar.space.SAMP {*;}
 -keep class ru.edgar.space.core.ui.** {*;}
 -keep class ru.edgar.launcher.activity.MainActivity {*;}
--keep class ru.edgar.launcher.model.** {*;}
+-keep class ru.edgar.nlremake.model.** {*;}
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
 -dontwarn com.liulishuo.**
@@ -34,7 +34,7 @@
 -dontwarn org.ini4j.**
 -keep class org.ini4j.** {*;}
 -keepclassmembers  class com.nvidia.** {*;}
--keepclassmembers  class ru.edgar.launcher.network.** { *; }
+-keepclassmembers  class ru.edgar.nlremake.network.** { *; }
 -keepclassmembers  class com.google.firebase.** { *; }
 -keepclassmembers  class androidx.fragment.** {*;}
 -keepclassmembers  class android.support.** { *; }
@@ -43,7 +43,7 @@
 -keepclassmembers  class ru.edgar.space.SAMP {*;}
 -keepclassmembers  class ru.edgar.space.core.ui.** {*;}
 -keepclassmembers  class ru.edgar.launcher.activity.MainActivity {*;}
--keepclassmembers  class ru.edgar.launcher.model.** {*;}
+-keepclassmembers  class ru.edgar.nlremake.model.** {*;}
 #-keepclassmembers  class ru.edgar.space.core.ui.edit.EditCamera {*;}
 -keepclassmembers  class retrofit2.** { *; }
 -keepclassmembers  class com.liulishuo.** {*;}

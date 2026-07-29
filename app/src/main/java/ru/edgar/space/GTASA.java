@@ -3,15 +3,13 @@ package ru.edgar.space;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
 import com.bytedance.shadowhook.ShadowHook;
 import com.joom.paranoid.Obfuscate;
 import com.wardrumstudios.utils.WarMedia;
 
-import ru.edgar.launcher.other.SharedPreferenceCore;
+import ru.edgar.nlremake.other.SharedPreferenceCore;
 
 @Obfuscate
 public class GTASA extends WarMedia {

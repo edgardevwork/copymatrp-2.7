@@ -27,7 +27,6 @@ class CJavaWrapper
     jmethodID s_ShowInputLayout;
     jmethodID s_HideInputLayout;
 
-    jmethodID s_ShowClientSettings;
     jmethodID s_SetUseFullScreen;
     jmethodID s_MakeDialog;
 
@@ -72,8 +71,6 @@ public:
 
     void SetRadar();
     void AddChatMessage(const char msg[], int color);
-
-    void ShowClientSettings();
 
     void SetUseFullScreen(int b);
 

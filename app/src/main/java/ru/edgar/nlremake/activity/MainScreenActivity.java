@@ -12,7 +12,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -69,22 +68,19 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.edgar.launcher.activity.MainActivity;
-import ru.edgar.launcher.fragment.AuthFragment;
-import ru.edgar.launcher.model.Api;
-import ru.edgar.launcher.model.Archive;
-import ru.edgar.launcher.model.ArchivePath;
-import ru.edgar.launcher.model.Deleted;
-import ru.edgar.launcher.model.FaqList;
-import ru.edgar.launcher.model.Main;
-import ru.edgar.launcher.model.News;
-import ru.edgar.launcher.model.Servers;
-import ru.edgar.launcher.network.Helper;
-import ru.edgar.launcher.other.Interface;
-import ru.edgar.launcher.other.Lists;
-import ru.edgar.launcher.other.Utils;
+import ru.edgar.nlremake.model.Api;
+import ru.edgar.nlremake.model.Archive;
+import ru.edgar.nlremake.model.ArchivePath;
+import ru.edgar.nlremake.model.Deleted;
+import ru.edgar.nlremake.model.FaqList;
+import ru.edgar.nlremake.model.Main;
+import ru.edgar.nlremake.model.News;
+import ru.edgar.nlremake.model.Servers;
+import ru.edgar.nlremake.network.Helper;
+import ru.edgar.nlremake.other.Interface;
+import ru.edgar.nlremake.other.Lists;
+import ru.edgar.nlremake.other.Utils;
 import ru.edgar.matrp.R;
-import ru.edgar.nlremake.ui.DialogUI;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
 import ru.edgar.space.EdgarConectV2;
 import ru.edgar.space.SAMP;
@@ -99,7 +95,7 @@ public class MainScreenActivity  extends AppCompatActivity {
     private FrameLayout mainScreen;
     private FirebaseAuth mAuth;
     private TextView statusBar;
-    private DialogUI dialogUI;
+    public static String nickName;
 
     String apiLink;
 
@@ -165,7 +161,6 @@ public class MainScreenActivity  extends AppCompatActivity {
         return false;
     }
 
-
     public void hideUI() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
@@ -211,11 +206,23 @@ public class MainScreenActivity  extends AppCompatActivity {
                 .build();
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, options);
         if (GoogleSignIn.getLastSignedInAccount(this) != null) {
-            googleSignInClient.signOut().addOnCompleteListener(this, new AuthFragment.a(googleSignInClient));
+            googleSignInClient.signOut().addOnCompleteListener(this, new a(googleSignInClient));
             return;
         }
         Intent i = googleSignInClient.getSignInIntent();
         startActivityForResult(i, 1234);
+    }
+
+    public static class a implements OnCompleteListener<Void> {
+        GoogleSignInClient googleSignInClient;
+        public a(GoogleSignInClient googleSignInClient) {
+            this.googleSignInClient = googleSignInClient;
+        }
+
+        @Override // com.google.android.gms.tasks.OnCompleteListener
+        public final void onComplete(@NonNull Task<Void> task) {
+            MainScreenActivity.getInstance().onInitAuthGoogle();
+        }
     }
     public void onRequestPermissions() {
         List<String> permissionsToRequest = new ArrayList<>();
@@ -332,7 +339,7 @@ public class MainScreenActivity  extends AppCompatActivity {
 
     public void loadSettings() {
         if(!netIsAvailable()) {
-            dialogUI = new DialogUI(
+            /*dialogUI = new DialogUI(
                     this,
                     "Подключиться",
                     "Чтобы продолжить\nподключитесь к интернету!", // Заголовок
@@ -377,7 +384,7 @@ public class MainScreenActivity  extends AppCompatActivity {
             });
 
             // Добавляем диалог в mainScreen с анимацией появления
-            dialogUI.showIn(mainScreen);
+            dialogUI.showIn(mainScreen);*/
             return;
         }
         Retrofit retrofit = new Retrofit.Builder()
@@ -417,7 +424,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                         {
                             if(response.body() != null) {
                                 if(response.body().getLauncherVersion() != 73) {
-                                    dialogUI = new DialogUI(
+                                    /*dialogUI = new DialogUI(
                                             MainScreenActivity.getInstance(),
                                             "Да",
                                             "Нет",
@@ -441,11 +448,11 @@ public class MainScreenActivity  extends AppCompatActivity {
                                             loadSettings();
                                         }
                                     });
-                                    dialogUI.showIn(mainScreen);
+                                    dialogUI.showIn(mainScreen);*/
                                 } else {
                                     if (response.body().getIsTest()) {
                                         if (!response.body().getTestApi()) {
-                                            dialogUI = new DialogUI(
+                                            /*dialogUI = new DialogUI(
                                                     MainScreenActivity.getInstance(),
                                                     "Да",
                                                     "Нет",
@@ -460,7 +467,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                     onDestroy();
                                                 }
                                             });
-                                            dialogUI.showIn(mainScreen);
+                                            dialogUI.showIn(mainScreen);*/
                                         }
                                         //testApi = response.body().getTestApi();
                                     }
@@ -646,7 +653,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                                                 serversInfo.put("nick", "ERYHB_hjdcb");
                                                                                 FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).setValue(serversInfo);
                                                                             } else {
-                                                                                MainActivity.nickName = snapshot.getValue(String.class);
+                                                                                nickName = snapshot.getValue(String.class);
 
                                                                             }
                                                                         }
@@ -659,7 +666,7 @@ public class MainScreenActivity  extends AppCompatActivity {
 
                                                                     clearModelCache();
                                                                     if (!url.isEmpty()) {
-                                                                        dialogUI = new DialogUI(
+                                                                        /*dialogUI = new DialogUI(
                                                                                 MainScreenActivity.getInstance(),
                                                                                 "Да",
                                                                                 "Нет",
@@ -682,7 +689,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                                                 loadSettings();
                                                                             }
                                                                         });
-                                                                        dialogUI.showIn(mainScreen);
+                                                                        dialogUI.showIn(mainScreen);*/
                                                                     } else {
                                                                         Intent intent = new Intent(MainScreenActivity.getInstance(), SAMP.class);
                                                                         startActivity(intent);
@@ -715,7 +722,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                                 }
                             } else {
                                 Log.e("api-", "api----");
-                                dialogUI = new DialogUI(
+                                /*dialogUI = new DialogUI(
                                         MainScreenActivity.getInstance(),
                                         "Повторить",
                                         "Не удаётся установить\nсоединение с сервером!", // Заголовок
@@ -729,13 +736,13 @@ public class MainScreenActivity  extends AppCompatActivity {
                                         loadSettings();
                                     }
                                 });
-                                dialogUI.showIn(mainScreen);
+                                dialogUI.showIn(mainScreen);*/
                             }
                         } else {
                             System.out.println(response.body());
                             Log.e("api-", "api---1-");
                             System.err.println("Ошибка: " + response.code() + " - " + response.message());
-                            dialogUI = new DialogUI(
+                            /*dialogUI = new DialogUI(
                                     MainScreenActivity.getInstance(),
                                     "Повторить",
                                     "Не удаётся установить\nсоединение с сервером!", // Заголовок
@@ -749,12 +756,12 @@ public class MainScreenActivity  extends AppCompatActivity {
                                     loadSettings();
                                 }
                             });
-                            dialogUI.showIn(mainScreen);
+                            dialogUI.showIn(mainScreen);*/
                         }
                     }
                     public void onFailure(Call<Api> call, Throwable th) {
                         Log.e("api-", "api----" + th.toString());
-                        dialogUI = new DialogUI(
+                        /*dialogUI = new DialogUI(
                                 MainScreenActivity.getInstance(),
                                 "Повторить",
                                 "Не удаётся установить\nсоединение с сервером!", // Заголовок
@@ -768,7 +775,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                                 loadSettings();
                             }
                         });
-                        dialogUI.showIn(mainScreen);
+                        dialogUI.showIn(mainScreen);*/
                     }
                 });
             }
@@ -1064,13 +1071,13 @@ public class MainScreenActivity  extends AppCompatActivity {
                                 if(task.isSuccessful()){
                                     FirebaseUser currentUser = mAuth.getCurrentUser();
                                     if(currentUser != null) {
-                                        MainActivity.isAuth = true;
+                                        isAuth = true;
                                     } else {
-                                        MainActivity.isAuth = false;
+                                        isAuth = false;
                                     }
                                     onRequestPermissions();
                                 } else {
-                                    dialogUI = new DialogUI(
+                                   /*dialogUI = new DialogUI(
                                             MainScreenActivity.getInstance(),
                                             "Понятно",
                                             "Ошибка авторизации через Google!", // Заголовок
@@ -1092,7 +1099,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                                             } else onRequestPermissions();
                                         }
                                     });
-                                    dialogUI.showIn(mainScreen);
+                                    dialogUI.showIn(mainScreen);*/
                                 }
 
                             }
@@ -1100,7 +1107,7 @@ public class MainScreenActivity  extends AppCompatActivity {
             } catch (ApiException e) {
                 e.printStackTrace();
                 Log.e("GOOGLE AUTH", "Error - " + e.getMessage());
-                dialogUI = new DialogUI(
+                /*dialogUI = new DialogUI(
                         MainScreenActivity.getInstance(),
                         "Понятно",
                         "Ошибка авторизации через Google!", // Заголовок
@@ -1114,7 +1121,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                         loadSettings();
                     }
                 });
-                dialogUI.showIn(mainScreen);
+                dialogUI.showIn(mainScreen);*/
             }
         }
     }

@@ -17,11 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nvidia.devtech.NvEventQueueActivity;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import ru.edgar.launcher.other.Lists;
+import ru.edgar.nlremake.other.Lists;
 import ru.edgar.space.InterfacesManager;
 import ru.edgar.matrp.R;
 import ru.edgar.space.SAMP;

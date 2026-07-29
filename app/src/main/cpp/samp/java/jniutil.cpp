@@ -198,21 +198,6 @@ void CJavaWrapper::HideInputLayout()
     EXCEPTION_CHECK(env);
 }
 
-void CJavaWrapper::ShowClientSettings()
-{
-    JNIEnv* env = GetEnv();
-
-    if (!env)
-    {
-        FLog("No env");
-        return;
-    }
-
-    env->CallVoidMethod(activity, s_ShowClientSettings);
-
-    EXCEPTION_CHECK(env);
-}
-
 void CJavaWrapper::MakeDialog(int diaFLogId, int diaFLogTypeId, char* caption, char* content, char* leftBtnText, char* rightBtnText)
 {
     JNIEnv* env = GetEnv();
@@ -1178,7 +1163,6 @@ CJavaWrapper::CJavaWrapper(JNIEnv* env, jobject activity)
     s_ShowInputLayout = env->GetMethodID(nvEventClass, "showInputLayout", "()V");
     s_HideInputLayout = env->GetMethodID(nvEventClass, "hideInputLayout", "()V");
 
-    s_ShowClientSettings = env->GetMethodID(nvEventClass, "showClientSettings", "()V");
     s_SetUseFullScreen = env->GetMethodID(nvEventClass, "setUseFullscreen", "(I)V");
     s_MakeDialog = env->GetMethodID(nvEventClass, "showDialog", "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
     //

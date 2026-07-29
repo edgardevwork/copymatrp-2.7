@@ -60,7 +60,7 @@ public class CircularSegmentProgressBar extends View {
             alphaFactor = Math.max(0.05f, alphaFactor);  // минимальная видимость
 
             int alpha = (int) (alphaFactor * 255);
-            paint.setColor(Color.argb(alpha, 0, 119, 255));
+            paint.setColor(Color.argb(alpha, 255, 255, 255));
 
             drawTrapezoidSegment(canvas, paint, innerRadius, outerRadius, startAngle, anglePerSegment * 0.8f);
         }

@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.nvidia.devtech.NvEventQueueActivity;
 
-import ru.edgar.launcher.activity.MainActivity;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.space.InterfacesManager;
@@ -40,7 +39,7 @@ public class MenuFragment {
         layoutParams.height = -1;
         btn_play = viewGroup.findViewById(R.id.btn_play);
         btn_play.setOnClickListener(v -> {
-            MainActivity.nickName = "Apk_TestBR";
+            MainScreenActivity.nickName = "Apk_TestBR";
             SAMP.getInstance().connectEdgar();
             hide();
         });

@@ -18,23 +18,23 @@
 
         <TextView
             android:id="@+id/lm_status"
-            android:textSize="@dimen/_10sdp"
+            android:textSize="@dimen/_8sdp"
             android:textColor="#ffffffff"
             android:gravity="right"
             android:layout_gravity="center_vertical"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_15sdp"
-            android:text="Загрузка игры..."
+            android:layout_marginEnd="@dimen/_18sdp"
+            android:text="Загрузка..."
             android:layout_weight="1.0"
             android:fontFamily="@font/ttnorms_medium"
             tools:ignore="SpUsage" />
 
         <ru.edgar.nlremake.ui.CircularSegmentProgressBar
             android:layout_gravity="center"
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="@dimen/_26sdp"
+            android:layout_height="@dimen/_26sdp"
+            android:layout_marginEnd="@dimen/_18sdp"
             android:indeterminate="true"/>
     </LinearLayout>
 

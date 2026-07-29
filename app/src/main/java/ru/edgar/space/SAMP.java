@@ -1,8 +1,6 @@
 package ru.edgar.space;
 
-import android.app.AlertDialog;
 import android.content.ClipData;
-import android.content.DialogInterface;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -13,10 +11,8 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,13 +27,10 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 import kotlin.jvm.internal.Intrinsics;
-import ru.edgar.launcher.activity.MainActivity;
-import ru.edgar.launcher.model.Servers;
-import ru.edgar.launcher.other.Lists;
 import ru.edgar.matrp.R;
+import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
 import ru.edgar.space.core.ui.noty.Notification;
-import ru.edgar.space.core.ui.settingsdialog.DialogClientSettings;
 
 @Obfuscate
 public class SAMP extends GTASA implements HeightProvider.HeightListener {
@@ -62,8 +55,6 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
     private InputManager mInputManager = null;
     private HeightProvider mHeightProvider = null;
-    private DialogClientSettings mDialogClientSettings = null;
-
     private Notification mNotification = null;
     private GameRender mGameRender = null;
     public SoundPool soundPool;
@@ -511,21 +502,6 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
         //mUseFullscreen = b;
     }
 
-    public void showClientSettings()
-    {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(mDialogClientSettings != null)
-                {
-                    mDialogClientSettings = null;
-                }
-                mDialogClientSettings = new DialogClientSettings();
-                mDialogClientSettings.show(getSupportFragmentManager(), "test");
-            }
-        });
-    }
-
     public void showSpawnMenu() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getSpawnMenu().ShowSpawnMenu(); } ); }
 
     public void hideSpawnMenu() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getSpawnMenu().HideSpawnMenu(); } ); }
@@ -549,7 +525,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
     public void connectEdgar() {
         runOnUiThread(() -> {
-            connn(EdgarConectV2.host, EdgarConectV2.port, MainActivity.nickName);
+            connn(EdgarConectV2.host, EdgarConectV2.port, MainScreenActivity.nickName);
         });
     }
 }

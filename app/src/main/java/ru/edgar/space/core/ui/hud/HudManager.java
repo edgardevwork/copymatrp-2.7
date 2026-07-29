@@ -23,7 +23,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Formatter;
 
-import ru.edgar.launcher.activity.MainActivity;
 import ru.edgar.space.InterfacesManager;
 import ru.edgar.matrp.R;
 import ru.edgar.space.SAMP;
