@@ -5,5 +5,5 @@ pluginManagement {
         mavenCentral()
     }
 }
-rootProject.name = "SPACE RP[2.5]"
+rootProject.name = "MATRESHKA RP[2.7-CopyPaste]"
 include ':app'
