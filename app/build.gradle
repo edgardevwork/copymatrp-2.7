@@ -64,6 +64,15 @@ android {
             abiFilters 'arm64-v8a'
         }
 
+        defaultConfig {
+            manifestPlaceholders = [
+                    VKIDClientID     : "51874098",   // ID вашего приложения (app_id)
+                    VKIDClientSecret : "Z1WG3N8SpdQFHx9FE4eM", // Ваш защищённый ключ (client_secret)
+                    VKIDRedirectHost : "vk.ru",      // Домен перенаправления (обычно vk.ru)
+                    VKIDRedirectScheme: "vk51874098"  // Cхема перенаправления (должна начинаться с "vk")
+            ]
+        }
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -126,14 +135,15 @@ android {
         checkReleaseBuilds false
     }
 }
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation "androidx.multidex:multidex:2.0.1"
     implementation group: 'org.ini4j', name: 'ini4j', version: '0.5.4'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'ru.egslava:MaskedEditText:1.0.5'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     implementation 'com.dinuscxj:circleprogressbar:1.3.6'
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.mindorks.android:prdownloader:0.6.0'
@@ -147,18 +157,22 @@ dependencies {
     implementation 'com.github.smarteist:autoimageslider:1.4.0'
     implementation 'com.github.skydoves:colorpickerview:2.3.0'
 
-    implementation platform('com.google.firebase:firebase-bom:32.4.0')
+    implementation platform('com.google.firebase:firebase-bom:34.16.0')
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-config'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-analytics'
 
-    // VK
-    implementation 'com.vk:android-sdk-core:3.0.0'
+    // VK ID by EDGAR 3.0 — Обновленные зависимости
 
-    implementation 'com.google.android.gms:play-services-auth:20.2.0'
-    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.vk.id:vkid:2.7.1'
+    //implementation 'com.vk.id:onetap-compose:2.7.1'
+    implementation 'com.vk.id:onetap-xml:2.7.1'
+    implementation 'androidx.compose.material3:material3-android:1.4.0'
+
+    implementation 'com.google.android.gms:play-services-auth:21.6.0'
+    implementation 'com.google.android.material:material:1.14.0'
 
     implementation "com.joom.paranoid:paranoid-gradle-plugin:0.3.14"
     implementation 'com.bytedance.android:shadowhook:2.0.0'

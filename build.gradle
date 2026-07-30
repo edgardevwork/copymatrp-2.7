@@ -21,6 +21,22 @@ buildscript {
     }
 }
 
+plugins {
+    id "vkid.manifest.placeholders" version "1.1.0" apply true
+}
+
+String clientId = "51874098"
+String clientSecret = "Z1WG3N8SpdQFHx9FE4eM"
+// Добавление значений в Manifest Placeholders.
+vkidManifestPlaceholders {
+    // Добавьте плейсхолдеры сокращенным способом. Например, vkidRedirectHost будет "vk.ru", а vkidRedirectScheme будет "vk$clientId".
+    init(clientId, clientSecret)
+    // Или укажите значения явно через properties, если не хотите использовать плейсхолдеры.
+    vkidRedirectHost = "vk.ru" // Обычно vk.ru.
+    vkidRedirectScheme = "vk{$clientId}" // Строго в формате vk{ID приложения}.
+    vkidClientId = clientId
+    vkidClientSecret = clientSecret
+}
 
 allprojects {
     repositories {
@@ -28,6 +44,9 @@ allprojects {
         maven { url 'https://jitpack.io' }
         maven { url 'https://mint.splunk.com/gradle/'}
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url 'https://artifactory-external.vkpartner.ru/artifactory/vkid-sdk-android/' }
+        maven { url 'https://artifactory-external.vkpartner.ru/artifactory/maven/' }
+        maven { url 'https://artifactory-external.vkpartner.ru/artifactory/vk-id-captcha/android/' }
         google()
     }
 }

@@ -3,6 +3,8 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven { url 'https://artifactory-external.vkpartner.ru/artifactory/vkid-sdk-android/' }
+        maven { url 'https://artifactory-external.vkpartner.ru/artifactory/maven/' }
     }
 }
 rootProject.name = "MATRESHKA RP[2.7-CopyPaste]"

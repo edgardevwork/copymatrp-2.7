@@ -49,6 +49,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadSampleListener;
 import com.liulishuo.filedownloader.FileDownloader;
+import com.vk.id.VKID;
 
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -109,6 +110,7 @@ public class MainScreenActivity  extends AppCompatActivity {
         setContentView(R.layout.activity_mainscreen);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         instance = this;
+        VKID.Companion.init(this);
         hideUI();
         lm_loadicon = (ImageView) findViewById(R.id.lm_loadicon);
         statusBar = (TextView) findViewById(R.id.lm_status);
