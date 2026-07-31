@@ -17,7 +17,8 @@
         app:srcCompat="@drawable/loading_logo" />
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/_20sdp"
@@ -51,62 +52,65 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:id="@+id/downloadBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:layout_marginStart="@dimen/_32sdp"
         android:layout_marginEnd="@dimen/_32sdp"
-        android:layout_marginBottom="@dimen/_20sdp">
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/_6sdp">
+            android:layout_marginBottom="@dimen/_6sdp"
+            android:orientation="horizontal">
 
             <TextView
-                android:textSize="@dimen/_9sdp"
-                android:textColor="#BABABA"
+                android:id="@+id/dw_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Загружено файлов"
                 android:fontFamily="@font/ttnorms_medium"
+                android:text="Загружено файлов"
+                android:textColor="#BABABA"
+                android:textSize="@dimen/_9sdp"
                 tools:ignore="SpUsage" />
 
             <TextView
-                android:id="@+id/fail"
-                android:textSize="@dimen/_10sdp"
-                android:textColor="#FFFFFF"
-                android:layout_marginStart="@dimen/_2sdp"
-                android:letterSpacing="0.05"
+                android:id="@+id/progress_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="(144 / 3197 МБ)"
+                android:layout_marginStart="@dimen/_2sdp"
                 android:fontFamily="@font/ttnorms_bold"
+                android:letterSpacing="0.05"
+                android:text="(144 / 3197 МБ)"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_10sdp"
                 tools:ignore="SpUsage" />
 
             <TextView
-                android:id="@+id/proc"
-                android:textSize="@dimen/_10sdp"
-                android:textColor="#FFFFFF"
-                android:letterSpacing="0.035"
+                android:id="@+id/procent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="5%"
-                android:gravity="end"
                 android:fontFamily="@font/ttnorms_bold"
+                android:gravity="end"
+                android:letterSpacing="0.035"
+                android:text="5%"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_10sdp"
                 tools:ignore="SpUsage" />
 
         </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progress"
+            style="?android:progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_4sdp"
-            style="?android:progressBarStyleHorizontal"
-            android:max="1000"
-            android:progress="800"
+            android:max="100"
+            android:progress="10"
             android:progressDrawable="@drawable/progressload" />
 
     </LinearLayout>

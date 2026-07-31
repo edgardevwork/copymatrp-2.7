@@ -23,6 +23,8 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -58,10 +61,10 @@ import com.vk.id.VKID;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
-import org.jetbrains.annotations.Async;
-
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -104,11 +107,16 @@ public class MainScreenActivity  extends AppCompatActivity {
     private DialogFragment dialogFragment;
     public static boolean isAuth = false;
     private ImageView lm_loadicon;
+    private LinearLayout loading, downloadBar;
     private static MainScreenActivity instance;
     private FrameLayout mainScreen;
     public FirebaseAuth mAuth;
-    private TextView statusBar;
+    private TextView procent, progress_text, dw_status;
+
+    private ProgressBar progress;
     public static String nickName;
+    long maxSizeFiles = 0;
+    int progressSizeFiles = 0;
 
     String apiLink;
 
@@ -121,11 +129,19 @@ public class MainScreenActivity  extends AppCompatActivity {
         initializeOtherService();
         instance = this;
         hideUI();
+        loading = (LinearLayout) findViewById(R.id.loading);
+        downloadBar = (LinearLayout) findViewById(R.id.downloadBar);
         lm_loadicon = (ImageView) findViewById(R.id.lm_loadicon);
         lm_loadicon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation));
-        statusBar = (TextView) findViewById(R.id.lm_status);
+        procent = (TextView) findViewById(R.id.procent);
+        dw_status = (TextView) findViewById(R.id.dw_status);
+        progress_text = (TextView) findViewById(R.id.progress_text);
+        progress = (ProgressBar) findViewById(R.id.progress);
         mainScreen = (FrameLayout) findViewById(R.id.mainscreen);
         mVideoView = (FullHeightVideoView) findViewById(R.id.videoView);
+
+        loading.setVisibility(View.VISIBLE);
+        downloadBar.setVisibility(View.GONE);
 
         setupVideoPlayer();
 
@@ -680,6 +696,12 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                                             }
                                                                         });
                                                                     } else {
+                                                                        maxSizeFiles = 0;
+                                                                        progressSizeFiles = 0;
+                                                                        progress.setProgress(0);
+                                                                        loading.setVisibility(View.VISIBLE);
+                                                                        downloadBar.setVisibility(View.GONE);
+                                                                        progress_text.setVisibility(View.VISIBLE);
                                                                         Intent intent = new Intent(MainScreenActivity.getInstance(), SAMP.class);
                                                                         startActivity(intent);
                                                                         overridePendingTransition(0, 0);// Установка анимации перехода в 0*
@@ -805,6 +827,36 @@ public class MainScreenActivity  extends AppCompatActivity {
         }
         i = 0;
         urlsst = url;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (String fileUrl : url) {
+                    HttpURLConnection connection = null;
+                    try {
+                        URL url1 = new URL(fileUrl);
+                        connection = (HttpURLConnection) url1.openConnection();
+                        connection.setRequestMethod("HEAD");
+                        connection.setConnectTimeout(2000);
+                        connection.setReadTimeout(2000);
+
+                        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                            long size = connection.getContentLengthLong();
+                            if (size > 0) {
+                                maxSizeFiles += size;
+                            }
+                        }
+                    } catch (Throwable t) {
+                        // Ловим вообще любые системные ошибки (включая AconfigStorageReadException)
+                        t.printStackTrace();
+                    } finally {
+                        if (connection != null) {
+                            connection.disconnect();
+                        }
+                    }
+                }
+            }
+        }).start();
+
         toUnnZip = toUnZip;
         unnZip = unZip;
         String pathh = unZip.get(i);
@@ -858,7 +910,20 @@ public class MainScreenActivity  extends AppCompatActivity {
         }
     }
 
+    private long lastNotifUpdateTime = 0;
+
     private BaseDownloadTask createDownloadTask(String url, String path, boolean isApk) {
+        final int notificationId = 1;
+
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(MainScreenActivity.getInstance(), "space_1")
+                .setSmallIcon(R.drawable.ic_launcher) // Иконка стрелочки вниз
+                .setContentTitle("Загрузка обновления")          // Заголовок
+                .setContentText("Скачивание...")                             // Текст под заголовком
+                .setOngoing(true)                                 // Нельзя смахнуть пальцем во время качания
+                .setPriority(NotificationCompat.PRIORITY_HIGH) // Высокий приоритет для старых версий Android
+                .setDefaults(NotificationCompat.DEFAULT_ALL)  // Включает звук и вибрацию (без них баннер не всплывет)
+                .setOnlyAlertOnce(true);
+
         return FileDownloader.getImpl().create(url)
                 .setPath(path, true)
                 .setCallbackProgressTimes(100)
@@ -874,10 +939,42 @@ public class MainScreenActivity  extends AppCompatActivity {
                     protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
                         super.progress(task, soFarBytes, totalBytes);
 
+                        int loading_procent = 0;
+
                         if (!isApk) {
-                            statusBar.setText(getResources().getString(R.string.launcher_donwload_info_6, soFarBytes * 100.0f / totalBytes));
+                            if (maxSizeFiles > 0) {
+                                loading_procent = (int) (((soFarBytes + progressSizeFiles) * 100L) / maxSizeFiles);
+                            }
+                            loading_procent = Math.max(0, Math.min(100, loading_procent));
+
+                            // Локальные переменные для передачи в лямбду runOnUiThread
+                            final int currentPercent = loading_procent;
+                            runOnUiThread(() -> {
+                                progress.setProgress(currentPercent);
+                                procent.setText(currentPercent + "%");
+                                progress_text.setText(String.format("(%d / %d МБ)", (soFarBytes + progressSizeFiles) / 1048576, maxSizeFiles / 1048576));
+                            });
                         } else {
-                            statusBar.setText(getResources().getString(R.string.launcher_donwload_info_10, soFarBytes * 100.0f / totalBytes));
+                            if (totalBytes > 0) {
+                                loading_procent = (int) ((soFarBytes * 100L) / totalBytes);
+                            }
+                            loading_procent = Math.max(0, Math.min(100, loading_procent));
+
+                            final int currentPercent = loading_procent;
+                            runOnUiThread(() -> {
+                                progress.setProgress(currentPercent);
+                                procent.setText(currentPercent + "%");
+                                progress_text.setText(String.format("(%d / %d МБ)", soFarBytes / 1048576, totalBytes / 1048576));
+                            });
+                        }
+
+                        // ТАЙМЕР ДЛЯ УВЕДОМЛЕНИЯ: Обновляем шторку не чаще чем раз в 350 миллисекунд
+                        long currentTime = System.currentTimeMillis();
+                        if (currentTime - lastNotifUpdateTime > 350 || loading_procent == 100) {
+                            lastNotifUpdateTime = currentTime; // Запоминаем время последнего обновления
+
+                            builder.setContentText(loading_procent + "%");
+                            notifManager.notify(notificationId, builder.build());
                         }
                     }
 
@@ -885,15 +982,52 @@ public class MainScreenActivity  extends AppCompatActivity {
                     protected void error(BaseDownloadTask task, Throwable e) {
                         super.error(task, e);
                         System.out.println(e.toString() + " XUIIIIIIIIII");
+                        builder.setContentText("Ошибка при загрузке обновления")
+                                .setOngoing(false);
+
+                        notifManager.notify(notificationId, builder.build());
+
                         Toast.makeText(getApplicationContext(), "Произошла ошибка начните заново установку", Toast.LENGTH_SHORT).show();
-                        statusBar.setText(getResources().getString(R.string.launcher_donwload_info_5));
                         loadSettings();
                     }
 
                     @Override
                     protected void connected(BaseDownloadTask task, String et, boolean isContinue, int soFarBytes, int totalBytes) {
                         super.connected(task, et, isContinue, soFarBytes, totalBytes);
-                        System.out.println("dddddddd");
+                        // 1. Показываем уведомление (оно сработает один раз со звуком/баннером на старте)
+                        notifManager.notify(notificationId, builder.build());
+
+                        // Вычисляем проценты заранее, безопасно и с правильной формулой
+                        int loading_procent = 0;
+                        final String formattedText;
+
+                        if (!isApk) {
+                            if (maxSizeFiles > 0) {
+                                loading_procent = (int) (((soFarBytes + progressSizeFiles) * 100L) / maxSizeFiles);
+                            }
+                            loading_procent = Math.max(0, Math.min(100, loading_procent));
+                            formattedText = String.format("(%d / %d МБ)", (soFarBytes + progressSizeFiles) / 1048576, maxSizeFiles / 1048576);
+                        } else {
+                            if (totalBytes > 0) {
+                                loading_procent = (int) ((soFarBytes * 100L) / totalBytes);
+                            }
+                            loading_procent = Math.max(0, Math.min(100, loading_procent));
+                            formattedText = String.format("(%d / %d МБ)", soFarBytes / 1048576, totalBytes / 1048576);
+                        }
+
+                        final int finalPercent = loading_procent;
+
+                        // 2. Обязательно переносим ВСЁ управление интерфейсом в UI-поток
+                        runOnUiThread(() -> {
+                            loading.setVisibility(View.GONE);
+                            downloadBar.setVisibility(View.VISIBLE);
+                            dw_status.setText("Загружено файлов");
+                            progress_text.setVisibility(View.VISIBLE);
+
+                            progress.setProgress(finalPercent);
+                            procent.setText(finalPercent + "%");
+                            progress_text.setText(formattedText);
+                        });
                     }
 
                     @Override
@@ -905,6 +1039,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                     protected void completed(BaseDownloadTask task) {
                         super.completed(task);
                         if (!isApk) {
+                            progressSizeFiles += task.getTotalBytes();
                             System.out.println(urlsst.size() + " = " + i);
                             if (urlsst.size() > i) {
                                 String pathh = unnZip.get(i);
@@ -913,6 +1048,12 @@ public class MainScreenActivity  extends AppCompatActivity {
                                 createDownloadTask(urlss, pathh, false).start();
                                 i++;
                             } else {
+                                builder.setContentText("Завершено!")
+                                        .setOngoing(false); // Теперь можно смахнуть
+
+                                notifManager.notify(notificationId, builder.build());
+                                progress.setProgress(100);
+                                progress_text.setVisibility(View.GONE);
                                 i = 0;
                                 if (toUnnZip.size() > i) {
                                     String unn = toUnnZip.get(i);
@@ -922,6 +1063,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                                 }
                             }
                         } else {
+                            builder.setContentText("Завершено!")
+                                    .setOngoing(false); // Теперь можно смахнуть
+
+                            notifManager.notify(notificationId, builder.build());
                             installApk(launcher_path);
                         }
                     }
@@ -950,7 +1095,8 @@ public class MainScreenActivity  extends AppCompatActivity {
         String mInputFilePath = path;
         String mOutputPath = path2;
         String resultString = path.replace(Helper.androidPath + "/", "");
-        statusBar.setText("Распаковка архивов " + resultString);
+        dw_status.setText("Распаковка архивов");
+        procent.setText(String.format("%d / %d", i, toUnnZip.size()));
         new Thread() {
             @Override
             public void run() {
@@ -970,7 +1116,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                         unZip(unn, unn2);
                         i++;
                     } else {
-                        statusBar.setText(getResources().getString(R.string.launcher_donwload_info_5));
+                        dw_status.setText(getResources().getString(R.string.launcher_donwload_info_5));
 
                         String basePath = Helper.androidPath;
 
