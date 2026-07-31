@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_gravity="bottom"
     android:id="@+id/main_fl_root"
     android:layout_width="match_parent"
@@ -45,33 +45,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="@dimen/_104sdp"
+        android:layout_height="@dimen/_68sdp"
+        app:srcCompat="@drawable/loading_logo" />
+
     <LinearLayout
         android:id="@+id/progressBar"
         android:layout_gravity="bottom"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_17sdp">
+        android:layout_marginBottom="@dimen/_20sdp">
 
         <TextView
             android:id="@+id/lm_status"
-            android:textSize="@dimen/_10sdp"
+            android:textSize="@dimen/_9sdp"
             android:textColor="#ffffffff"
             android:gravity="right"
+            android:letterSpacing="0.035"
             android:layout_gravity="center_vertical"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_15sdp"
-            android:text="Загрузка игры..."
+            android:layout_marginEnd="@dimen/_24sdp"
+            android:text="Загрузка..."
             android:layout_weight="1.0"
-            android:fontFamily="@font/ttnorms_medium"/>
+            android:fontFamily="@font/ttnorms_medium"
+            tools:ignore="SpUsage" />
 
-        <ru.edgar.nlremake.ui.CircularSegmentProgressBar
+        <ImageView
             android:layout_gravity="center"
+            android:id="@+id/lm_loadicon"
+            android:background="@drawable/ic_loadingmenu_load"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
-            android:layout_marginEnd="16dp"
-            android:indeterminate="true"/>
+            android:layout_marginEnd="@dimen/_23sdp"
+            android:rotationY="180"/>
+
     </LinearLayout>
 
 </FrameLayout>

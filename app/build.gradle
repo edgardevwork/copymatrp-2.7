@@ -167,7 +167,7 @@ dependencies {
     // VK ID by EDGAR 3.0 — Обновленные зависимости
 
     implementation 'com.vk.id:vkid:2.7.1'
-    //implementation 'com.vk.id:onetap-compose:2.7.1'
+    implementation 'com.vk.id:onetap-compose:2.7.1'
     implementation 'com.vk.id:onetap-xml:2.7.1'
     implementation 'androidx.compose.material3:material3-android:1.4.0'
 

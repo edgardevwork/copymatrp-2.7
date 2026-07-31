@@ -1,6 +1,8 @@
 package ru.edgar.nlremake.activity;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -12,8 +14,12 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -28,8 +34,6 @@ import androidx.core.content.FileProvider;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -54,6 +58,8 @@ import com.vk.id.VKID;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
+import org.jetbrains.annotations.Async;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -65,12 +71,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.edgar.nlremake.fragment.DialogFragment;
 import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Archive;
 import ru.edgar.nlremake.model.ArchivePath;
@@ -93,11 +101,12 @@ public class MainScreenActivity  extends AppCompatActivity {
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private NotificationManager notifManager = null;
     private FullHeightVideoView mVideoView;
+    private DialogFragment dialogFragment;
     public static boolean isAuth = false;
     private ImageView lm_loadicon;
     private static MainScreenActivity instance;
     private FrameLayout mainScreen;
-    private FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
     private TextView statusBar;
     public static String nickName;
 
@@ -109,52 +118,80 @@ public class MainScreenActivity  extends AppCompatActivity {
         setTheme(R.style.AppTheme_Launcher);
         setContentView(R.layout.activity_mainscreen);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        initializeOtherService();
         instance = this;
-        VKID.Companion.init(this);
         hideUI();
         lm_loadicon = (ImageView) findViewById(R.id.lm_loadicon);
+        lm_loadicon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation));
         statusBar = (TextView) findViewById(R.id.lm_status);
         mainScreen = (FrameLayout) findViewById(R.id.mainscreen);
         mVideoView = (FullHeightVideoView) findViewById(R.id.videoView);
-        mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading));
 
-        mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        setupVideoPlayer();
 
+        // 3. Запускаем тяжелую проверку асинхронно
+        checkAuthInBackground(new AuthCallback() {
             @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.setLooping(true);
+            public void onResult(boolean isAuthenticated) {
+                // Этот блок выполнится ПОЗЖЕ, когда данные загрузятся
+                // Мы снова находимся в главном потоке, поэтому можем показывать диалоги
+
+                dialogFragment = new DialogFragment(); // Создаем прямо перед показом
+
+                if (!isAuthenticated) {
+                    dialogFragment.showNewDialog(true, "i", "i", null, null, null, null);
+                } else {
+                    onRequestPermissions();
+                }
             }
         });
-
-        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setLooping(true);
-                mVideoView.start();
-            }
-        });
-
-        lm_loadicon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation));
-
-        mVideoView.start();
-
-        otherInit();
-
-        Log.i("GOOGLE AUTH", "Init Google");
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null) {
-            isAuth = true;
-        } else {
-            isAuth = false;
-        }
-        if(!isAuth) {
-            onInitAuthGoogle();
-        } else onRequestPermissions();
     }
 
     public static MainScreenActivity getInstance() {
         return instance;
+    }
+
+    public FrameLayout getMainScreen() {
+        return mainScreen;
+    }
+
+    private void checkAuthInBackground(final AuthCallback callback) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            boolean result = false;
+
+            try {
+                Thread.sleep(1500);
+                result = loadAuthStatusFromSecureStorage();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
+            // Возвращаемся в главный поток, чтобы вызвать колбэк
+            boolean finalResult = result;
+            new Handler(Looper.getMainLooper()).post(() -> {
+                callback.onResult(finalResult);
+            });
+        });
+    }
+
+    interface AuthCallback {
+        void onResult(boolean isAuthenticated);
+    }
+
+    // Заглушка вашей реальной функции проверки
+    private boolean loadAuthStatusFromSecureStorage() {
+        // Тут может быть вызов вашего репозитория
+        return isAuth;
+    }
+
+    private void setupVideoPlayer() {
+        mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading));
+        mVideoView.setOnCompletionListener(mp -> mp.setLooping(true));
+        mVideoView.setOnPreparedListener(mp -> {
+            mp.setLooping(true);
+            mVideoView.start();
+        });
+        mVideoView.start();
     }
 
     private boolean netIsAvailable() {
@@ -184,7 +221,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
-    public void otherInit() {
+    public void initializeOtherService() {
         // Создание папки где будет кеш
         getExternalFilesDir("");
         // Создание канала уведомлений
@@ -204,34 +241,19 @@ public class MainScreenActivity  extends AppCompatActivity {
         FirebaseAnalytics.getInstance(this);
         FirebaseApp.initializeApp(this);
         FileDownloader.init(this);
+        VKID.Companion.init(this);
         mAuth = FirebaseAuth.getInstance();
-    }
 
-    public void onInitAuthGoogle() {
-        GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, options);
-        if (GoogleSignIn.getLastSignedInAccount(this) != null) {
-            googleSignInClient.signOut().addOnCompleteListener(this, new a(googleSignInClient));
-            return;
-        }
-        Intent i = googleSignInClient.getSignInIntent();
-        startActivityForResult(i, 1234);
-    }
+        Log.i("GOOGLE AUTH", "Init Google");
 
-    public static class a implements OnCompleteListener<Void> {
-        GoogleSignInClient googleSignInClient;
-        public a(GoogleSignInClient googleSignInClient) {
-            this.googleSignInClient = googleSignInClient;
-        }
-
-        @Override // com.google.android.gms.tasks.OnCompleteListener
-        public final void onComplete(@NonNull Task<Void> task) {
-            MainScreenActivity.getInstance().onInitAuthGoogle();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null) {
+            isAuth = true;
+        } else {
+            isAuth = false;
         }
     }
+
     public void onRequestPermissions() {
         List<String> permissionsToRequest = new ArrayList<>();
 
@@ -345,20 +367,13 @@ public class MainScreenActivity  extends AppCompatActivity {
         return size;
     }
 
-    public void loadSettings() {
+    public void loadSettings() { /// Главная логика подгрузки
         if(!netIsAvailable()) {
-            /*dialogUI = new DialogUI(
-                    this,
-                    "Подключиться",
-                    "Чтобы продолжить\nподключитесь к интернету!", // Заголовок
-                    "Подключиться к интернету и продолжить играть" // Описание
-            );
-            // Устанавливаем действие для Yes кнопки (с анимацией)
-            dialogUI.setOnClickYesBtn(new Runnable() {
+            dialogFragment.showNewDialog(false, "Чтобы продолжить\nподключитесь к интернету!", "Подключиться к интернету и продолжить играть", null, "Подключиться", null, new View.OnClickListener() {
                 @Override
-                public void run() {
+                public void onClick(View v) {
                     if(netIsAvailable()) {
-                        dialogUI.dismiss();
+                        AnimVisibale(dialogFragment.viewGroup, View.GONE);
                         loadSettings();
                         return;
                     }
@@ -367,14 +382,14 @@ public class MainScreenActivity  extends AppCompatActivity {
                         Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
 
                         if (intent.resolveActivity(getPackageManager()) != null) {
-                            dialogUI.dismiss();
+                            AnimVisibale(dialogFragment.viewGroup, View.GONE);
                             loadSettings();
                             startActivity(intent);
                         } else {
                             // Если не получилось, пробуем открыть общие настройки сетей
                             Intent fallbackIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
                             if (fallbackIntent.resolveActivity(getPackageManager()) != null) {
-                                dialogUI.dismiss();
+                                AnimVisibale(dialogFragment.viewGroup, View.GONE);
                                 loadSettings();
                                 startActivity(fallbackIntent);
                             } else {
@@ -390,11 +405,9 @@ public class MainScreenActivity  extends AppCompatActivity {
                     }
                 }
             });
-
-            // Добавляем диалог в mainScreen с анимацией появления
-            dialogUI.showIn(mainScreen);*/
             return;
         }
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://crmp.pro/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -424,58 +437,37 @@ public class MainScreenActivity  extends AppCompatActivity {
                     }
                 }
 
-
-
                 sInterface.getApi(apiLink).enqueue(new Callback<Api>() {
                     public void onResponse(Call<Api> call, Response<Api> response) {
                         if(response.isSuccessful())
                         {
                             if(response.body() != null) {
                                 if(response.body().getLauncherVersion() != 73) {
-                                    /*dialogUI = new DialogUI(
-                                            MainScreenActivity.getInstance(),
-                                            "Да",
-                                            "Нет",
-                                            "Доступна новая версия клиента!\nЗагрузить обновление?", // Заголовок
-                                            "" // Описание
-                                    );
-                                    // Устанавливаем действие для Yes кнопки (с анимацией)
-                                    dialogUI.setOnClickYesBtn(new Runnable() {
+                                    dialogFragment.showNewDialog(false, "Доступна новая версия клиента!\nЗагрузить обновление?", "", "Да", "Нет", new View.OnClickListener() {
                                         @Override
-                                        public void run() {
-                                            dialogUI.dismiss();
+                                        public void onClick(View v) {
+                                            AnimVisibale(dialogFragment.viewGroup, View.GONE);
                                             startDownloadApk(response.body().getLauncherUrl(),
                                                     response.body().getLauncherPath(),
                                                     response.body().getLauncherName());
                                         }
-                                    });
-                                    dialogUI.setOnClickNoBtn(new Runnable() {
+                                    }, new View.OnClickListener() {
                                         @Override
-                                        public void run() {
-                                            dialogUI.dismiss();
+                                        public void onClick(View v) {
+                                            AnimVisibale(dialogFragment.viewGroup, View.GONE);
                                             loadSettings();
                                         }
                                     });
-                                    dialogUI.showIn(mainScreen);*/
                                 } else {
                                     if (response.body().getIsTest()) {
                                         if (!response.body().getTestApi()) {
-                                            /*dialogUI = new DialogUI(
-                                                    MainScreenActivity.getInstance(),
-                                                    "Да",
-                                                    "Нет",
-                                                    "Тестовая версия клиента закрыта!\nОжидайте следующих тестов...", // Заголовок
-                                                    "" // Описание
-                                            );
-                                            // Устанавливаем действие для Yes кнопки (с анимацией)
-                                            dialogUI.setOnClickYesBtn(new Runnable() {
+                                            dialogFragment.showNewDialog(false, "Тестовая версия клиента закрыта!\nОжидайте следующих тестов...", "", null, "Понял", null, new View.OnClickListener() {
                                                 @Override
-                                                public void run() {
+                                                public void onClick(View v) {
                                                     finish();
                                                     onDestroy();
                                                 }
                                             });
-                                            dialogUI.showIn(mainScreen);*/
                                         }
                                         //testApi = response.body().getTestApi();
                                     }
@@ -674,30 +666,19 @@ public class MainScreenActivity  extends AppCompatActivity {
 
                                                                     clearModelCache();
                                                                     if (!url.isEmpty()) {
-                                                                        /*dialogUI = new DialogUI(
-                                                                                MainScreenActivity.getInstance(),
-                                                                                "Да",
-                                                                                "Нет",
-                                                                                "Доступно обновление!\nЗагрузить " + Utils.bytesIntoHumanReadable(si) + "?", // Заголовок
-                                                                                "" // Описание
-                                                                        );
-                                                                        // Устанавливаем действие для Yes кнопки
-                                                                        dialogUI.setOnClickYesBtn(new Runnable() {
+                                                                        dialogFragment.showNewDialog(false, "Доступно обновление!\nЗагрузить " + Utils.bytesIntoHumanReadable(si) + "?", null, "Да", "Нет", new View.OnClickListener() {
                                                                             @Override
-                                                                            public void run() {
-                                                                                dialogUI.dismiss();
+                                                                            public void onClick(View v) {
+                                                                                AnimVisibale(dialogFragment.viewGroup, View.GONE);
                                                                                 startDownload(url, path, unZip, toUnZip);
                                                                             }
-                                                                        });
-                                                                        // Устанавливаем действие для No кнопки
-                                                                        dialogUI.setOnClickNoBtn(new Runnable() {
+                                                                        }, new View.OnClickListener() {
                                                                             @Override
-                                                                            public void run() {
-                                                                                dialogUI.dismiss();
+                                                                            public void onClick(View v) {
+                                                                                AnimVisibale(dialogFragment.viewGroup, View.GONE);
                                                                                 loadSettings();
                                                                             }
                                                                         });
-                                                                        dialogUI.showIn(mainScreen);*/
                                                                     } else {
                                                                         Intent intent = new Intent(MainScreenActivity.getInstance(), SAMP.class);
                                                                         startActivity(intent);
@@ -710,6 +691,13 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                         @Override
                                                         public void onFailure(Call<List<News>> call, Throwable t) {
                                                             Toast.makeText(getApplicationContext(), "Ошибка News List", Toast.LENGTH_SHORT).show();
+                                                            dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                                                    loadSettings();
+                                                                }
+                                                            }, null);
                                                         }
                                                     });
                                                 }
@@ -717,6 +705,13 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                 @Override
                                                 public void onFailure(Call<List<Servers>> call, Throwable t) {
                                                     Toast.makeText(getApplicationContext(), "Ошибка Servers List", Toast.LENGTH_SHORT).show();
+                                                    dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                                            loadSettings();
+                                                        }
+                                                    }, null);
                                                 }
                                             });
 
@@ -725,65 +720,48 @@ public class MainScreenActivity  extends AppCompatActivity {
                                         @Override
                                         public void onFailure(Call<Main> call, Throwable t) {
                                             Toast.makeText(getApplicationContext(), "Ошибка Main List", Toast.LENGTH_SHORT).show();
+                                            dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                                    loadSettings();
+                                                }
+                                            }, null);
                                         }
                                     });
                                 }
                             } else {
                                 Log.e("api-", "api----");
-                                /*dialogUI = new DialogUI(
-                                        MainScreenActivity.getInstance(),
-                                        "Повторить",
-                                        "Не удаётся установить\nсоединение с сервером!", // Заголовок
-                                        "Повторите попытку позже." // Описание
-                                );
-                                // Устанавливаем действие для Yes кнопки (с анимацией)
-                                dialogUI.setOnClickYesBtn(new Runnable() {
+                                dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
                                     @Override
-                                    public void run() {
-                                        dialogUI.dismiss();
+                                    public void onClick(View v) {
+                                        AnimVisibale(dialogFragment.viewGroup, View.GONE);
                                         loadSettings();
                                     }
-                                });
-                                dialogUI.showIn(mainScreen);*/
+                                }, null);
                             }
                         } else {
                             System.out.println(response.body());
                             Log.e("api-", "api---1-");
                             System.err.println("Ошибка: " + response.code() + " - " + response.message());
-                            /*dialogUI = new DialogUI(
-                                    MainScreenActivity.getInstance(),
-                                    "Повторить",
-                                    "Не удаётся установить\nсоединение с сервером!", // Заголовок
-                                    "Повторите попытку позже." // Описание
-                            );
-                            // Устанавливаем действие для Yes кнопки (с анимацией)
-                            dialogUI.setOnClickYesBtn(new Runnable() {
+                            dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
                                 @Override
-                                public void run() {
-                                    dialogUI.dismiss();
+                                public void onClick(View v) {
+                                    AnimVisibale(dialogFragment.viewGroup, View.GONE);
                                     loadSettings();
                                 }
-                            });
-                            dialogUI.showIn(mainScreen);*/
+                            }, null);
                         }
                     }
                     public void onFailure(Call<Api> call, Throwable th) {
                         Log.e("api-", "api----" + th.toString());
-                        /*dialogUI = new DialogUI(
-                                MainScreenActivity.getInstance(),
-                                "Повторить",
-                                "Не удаётся установить\nсоединение с сервером!", // Заголовок
-                                "Повторите попытку позже." // Описание
-                        );
-                        // Устанавливаем действие для Yes кнопки (с анимацией)
-                        dialogUI.setOnClickYesBtn(new Runnable() {
+                        dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
                             @Override
-                            public void run() {
-                                dialogUI.dismiss();
+                            public void onClick(View v) {
+                                AnimVisibale(dialogFragment.viewGroup, View.GONE);
                                 loadSettings();
                             }
-                        });
-                        dialogUI.showIn(mainScreen);*/
+                        }, null);
                     }
                 });
             }
@@ -1060,6 +1038,32 @@ public class MainScreenActivity  extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void AnimVisibale(ViewGroup viewGroup, int targetState) {
+        if (viewGroup != null) {
+            if (targetState == View.VISIBLE) {
+                // Сначала делаем видимым, потом анимируем
+                viewGroup.setVisibility(View.VISIBLE);
+                viewGroup.setAlpha(0.0f); // Начинаем с полной прозрачности
+
+                viewGroup.animate()
+                        .alpha(1.0f)
+                        .setDuration(150)
+                        .setListener(null); // Слушатель здесь больше не нужен для установки видимости
+            } else {
+                viewGroup.animate()
+                        .alpha(0.0f)
+                        .setDuration(150)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                viewGroup.setVisibility(View.GONE);
+                                super.onAnimationEnd(animation);
+                            }
+                        });
+            }
         }
     }
 

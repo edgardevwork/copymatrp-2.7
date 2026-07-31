@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/ic_dialog_nlremake"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,8 +30,8 @@
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:letterSpacing="0.01"
                 android:fontFamily="@font/ttnorms_bold"
+                android:letterSpacing="0.01"
                 android:text="Авторизация"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_18sdp" />
@@ -41,9 +41,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginRight="@dimen/_6sdp"
-                android:lineHeight="@dimen/_12sdp"
-                android:letterSpacing="0.025"
                 android:fontFamily="@font/ttnorms_bold"
+                android:letterSpacing="0.025"
+                android:lineHeight="@dimen/_12sdp"
                 android:text="Создайте профиль или войдите в систему, чтобы\nпогрузиться в безграничные возможности игры"
                 android:textColor="#CCCFD8"
                 android:textSize="@dimen/_9sdp" />
@@ -123,9 +123,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_14sdp"
                 android:fontFamily="@font/ttnorms_bold"
+                android:letterSpacing="-0.02"
                 android:text="*Тебе нужно будет авторизоваться, чтобы накопленный\nпрогресс не пропал после удаление приложения"
                 android:textColor="#7F8288"
-                android:letterSpacing="-0.02"
                 android:textSize="@dimen/_8sdp" />
 
             <TextView
@@ -147,7 +147,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/ic_dialog_newlauncher_bg"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

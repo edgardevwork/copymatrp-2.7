@@ -11,7 +11,9 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
@@ -51,6 +53,8 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     private SurfaceView mSurfaceView = null;
 
     private LinearLayout progressBar = null;
+    private ImageView lm_loadicon;
+    private ImageView logoBig;
     private FullHeightVideoView mVideoView = null;
 
     private InputManager mInputManager = null;
@@ -234,6 +238,8 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
         mFrontUILayout = (FrameLayout) findViewById(R.id.front_ui_layout);
         progressBar = (LinearLayout) findViewById(R.id.progressBar);
         mVideoView = (FullHeightVideoView) findViewById(R.id.videoView);
+        logoBig = (ImageView) findViewById(R.id.imageView);
+        lm_loadicon = (ImageView) findViewById(R.id.lm_loadicon);
 
         mDarkScreen = findViewById(R.id.dark_screen);
         mDarkScreen.setAlpha(0.0f);
@@ -244,6 +250,10 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
         mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() +"/"+R.raw.portobeloloop));
         mVideoView.setVisibility(View.VISIBLE);
         mVideoView.setAlpha(1.0f);
+        logoBig.setVisibility(View.VISIBLE);
+        logoBig.setAlpha(1.0f);
+
+        lm_loadicon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation));
 
         mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
@@ -483,6 +493,12 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
             @Override
             public void run() {
                 progressBar.setVisibility(View.GONE);
+            }
+        }).start();
+        logoBig.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                logoBig.setVisibility(View.GONE);
             }
         }).start();
     });
