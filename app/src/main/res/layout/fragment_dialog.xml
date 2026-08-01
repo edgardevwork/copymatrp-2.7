@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e60D1518">
+    android:background="#E114141A">
 
     <FrameLayout
         android:id="@+id/bg"
@@ -162,82 +162,76 @@
                 android:id="@+id/textView45"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_16sdp"
-                android:layout_marginTop="@dimen/_16sdp"
-                android:layout_marginRight="@dimen/_16sdp"
-                android:fontFamily="@font/montserrat_bold"
-                android:letterSpacing="0.06"
-                android:text="Доступна новая\nверсия клиента!"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginRight="@dimen/_18sdp"
+                android:letterSpacing="0.03"
+                android:fontFamily="@font/ttnorms_bold"
+                android:text="Доступно обновление!"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_15sdp" />
+                android:textSize="@dimen/_18sdp" />
 
             <TextView
                 android:id="@+id/dname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginLeft="@dimen/_18sdp"
                 android:layout_marginTop="@dimen/_4sdp"
-                android:layout_marginRight="@dimen/_16sdp"
-                android:fontFamily="@font/montserrat_bold"
-                android:letterSpacing="0.07"
-                android:lineHeight="@dimen/_16sdp"
-                android:text="Скачать обновление и продолжить играть"
-                android:textColor="#B7B7C1"
-                android:textSize="@dimen/_7sdp" />
+                android:layout_marginRight="@dimen/_18sdp"
+                android:fontFamily="@font/ttnorms_medium"
+                android:lineHeight="@dimen/_10sdp"
+                android:text="Размер обновления: 3.0 GB\nХочешь скачать его сейчас?"
+                android:textColor="#e9e9f3"
+                android:textSize="@dimen/_9sdp" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginRight="@dimen/_18sdp"
                 android:visibility="visible">
 
                 <FrameLayout
                     android:id="@+id/main_btn_yes"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="@dimen/_28sdp"
-                    android:layout_marginLeft="@dimen/_16sdp"
-                    android:layout_marginTop="@dimen/_14sdp"
-                    android:layout_marginRight="@dimen/_3sdp"
-                    android:layout_marginBottom="@dimen/_16sdp"
-                    android:background="@drawable/ic_dialog_newbtnin"
-                    android:gravity="center">
+                    android:layout_marginBottom="@dimen/_18sdp"
+                    android:layout_weight="1"
+                    android:background="@drawable/ic_dialog_newbtnin">
 
                     <TextView
                         android:id="@+id/b1"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/_17sdp"
-                        android:layout_marginEnd="@dimen/_17sdp"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:gravity="center"
-                        android:text="Скачать обновление"
+                        android:fontFamily="@font/ttnorms_medium"
+                        android:text="Да"
                         android:textColor="#ffffff"
-                        android:textSize="@dimen/_10sdp" />
+                        android:textSize="@dimen/_9sdp" />
                 </FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/main_btn_no"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_28sdp"
-                    android:layout_marginLeft="@dimen/_2sdp"
-                    android:layout_marginTop="@dimen/_14sdp"
-                    android:layout_marginRight="@dimen/_16sdp"
-                    android:layout_marginBottom="@dimen/_16sdp"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginBottom="@dimen/_18sdp"
                     android:background="@drawable/ic_dialog_newbtnoff">
 
                     <TextView
                         android:id="@+id/b2"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/_17sdp"
-                        android:layout_marginEnd="@dimen/_17sdp"
-                        android:fontFamily="@font/montserrat_bold"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginEnd="@dimen/_8sdp"
+                        android:fontFamily="@font/ttnorms_medium"
                         android:gravity="center"
-                        android:text="Отмена"
+                        android:text="Нет"
                         android:textColor="#ffffff"
-                        android:textSize="@dimen/_10sdp" />
+                        android:textSize="@dimen/_9sdp" />
                 </FrameLayout>
 
             </LinearLayout>
