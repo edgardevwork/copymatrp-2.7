@@ -395,6 +395,5 @@
     <item name="cmd_recycler" type="id" />
     <item name="tab_recycler" type="id" />
     <item name="settings" type="id" />
-    <item name="bg" type="id" />
     <item name="add_icon" type="id" />
 </resources>

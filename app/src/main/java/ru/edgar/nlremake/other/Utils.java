@@ -10,7 +10,7 @@ public class Utils {
 	
 	public static String bytesIntoHumanReadable(long value) {
         long[] dividers = {GB, MB, KB, 1};
-        String[] units = {"GB", "MB", "KB", "B"};
+        String[] units = {"ГБ", "МБ", "КБ", "Б"};
         if (value < 1) {
             value = 0;
         }

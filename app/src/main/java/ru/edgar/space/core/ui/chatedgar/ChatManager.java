@@ -19,7 +19,7 @@ import com.nvidia.devtech.NvEventQueueActivity;
 
 import java.util.ArrayList;
 
-import ru.edgar.nlremake.other.Lists;
+import ru.edgar.nlremake.network.Lists;
 import ru.edgar.space.InterfacesManager;
 import ru.edgar.matrp.R;
 import ru.edgar.space.SAMP;

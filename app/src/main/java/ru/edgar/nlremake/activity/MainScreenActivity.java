@@ -8,7 +8,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -81,7 +80,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.edgar.nlremake.fragment.DialogFragment;
+import ru.edgar.nlremake.fragment.dialogs.DialogFragment;
+import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Archive;
 import ru.edgar.nlremake.model.ArchivePath;
@@ -90,9 +90,9 @@ import ru.edgar.nlremake.model.FaqList;
 import ru.edgar.nlremake.model.Main;
 import ru.edgar.nlremake.model.News;
 import ru.edgar.nlremake.model.Servers;
-import ru.edgar.nlremake.network.Helper;
-import ru.edgar.nlremake.other.Interface;
-import ru.edgar.nlremake.other.Lists;
+import ru.edgar.nlremake.other.Helper;
+import ru.edgar.nlremake.network.Interface;
+import ru.edgar.nlremake.network.Lists;
 import ru.edgar.nlremake.other.Utils;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
@@ -104,7 +104,7 @@ public class MainScreenActivity  extends AppCompatActivity {
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private NotificationManager notifManager = null;
     private FullHeightVideoView mVideoView;
-    private DialogFragment dialogFragment;
+    private DialogManager dialogManager;
     public static boolean isAuth = false;
     private ImageView lm_loadicon;
     private LinearLayout loading, downloadBar;
@@ -145,6 +145,8 @@ public class MainScreenActivity  extends AppCompatActivity {
 
         setupVideoPlayer();
 
+        dialogManager = new DialogManager();
+
         // 3. Запускаем тяжелую проверку асинхронно
         checkAuthInBackground(new AuthCallback() {
             @Override
@@ -152,10 +154,8 @@ public class MainScreenActivity  extends AppCompatActivity {
                 // Этот блок выполнится ПОЗЖЕ, когда данные загрузятся
                 // Мы снова находимся в главном потоке, поэтому можем показывать диалоги
 
-                dialogFragment = new DialogFragment(); // Создаем прямо перед показом
-
                 if (!isAuthenticated) {
-                    dialogFragment.showNewDialog(true, "i", "i", null, null, null, null);
+                    dialogManager.showAuthDialog();
                 } else {
                     onRequestPermissions();
                 }
@@ -385,11 +385,11 @@ public class MainScreenActivity  extends AppCompatActivity {
 
     public void loadSettings() { /// Главная логика подгрузки
         if(!netIsAvailable()) {
-            dialogFragment.showNewDialog(false, "Чтобы продолжить\nподключитесь к интернету!", "Подключиться к интернету и продолжить играть", null, "Подключиться", null, new View.OnClickListener() {
+            dialogManager.showDialog("Чтобы продолжить\nподключитесь к интернету!", "Подключиться к интернету и продолжить играть", "Подключиться", null, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(netIsAvailable()) {
-                        AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                        dialogManager.hideDialog();
                         loadSettings();
                         return;
                     }
@@ -398,17 +398,18 @@ public class MainScreenActivity  extends AppCompatActivity {
                         Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
 
                         if (intent.resolveActivity(getPackageManager()) != null) {
-                            AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                            dialogManager.hideDialog();
                             loadSettings();
                             startActivity(intent);
                         } else {
                             // Если не получилось, пробуем открыть общие настройки сетей
                             Intent fallbackIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
                             if (fallbackIntent.resolveActivity(getPackageManager()) != null) {
-                                AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                dialogManager.hideDialog();
                                 loadSettings();
                                 startActivity(fallbackIntent);
                             } else {
+                                dialogManager.hideDialog();
                                 loadSettings();
                                 // Если и это не сработало, сообщаем пользователю
                                 Toast.makeText(getApplicationContext(), "Не удалось открыть настройки сети", Toast.LENGTH_LONG).show();
@@ -420,7 +421,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Ошибка: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
-            });
+            }, null);
             return;
         }
 
@@ -459,10 +460,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                         {
                             if(response.body() != null) {
                                 if(response.body().getLauncherVersion() != 73) {
-                                    dialogFragment.showNewDialog(false, "Доступна новая версия клиента!\nЗагрузить обновление?", "", "Да", "Нет", new View.OnClickListener() {
+                                    dialogManager.showDialog("Доступна новая версия клиента!\nЗагрузить обновление?", "", "Да", "Нет", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                            dialogManager.hideDialog();
                                             startDownloadApk(response.body().getLauncherUrl(),
                                                     response.body().getLauncherPath(),
                                                     response.body().getLauncherName());
@@ -470,20 +471,20 @@ public class MainScreenActivity  extends AppCompatActivity {
                                     }, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                            dialogManager.hideDialog();
                                             loadSettings();
                                         }
                                     });
                                 } else {
                                     if (response.body().getIsTest()) {
                                         if (!response.body().getTestApi()) {
-                                            dialogFragment.showNewDialog(false, "Тестовая версия клиента закрыта!\nОжидайте следующих тестов...", "", null, "Понял", null, new View.OnClickListener() {
+                                            dialogManager.showDialog("Тестовая версия клиента закрыта!\nОжидайте следующих тестов...", "", "Понял", null, new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
                                                     finish();
                                                     onDestroy();
                                                 }
-                                            });
+                                            }, null);
                                         }
                                         //testApi = response.body().getTestApi();
                                     }
@@ -682,17 +683,30 @@ public class MainScreenActivity  extends AppCompatActivity {
 
                                                                     clearModelCache();
                                                                     if (!url.isEmpty()) {
-                                                                        dialogFragment.showNewDialog(false, "Доступно обновление!\nЗагрузить " + Utils.bytesIntoHumanReadable(si) + "?", null, "Да", "Нет", new View.OnClickListener() {
+                                                                        long finalSi = si;
+                                                                        dialogManager.showDialog("Доступно обновление!", "Размер обновления " + Utils.bytesIntoHumanReadable(si) + ".\nХочешь скачать его сейчас?", "Да", "Нет", new View.OnClickListener() {
                                                                             @Override
                                                                             public void onClick(View v) {
-                                                                                AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                                                                dialogManager.hideDialog();
                                                                                 startDownload(url, path, unZip, toUnZip);
                                                                             }
                                                                         }, new View.OnClickListener() {
                                                                             @Override
                                                                             public void onClick(View v) {
-                                                                                AnimVisibale(dialogFragment.viewGroup, View.GONE);
-                                                                                loadSettings();
+                                                                                dialogManager.hideDialog();
+                                                                                dialogManager.showDialog("Предупреждение", "Чтобы продолжить игру, загрузи, пожалуйста,\ndополнительные файлы: они содержат музыку, уровни,\ngрафику и прочий важный контент.\nНеобходимо скачать: " + Utils.bytesIntoHumanReadable(finalSi) + "\nЕсли выберешь «Позже», приложение закроется, и ты\nсможешь скачивать все необходимое в любое удобное\nвремя.\nБлагодарим за понимание!", "Скачать", "Позже", new View.OnClickListener() {
+                                                                                    @Override
+                                                                                    public void onClick(View v) {
+                                                                                        dialogManager.hideDialog();
+                                                                                        startDownload(url, path, unZip, toUnZip);
+                                                                                    }
+                                                                                }, new View.OnClickListener() {
+                                                                                    @Override
+                                                                                    public void onClick(View v) {
+                                                                                        finish();
+                                                                                        onDestroy();
+                                                                                    }
+                                                                                });
                                                                             }
                                                                         });
                                                                     } else {
@@ -713,10 +727,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                         @Override
                                                         public void onFailure(Call<List<News>> call, Throwable t) {
                                                             Toast.makeText(getApplicationContext(), "Ошибка News List", Toast.LENGTH_SHORT).show();
-                                                            dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                                            dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(View v) {
-                                                                    AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                                                    dialogManager.hideDialog();
                                                                     loadSettings();
                                                                 }
                                                             }, null);
@@ -727,10 +741,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                 @Override
                                                 public void onFailure(Call<List<Servers>> call, Throwable t) {
                                                     Toast.makeText(getApplicationContext(), "Ошибка Servers List", Toast.LENGTH_SHORT).show();
-                                                    dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                                    dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
                                                         @Override
                                                         public void onClick(View v) {
-                                                            AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                                            dialogManager.hideDialog();
                                                             loadSettings();
                                                         }
                                                     }, null);
@@ -742,10 +756,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                                         @Override
                                         public void onFailure(Call<Main> call, Throwable t) {
                                             Toast.makeText(getApplicationContext(), "Ошибка Main List", Toast.LENGTH_SHORT).show();
-                                            dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                            dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                                    dialogManager.hideDialog();
                                                     loadSettings();
                                                 }
                                             }, null);
@@ -754,10 +768,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                                 }
                             } else {
                                 Log.e("api-", "api----");
-                                dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                        dialogManager.hideDialog();
                                         loadSettings();
                                     }
                                 }, null);
@@ -766,10 +780,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                             System.out.println(response.body());
                             Log.e("api-", "api---1-");
                             System.err.println("Ошибка: " + response.code() + " - " + response.message());
-                            dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                            dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                    dialogManager.hideDialog();
                                     loadSettings();
                                 }
                             }, null);
@@ -777,10 +791,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                     }
                     public void onFailure(Call<Api> call, Throwable th) {
                         Log.e("api-", "api----" + th.toString());
-                        dialogFragment.showNewDialog(false, "Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                        dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                AnimVisibale(dialogFragment.viewGroup, View.GONE);
+                                dialogManager.hideDialog();
                                 loadSettings();
                             }
                         }, null);
@@ -1227,6 +1241,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
+                                    dialogManager.hideAuthDialog();
                                     FirebaseUser currentUser = mAuth.getCurrentUser();
                                     if(currentUser != null) {
                                         isAuth = true;
@@ -1235,17 +1250,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                                     }
                                     onRequestPermissions();
                                 } else {
-                                   /*dialogUI = new DialogUI(
-                                            MainScreenActivity.getInstance(),
-                                            "Понятно",
-                                            "Ошибка авторизации через Google!", // Заголовок
-                                            "Попробуйте ещё раз." // Описание
-                                    );
-                                    // Устанавливаем действие для Yes кнопки (с анимацией)
-                                    dialogUI.setOnClickYesBtn(new Runnable() {
+                                    dialogManager.hideAuthDialog();
+                                    dialogManager.showDialog("Ошибка авторизации через Google!", "Попробуйте ещё раз.", "Понятно", null, new View.OnClickListener() {
                                         @Override
-                                        public void run() {
-                                            dialogUI.dismiss();
+                                        public void onClick(View v) {
                                             FirebaseUser currentUser = mAuth.getCurrentUser();
                                             if(currentUser != null) {
                                                 isAuth = true;
@@ -1253,11 +1261,11 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                 isAuth = false;
                                             }
                                             if(!isAuth) {
-                                                onInitAuthGoogle();
+                                                dialogManager.hideDialog();
+                                                dialogManager.showAuthDialog();
                                             } else onRequestPermissions();
                                         }
-                                    });
-                                    dialogUI.showIn(mainScreen);*/
+                                    }, null);
                                 }
 
                             }
@@ -1265,21 +1273,22 @@ public class MainScreenActivity  extends AppCompatActivity {
             } catch (ApiException e) {
                 e.printStackTrace();
                 Log.e("GOOGLE AUTH", "Error - " + e.getMessage());
-                /*dialogUI = new DialogUI(
-                        MainScreenActivity.getInstance(),
-                        "Понятно",
-                        "Ошибка авторизации через Google!", // Заголовок
-                        "Попробуйте ещё раз." // Описание
-                );
-                // Устанавливаем действие для Yes кнопки (с анимацией)
-                dialogUI.setOnClickYesBtn(new Runnable() {
+                dialogManager.hideAuthDialog();
+                dialogManager.showDialog("Ошибка авторизации через Google!", "Попробуйте ещё раз.", "Понятно", null, new View.OnClickListener() {
                     @Override
-                    public void run() {
-                        dialogUI.dismiss();
-                        loadSettings();
+                    public void onClick(View v) {
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        if(currentUser != null) {
+                            isAuth = true;
+                        } else {
+                            isAuth = false;
+                        }
+                        if(!isAuth) {
+                            dialogManager.hideDialog();
+                            dialogManager.showAuthDialog();
+                        } else onRequestPermissions();
                     }
-                });
-                dialogUI.showIn(mainScreen);*/
+                }, null);
             }
         }
     }

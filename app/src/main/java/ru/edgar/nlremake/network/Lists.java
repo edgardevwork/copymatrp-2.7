@@ -1,4 +1,4 @@
-package ru.edgar.nlremake.other;
+package ru.edgar.nlremake.network;
 
 import java.util.ArrayList;
 

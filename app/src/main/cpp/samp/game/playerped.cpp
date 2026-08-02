@@ -1172,30 +1172,42 @@ void CPlayerPed::FireInstant()
         GameStoreLocalPlayerAim();
         GameSetRemotePlayerAim(m_bytePlayerNumber);
     }
+	LOGI("CPlayerPed::FireInstant1");
     g_pCurrentFiredPed = this;
 
     CWeapon *pSlot = GetCurrentWeaponSlot();
+
+	LOGI("CPlayerPed::FireInstant1.1");
     if(pSlot) {
         if(GetCurrentWeapon() == WEAPON_SNIPERRIFLE)
         {
+			LOGI("CPlayerPed::FireInstant1.2");
             if(m_pPed)
                 CWeapon__FireSniper(pSlot, m_pPed, nullptr, nullptr);
             else
                 CWeapon__FireSniper(nullptr, m_pPed, nullptr, nullptr);
+
+			LOGI("CPlayerPed::FireInstant1.3");
         }
         else
         {
+			LOGI("CPlayerPed::FireInstant1.4");
             CVector vecBonePos;
             CVector vecOut;
 
             GetWeaponInfoForFire(false, &vecBonePos, &vecOut);
 
+			LOGI("CPlayerPed::FireInstant1.5");
             if(m_pPed)
                 CWeapon__FireInstantHit(pSlot, m_pPed, &vecBonePos, &vecOut, nullptr, nullptr, nullptr, 0, 1);
             else
                 CWeapon__FireInstantHit(nullptr, m_pPed, &vecBonePos, &vecOut, nullptr, nullptr, nullptr, 0, 1);
-        }
+
+			LOGI("CPlayerPed::FireInstant1.6");
+		}
     }
+
+	LOGI("CPlayerPed::FireInstant2");
 
     g_pCurrentFiredPed = nullptr;
 
@@ -1206,6 +1218,8 @@ void CPlayerPed::FireInstant()
         GameSetLocalPlayerCameraExtZoomAndAspect();
         GameSetLocalPlayerAim();
     }
+
+	LOGI("CPlayerPed::FireInstant3");
 }
 // 0.3.7
 void CPlayerPed::GetWeaponInfoForFire(bool bLeftWrist, CVector* vecBonePos, CVector* vecOut)

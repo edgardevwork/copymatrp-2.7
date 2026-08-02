@@ -1,4 +1,4 @@
-package ru.edgar.nlremake.network;
+package ru.edgar.nlremake.other;
 
 import ru.edgar.nlremake.activity.MainScreenActivity;
 

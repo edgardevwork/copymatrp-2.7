@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#C814141A">
+
+    <FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/ic_dialog_nlremake"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_14sdp"
+        android:layout_marginRight="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_14sdp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ttnorms_bold"
+            android:letterSpacing="0.01"
+            android:text="Авторизация"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sdp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_6sdp"
+            android:fontFamily="@font/ttnorms_bold"
+            android:letterSpacing="0.025"
+            android:lineHeight="@dimen/_12sdp"
+            android:text="Создайте профиль или войдите в систему, чтобы\nпогрузиться в безграничные возможности игры"
+            android:textColor="#CCCFD8"
+            android:textSize="@dimen/_9sdp" />
+
+        <FrameLayout
+            android:id="@+id/main_btn_google"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_14sdp"
+            android:background="@drawable/ic_dialog_newgoogle">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_6sdp"
+                    android:background="@drawable/ic_launcher_google"
+                    android:backgroundTint="#ffffff" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:letterSpacing="0.015"
+                    android:text="Продолжить через Google"
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/_8sdp" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <com.vk.id.onetap.xml.OneTap
+            android:id="@+id/vk_one_tap_button"
+            android:layout_width="@dimen/_230sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_6sdp"
+            app:vkid_buttonsCornerRadius="50dp"/>
+
+        <FrameLayout
+            android:id="@+id/main_btn_vk"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:background="@drawable/ic_dialog_newvk"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="@dimen/_13sdp"
+                android:layout_height="@dimen/_13sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_50sdp"
+                app:srcCompat="@drawable/ic_launcher_vk" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_67sdp"
+                android:layout_marginEnd="@dimen/_67sdp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="Войти с VK ID"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/_10sdp" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_14sdp"
+            android:fontFamily="@font/ttnorms_bold"
+            android:letterSpacing="-0.02"
+            android:text="*Тебе нужно будет авторизоваться, чтобы накопленный\nпрогресс не пропал после удаление приложения"
+            android:textColor="#7F8288"
+            android:textSize="@dimen/_8sdp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:fontFamily="@font/ttnorms_bold"
+            android:letterSpacing="-0.05"
+            android:text="Продолжая, ты принимаешь Договор-оферту и Политику\nконфиденциальности"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/_8sdp" />
+
+    </LinearLayout>
+</FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

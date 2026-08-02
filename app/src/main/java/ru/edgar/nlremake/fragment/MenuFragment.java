@@ -39,7 +39,7 @@ public class MenuFragment {
         layoutParams.height = -1;
         btn_play = viewGroup.findViewById(R.id.btn_play);
         btn_play.setOnClickListener(v -> {
-            MainScreenActivity.nickName = "Apk_TestBR";
+            MainScreenActivity.nickName = "Piter_Parker";
             SAMP.getInstance().connectEdgar();
             hide();
         });
