@@ -710,9 +710,6 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                                             }
                                                                         });
                                                                     } else {
-                                                                        maxSizeFiles = 0;
-                                                                        progressSizeFiles = 0;
-                                                                        progress.setProgress(0);
                                                                         loading.setVisibility(View.VISIBLE);
                                                                         downloadBar.setVisibility(View.GONE);
                                                                         progress_text.setVisibility(View.VISIBLE);
@@ -841,6 +838,9 @@ public class MainScreenActivity  extends AppCompatActivity {
         }
         i = 0;
         urlsst = url;
+        maxSizeFiles = 0;
+        progressSizeFiles = 0;
+        progress.setProgress(0);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1110,7 +1110,7 @@ public class MainScreenActivity  extends AppCompatActivity {
         String mOutputPath = path2;
         String resultString = path.replace(Helper.androidPath + "/", "");
         dw_status.setText("Распаковка архивов");
-        procent.setText(String.format("%d / %d", i, toUnnZip.size()));
+        procent.setText(String.format("%d / %d", i+1, toUnnZip.size()));
         new Thread() {
             @Override
             public void run() {

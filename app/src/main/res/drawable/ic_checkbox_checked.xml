@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/_12sdp"
+    android:height="@dimen/_12sdp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <!-- Фиолетовый фон с закруглением -->
+    <path
+        android:fillColor="#8649d4"
+        android:pathData="M 6 0 H 34 A 6 6 0 0 1 40 6 V 34 A 6 6 0 0 1 34 40 H 6 A 6 6 0 0 1 0 34 V 6 A 6 6 0 0 1 6 0 Z" />
+
+    <!-- Белая галочка -->
+    <path
+        android:fillColor="#E9E9F3"
+        android:pathData="M28.8187 13.6677C29.2826 14.1132 29.2826 14.8356 28.8187 15.2811L18.1802 25.4993C17.9575 25.7133 17.6553 25.8335 17.3403 25.8335C17.0253 25.8335 16.7231 25.7133 16.5004 25.4993L11.1812 20.3902C10.7173 19.9447 10.7173 19.2223 11.1812 18.7768C11.645 18.3312 12.3971 18.3312 12.861 18.7768L17.3403 23.0791L27.1388 13.6677C27.6027 13.2221 28.3548 13.2221 28.8187 13.6677Z"/>
+</vector>
