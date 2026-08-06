@@ -1,0 +1,14 @@
+Для отслеживание багов -
+CREATE TABLE IF NOT EXISTS bug_reports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uid TEXT NULL,
+    location TEXT NOT NULL,
+    error_text TEXT NOT NULL,
+    timestamp TEXT NOT NULL,
+    device_brand TEXT NOT NULL,
+    device_model TEXT NOT NULL,
+    android_version TEXT NOT NULL,
+    android_sdk INT NOT NULL,
+    app_version TEXT NOT NULL,
+    network_type TEXT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

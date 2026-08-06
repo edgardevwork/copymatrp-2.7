@@ -7,10 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import javax.annotation.Nullable;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
@@ -18,7 +21,8 @@ import ru.edgar.space.InterfacesManager;
 
 public class DialogFragment extends AppCompatActivity {
 
-    public ViewGroup viewGroup;
+    private ViewGroup viewGroup;
+    public CheckBox checkBox;
 
     public DialogFragment() {
         if(viewGroup != null) {
@@ -31,11 +35,15 @@ public class DialogFragment extends AppCompatActivity {
         layoutParams.height = -1;
         viewGroup.setLayoutParams(layoutParams);
 
+        checkBox = viewGroup.findViewById(R.id.checkBox);
+
         viewGroup.setVisibility(View.GONE);
     }
 
     void showDialog(String name, String dname, String b1, String b2, View.OnClickListener click1, View.OnClickListener click2) {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
+
+        checkBox.setVisibility(View.GONE);
 
         TextView text = viewGroup.findViewById(R.id.textView45);
         text.setText(name);
@@ -78,6 +86,48 @@ public class DialogFragment extends AppCompatActivity {
             FrameLayout main_btn_no = viewGroup.findViewById(R.id.main_btn_no);
             main_btn_no.setVisibility(View.GONE);
         }
+    }
+
+    void showErrorDialog(String name, String dname, String b1, View.OnClickListener click1, boolean isCheckBox, String dCheckBox) {
+        MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
+
+        checkBox.setChecked(false);
+
+        if(isCheckBox) {
+            checkBox.setText(dCheckBox);
+            checkBox.setVisibility(View.VISIBLE);
+        } else
+            checkBox.setVisibility(View.GONE);
+
+        TextView text = viewGroup.findViewById(R.id.textView45);
+        text.setText(name);
+        TextView text2 = viewGroup.findViewById(R.id.dname);
+        if(dname != null) {
+            text2.setVisibility(View.VISIBLE);
+            text2.setText(dname);
+        } else {
+            text2.setVisibility(View.GONE);
+        }
+        TextView text3 = viewGroup.findViewById(R.id.b1);
+        if(b1 != null) {
+            text3.setVisibility(View.VISIBLE);
+            text3.setText(b1);
+        } else {
+            text3.setVisibility(View.GONE);
+        }
+        TextView text34 = viewGroup.findViewById(R.id.b2);
+        text34.setVisibility(View.GONE);
+        if(click1 != null) {
+            FrameLayout main_btn_yes = viewGroup.findViewById(R.id.main_btn_yes);
+            main_btn_yes.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_yes));
+            main_btn_yes.setOnClickListener(click1);
+            main_btn_yes.setVisibility(View.VISIBLE);
+        } else {
+            FrameLayout main_btn_yes = viewGroup.findViewById(R.id.main_btn_yes);
+            main_btn_yes.setVisibility(View.GONE);
+        }
+        FrameLayout main_btn_no = viewGroup.findViewById(R.id.main_btn_no);
+        main_btn_no.setVisibility(View.GONE);
     }
 
     void hideDialog() {

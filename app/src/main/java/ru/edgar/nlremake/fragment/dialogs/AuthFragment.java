@@ -29,6 +29,7 @@ import java.util.HashMap;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.space.InterfacesManager;
 
 public class AuthFragment {
@@ -136,13 +137,16 @@ public class AuthFragment {
                                                 MainScreenActivity.getInstance().loadSettings();
                                             } else {
                                                 DialogManager.getDialogManager().hideAuthDialog();
-                                                DialogManager.getDialogManager().showDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", null, new View.OnClickListener() {
+                                                DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {
+                                                        if(DialogManager.getDialogManager().getIsChecked()) {
+                                                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), ".createUserWithEmailAndPassword( !task.isSuccessful()", task.toString());
+                                                        }
                                                         DialogManager.getDialogManager().hideDialog();
                                                         DialogManager.getDialogManager().showAuthDialog();
                                                     }
-                                                }, null);
+                                                }, true, "Сообщить об ошибке");
                                             }
                                         }
                                     });
@@ -152,13 +156,16 @@ public class AuthFragment {
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
                                 DialogManager.getDialogManager().hideAuthDialog();
-                                DialogManager.getDialogManager().showDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null, "Понятно", null, new View.OnClickListener() {
+                                DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        if(DialogManager.getDialogManager().getIsChecked()) {
+                                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), "(oAuth, accessToken) - onCancelled", error.toString());
+                                        }
                                         DialogManager.getDialogManager().hideDialog();
                                         DialogManager.getDialogManager().showAuthDialog();
                                     }
-                                }, null);
+                                }, true, "Сообщить об ошибке");
 
                             }
                         });
@@ -166,28 +173,34 @@ public class AuthFragment {
                         // Здесь можете обрабатывать успешную аутентификацию
                     } else {
                         // Если произошла ошибка или токен отсутствует
-                        Log.e("VK_AUTH", "Ошибка обработки токена(пустой)!");
+                        //Log.e("VK_AUTH", "Ошибка обработки токена(пустой)!");
                         DialogManager.getDialogManager().hideAuthDialog();
-                        DialogManager.getDialogManager().showDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", null, new View.OnClickListener() {
+                        DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                if(DialogManager.getDialogManager().getIsChecked()) {
+                                    CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), "(oAuth, accessToken)", "Ошибка обработки токена(пустой)!");
+                                }
                                 DialogManager.getDialogManager().hideDialog();
                                 DialogManager.getDialogManager().showAuthDialog();
                             }
-                        }, null);
+                        }, true, "Сообщить об ошибке");
                     }
                     return null;
                 },
                 (oAuth, fail) -> {
-                    Log.e("VK_AUTH", "Ошибка обработки токена " + fail.getDescription());
+                    //Log.e("VK_AUTH", "Ошибка обработки токена " + fail.getDescription());
                     DialogManager.getDialogManager().hideAuthDialog();
-                    DialogManager.getDialogManager().showDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", null, new View.OnClickListener() {
+                    DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            if(DialogManager.getDialogManager().getIsChecked()) {
+                                CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), "(oAuth, fail)", "Ошибка обработки токена " + fail.getDescription());
+                            }
                             DialogManager.getDialogManager().hideDialog();
                             DialogManager.getDialogManager().showAuthDialog();
                         }
-                    }, null);
+                    }, true, "Сообщить об ошибке");
                     return null;
                 },
                 (data, completion) -> {

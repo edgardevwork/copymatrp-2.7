@@ -80,7 +80,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.edgar.nlremake.fragment.dialogs.DialogFragment;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Archive;
@@ -90,6 +89,7 @@ import ru.edgar.nlremake.model.FaqList;
 import ru.edgar.nlremake.model.Main;
 import ru.edgar.nlremake.model.News;
 import ru.edgar.nlremake.model.Servers;
+import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.nlremake.other.Helper;
 import ru.edgar.nlremake.network.Interface;
 import ru.edgar.nlremake.network.Lists;
@@ -723,28 +723,34 @@ public class MainScreenActivity  extends AppCompatActivity {
 
                                                         @Override
                                                         public void onFailure(Call<List<News>> call, Throwable t) {
-                                                            Toast.makeText(getApplicationContext(), "Ошибка News List", Toast.LENGTH_SHORT).show();
-                                                            dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                                            //Toast.makeText(getApplicationContext(), "Ошибка News List", Toast.LENGTH_SHORT).show();
+                                                            dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(View v) {
+                                                                    if(dialogManager.getIsChecked()) {
+                                                                        CrashReporter.sendBugReport(MainScreenActivity.getInstance(), mAuth.getUid(), "sInterface.getStories(..)...", t.toString());
+                                                                    }
                                                                     dialogManager.hideDialog();
                                                                     loadSettings();
                                                                 }
-                                                            }, null);
+                                                            }, true, "Сообщить об ошибке");
                                                         }
                                                     });
                                                 }
 
                                                 @Override
                                                 public void onFailure(Call<List<Servers>> call, Throwable t) {
-                                                    Toast.makeText(getApplicationContext(), "Ошибка Servers List", Toast.LENGTH_SHORT).show();
-                                                    dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                                    //Toast.makeText(getApplicationContext(), "Ошибка Servers List", Toast.LENGTH_SHORT).show();
+                                                    dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
                                                         @Override
                                                         public void onClick(View v) {
+                                                            if(dialogManager.getIsChecked()) {
+                                                                CrashReporter.sendBugReport(MainScreenActivity.getInstance(), mAuth.getUid(), "sInterface.getServers(..)...", t.toString());
+                                                            }
                                                             dialogManager.hideDialog();
                                                             loadSettings();
                                                         }
-                                                    }, null);
+                                                    }, true, "Сообщить об ошибке");
                                                 }
                                             });
 
@@ -752,49 +758,61 @@ public class MainScreenActivity  extends AppCompatActivity {
 
                                         @Override
                                         public void onFailure(Call<Main> call, Throwable t) {
-                                            Toast.makeText(getApplicationContext(), "Ошибка Main List", Toast.LENGTH_SHORT).show();
-                                            dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                            //Toast.makeText(getApplicationContext(), "Ошибка Main List", Toast.LENGTH_SHORT).show();
+                                            dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
+                                                    if(dialogManager.getIsChecked()) {
+                                                        CrashReporter.sendBugReport(MainScreenActivity.getInstance(), mAuth.getUid(), "sInterface.getMain(..)...", t.toString());
+                                                    }
                                                     dialogManager.hideDialog();
                                                     loadSettings();
                                                 }
-                                            }, null);
+                                            }, true, "Сообщить об ошибке");
                                         }
                                     });
                                 }
                             } else {
-                                Log.e("api-", "api----");
-                                dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                                //Log.e("api-", "api----");
+                                dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        if(dialogManager.getIsChecked()) {
+                                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), mAuth.getUid(), "sInterface.getApi(..)... Response == NULL", "Ошибка: " + response.code() + " - " + response.message());
+                                        }
                                         dialogManager.hideDialog();
                                         loadSettings();
                                     }
-                                }, null);
+                                }, true, "Сообщить об ошибке");
                             }
                         } else {
-                            System.out.println(response.body());
+                            /*System.out.println(response.body());
                             Log.e("api-", "api---1-");
-                            System.err.println("Ошибка: " + response.code() + " - " + response.message());
-                            dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                            System.err.println("Ошибка: " + response.code() + " - " + response.message());*/
+                            dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    if(dialogManager.getIsChecked()) {
+                                        CrashReporter.sendBugReport(MainScreenActivity.getInstance(), mAuth.getUid(), "sInterface.getApi(..)... response.isSuccessful()", "Ошибка: " + response.code() + " - " + response.message());
+                                    }
                                     dialogManager.hideDialog();
                                     loadSettings();
                                 }
-                            }, null);
+                            }, true, "Сообщить об ошибке");
                         }
                     }
                     public void onFailure(Call<Api> call, Throwable th) {
-                        Log.e("api-", "api----" + th.toString());
-                        dialogManager.showDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", null, new View.OnClickListener() {
+                        //Log.e("api-", "api----" + th.toString());
+                        dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                if(dialogManager.getIsChecked()) {
+                                    CrashReporter.sendBugReport(MainScreenActivity.getInstance(), mAuth.getUid(), "sInterface.getApi(..)... onFailure", th.toString());
+                                }
                                 dialogManager.hideDialog();
                                 loadSettings();
                             }
-                        }, null);
+                        }, true, "Сообщить об ошибке");
                     }
                 });
             }
@@ -1001,8 +1019,16 @@ public class MainScreenActivity  extends AppCompatActivity {
 
                         notifManager.notify(notificationId, builder.build());
 
-                        Toast.makeText(getApplicationContext(), "Произошла ошибка начните заново установку", Toast.LENGTH_SHORT).show();
-                        loadSettings();
+                        dialogManager.showErrorDialog("Произошла ошибка начните заново установку!", null, "Повторить", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(dialogManager.getIsChecked()) {
+                                    CrashReporter.sendBugReport(MainScreenActivity.getInstance(), mAuth.getUid(), "BaseDownloadTask - error()", e.toString());
+                                }
+                                dialogManager.hideDialog();
+                                loadSettings();
+                            }
+                        }, true, "Сообщить об ошибке");
                     }
 
                     @Override
@@ -1251,9 +1277,13 @@ public class MainScreenActivity  extends AppCompatActivity {
                                     onRequestPermissions();
                                 } else {
                                     dialogManager.hideAuthDialog();
-                                    dialogManager.showDialog("Ошибка авторизации через Google!", "Попробуйте ещё раз.", "Понятно", null, new View.OnClickListener() {
+                                    dialogManager.showErrorDialog("Ошибка авторизации через Google!", "Попробуйте ещё раз.", "Понятно", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
+                                            if(dialogManager.getIsChecked()) {
+                                                CrashReporter.sendBugReport(MainScreenActivity.getInstance(), mAuth.getUid(), "signInWithCredential()", task.getException().toString());
+                                            }
+                                            dialogManager.hideDialog();
                                             FirebaseUser currentUser = mAuth.getCurrentUser();
                                             if(currentUser != null) {
                                                 isAuth = true;
@@ -1265,18 +1295,22 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                 dialogManager.showAuthDialog();
                                             } else onRequestPermissions();
                                         }
-                                    }, null);
+                                    }, true, "Сообщить об ошибке");
                                 }
 
                             }
                         });
             } catch (ApiException e) {
-                e.printStackTrace();
-                Log.e("GOOGLE AUTH", "Error - " + e.getMessage());
+                //e.printStackTrace();
+                //Log.e("GOOGLE AUTH", "Error - " + e.getMessage());
                 dialogManager.hideAuthDialog();
-                dialogManager.showDialog("Ошибка авторизации через Google!", "Попробуйте ещё раз.", "Понятно", null, new View.OnClickListener() {
+                dialogManager.showErrorDialog("Ошибка авторизации через Google!", "Попробуйте ещё раз.", "Понятно", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if(dialogManager.getIsChecked()) {
+                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), mAuth.getUid(), "signInWithCredential() catch (ApiException e)", e.toString());
+                        }
+                        dialogManager.hideDialog();
                         FirebaseUser currentUser = mAuth.getCurrentUser();
                         if(currentUser != null) {
                             isAuth = true;
@@ -1288,7 +1322,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                             dialogManager.showAuthDialog();
                         } else onRequestPermissions();
                     }
-                }, null);
+                }, true, "Сообщить об ошибке");
             }
         }
     }
