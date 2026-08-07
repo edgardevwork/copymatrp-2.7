@@ -2,11 +2,18 @@ package ru.edgar.nlremake.fragment.dialogs;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.graphics.Color;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
@@ -35,8 +42,10 @@ import ru.edgar.space.InterfacesManager;
 public class AuthFragment {
 
     public ViewGroup viewGroup;
-    FrameLayout main_btn_google;
-    OneTap vk_onetap;
+    private FrameLayout main_btn_google;
+    private OneTap vk_onetap;
+    private CheckBox checkBox, checkBox1;
+    private LinearLayout main_btn_email;
 
     public AuthFragment() {
         if(viewGroup != null) {
@@ -49,17 +58,47 @@ public class AuthFragment {
         layoutParams.height = -1;
         viewGroup.setLayoutParams(layoutParams);
 
+        checkBox = viewGroup.findViewById(R.id.checkBox);
+        checkBox1 = viewGroup.findViewById(R.id.checkBox1);
+
+        StringBuilder sb1 = new StringBuilder();
+        String str1 = String.format("Я принимаю <a href=\"https://crmp.pro\">%s</a>", "Пользовательское соглашение (EULA)");
+        sb1.append(str1);
+
+        CharSequence content1 = removeUnderlines(Html.fromHtml(sb1.toString()));
+
+        checkBox.setText(content1);
+        checkBox.setMovementMethod(LinkMovementMethod.getInstance());
+        checkBox.setLinkTextColor(Color.parseColor("#b797e0"));// На старой матрешке также было )
+        checkBox.setHighlightColor(0);
+
+        StringBuilder sb2 = new StringBuilder();
+        String str2 = String.format("Я принимаю <a href=\"https://crmp.pro\">%s</a>", "Политику конфиденциальности");
+        sb2.append(str2);
+
+        CharSequence content2 = removeUnderlines(Html.fromHtml(sb2.toString()));
+
+        checkBox1.setText(content2);
+        checkBox1.setMovementMethod(LinkMovementMethod.getInstance());
+        checkBox1.setLinkTextColor(Color.parseColor("#b797e0"));
+        checkBox1.setHighlightColor(0);
+
         main_btn_google = viewGroup.findViewById(R.id.main_btn_google);
         main_btn_google.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_google));
         main_btn_google.setOnClickListener(v -> {
-            onClickAuthGoogle();
+            if(checkBox.isChecked() && checkBox1.isChecked()) {
+                onClickAuthGoogle();
+            } else {
+                // Уточняющий диалог
+            }
         });
+
         vk_onetap = viewGroup.findViewById(R.id.vk_one_tap_button);
         vk_onetap.setScenario(OneTapTitleScenario.SignIn);
-        //vk_onetap.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), vk_onetap));
+        vk_onetap.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), vk_onetap));
         vk_onetap.setCallbacks(
                 (oAuth, accessToken) -> {
-                    if (accessToken != null/* && !TextUtils.isEmpty(accessToken.getToken())*/) {
+                    if (accessToken != null /*&& !TextUtils.isEmpty(accessToken.getToken())*/) {
                         // Обработка успешного входа с токеном
                         //Log.e("VK_AUTH", "Пользователь успешно вошел, токен: " + accessToken.getToken() + accessToken.getScopes());
                         // Использование обработчика:
@@ -213,11 +252,45 @@ public class AuthFragment {
                 }
         );
 
+        main_btn_email = viewGroup.findViewById(R.id.main_btn_email);
+        main_btn_email.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_email));
+        main_btn_email.setOnClickListener(v -> {
+
+        });
+
         viewGroup.setVisibility(View.GONE);
+    }
+
+    private CharSequence removeUnderlines(CharSequence p_Text) {
+        if (p_Text instanceof Spannable) {
+            Spannable s = (Spannable) p_Text;
+            // Находим все ссылки в тексте
+            URLSpan[] spans = s.getSpans(0, s.length(), URLSpan.class);
+
+            for (URLSpan span : spans) {
+                int start = s.getSpanStart(span);
+                int end = s.getSpanEnd(span);
+                s.removeSpan(span);
+
+                // Создаем новую ссылку поверх старой, но отключаем подчеркивание
+                URLSpan newSpan = new URLSpan(span.getURL()) {
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false); // Тот самый переключатель, который убирает линию
+                    }
+                };
+                s.setSpan(newSpan, start, end, 0);
+            }
+            return s;
+        }
+        return p_Text;
     }
 
     void showAuthDialog() {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
+        checkBox.setChecked(false);
+        checkBox1.setChecked(false);
     }
 
     void hideAuthDialog() {
