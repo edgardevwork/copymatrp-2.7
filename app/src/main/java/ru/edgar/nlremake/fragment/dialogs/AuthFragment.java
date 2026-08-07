@@ -74,7 +74,7 @@ public class AuthFragment {
                                     if (paramValue != null) {
                                         if (paramValue.equals(id)) {
                                             isAcc = true;
-                                            MainScreenActivity.getInstance().mAuth.signInWithEmailAndPassword(id + "@vk.ru", id + "pass").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                            MainScreenActivity.getInstance().mAuth.signInWithEmailAndPassword(id + "@vk.com", id + "pass").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                                     if(task.isSuccessful()){
@@ -113,7 +113,7 @@ public class AuthFragment {
                                     }
                                 }
                                 if (!isAcc) {
-                                    MainScreenActivity.getInstance().mAuth.createUserWithEmailAndPassword(id + "@vk.ru", id + "pass").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    MainScreenActivity.getInstance().mAuth.createUserWithEmailAndPassword(id + "@vk.com", id + "pass").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                         @Override
                                         public void onComplete(@NonNull Task<AuthResult> task) {
                                             if(task.isSuccessful()){

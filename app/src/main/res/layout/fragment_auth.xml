@@ -6,14 +6,14 @@
     android:background="#C814141A">
 
     <FrameLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="@drawable/ic_dialog_nlremake"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_dialog_nlremake"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,11 +38,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_6sdp"
-            android:fontFamily="@font/ttnorms_bold"
+            android:fontFamily="@font/ttnorms_medium"
             android:letterSpacing="0.025"
             android:lineHeight="@dimen/_12sdp"
-            android:text="Создайте профиль или войдите в систему, чтобы\nпогрузиться в безграничные возможности игры"
+            android:text="Создай профиль или войдите в систему, чтобы\nпогрузиться в безграничные возможности игры."
             android:textColor="#CCCFD8"
             android:textSize="@dimen/_9sdp" />
 
@@ -81,20 +80,12 @@
 
         </FrameLayout>
 
-        <com.vk.id.onetap.xml.OneTap
-            android:id="@+id/vk_one_tap_button"
-            android:layout_width="@dimen/_230sdp"
-            android:layout_height="@dimen/_30sdp"
-            android:layout_marginTop="@dimen/_6sdp"
-            app:vkid_buttonsCornerRadius="50dp"/>
-
         <FrameLayout
             android:id="@+id/main_btn_vk"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_30sdp"
             android:layout_marginTop="@dimen/_6sdp"
-            android:background="@drawable/ic_dialog_newvk"
-            android:visibility="gone">
+            android:background="@drawable/ic_dialog_newvk">
 
             <ImageView
                 android:layout_width="@dimen/_13sdp"
@@ -111,30 +102,107 @@
                 android:layout_marginEnd="@dimen/_67sdp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
+                android:letterSpacing="0.015"
                 android:text="Войти с VK ID"
                 android:textColor="#ffffff"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/_8sdp" />
         </FrameLayout>
 
-        <TextView
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:backgroundTint="@color/black"
+            android:background="@drawable/ic_dialog_newvk">
+        </FrameLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_6sdp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/ic_dialog_email_bg">
+
+                    <ImageView
+                        android:layout_width="@dimen/_13sdp"
+                        android:layout_height="@dimen/_13sdp"
+                        android:layout_marginEnd="@dimen/_6sdp"
+                        app:srcCompat="@drawable/ic_dialog_email" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:letterSpacing="0.015"
+                        android:text="Через почту"
+                        android:textColor="#ffffff"
+                        android:textSize="@dimen/_8sdp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:gravity="center"
+                android:backgroundTint="@color/black"
+                android:background="@drawable/ic_dialog_newvk">
+
+                <ImageView
+                    android:layout_width="@dimen/_13sdp"
+                    android:layout_height="@dimen/_13sdp"
+                    android:layout_marginEnd="@dimen/_6sdp"
+                    app:srcCompat="@drawable/ic_launcher_vk" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Войти с VK ID"
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/_10sdp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <CheckBox
+            android:id="@+id/checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_14sdp"
-            android:fontFamily="@font/ttnorms_bold"
-            android:letterSpacing="-0.02"
-            android:text="*Тебе нужно будет авторизоваться, чтобы накопленный\nпрогресс не пропал после удаление приложения"
-            android:textColor="#7F8288"
-            android:textSize="@dimen/_8sdp" />
+            android:text="Я принимаю Пользовательское соглашение (EULA)"
+            android:textSize="@dimen/_7sdp"
+            android:checked="false"
+            android:textColor="#ffffff"
+            android:background="@null"
+            android:paddingStart="@dimen/_7sdp"
+            android:fontFamily="@font/ttnorms_medium"
+            android:button="@drawable/checkbox_selector" />
 
-        <TextView
+        <CheckBox
+            android:id="@+id/checkBox1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp"
-            android:fontFamily="@font/ttnorms_bold"
-            android:letterSpacing="-0.05"
-            android:text="Продолжая, ты принимаешь Договор-оферту и Политику\nконфиденциальности"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:text="Я принимаю Политику конфиденциальности"
+            android:textSize="@dimen/_7sdp"
+            android:checked="false"
             android:textColor="#ffffff"
-            android:textSize="@dimen/_8sdp" />
+            android:background="@null"
+            android:paddingStart="@dimen/_7sdp"
+            android:fontFamily="@font/ttnorms_medium"
+            android:button="@drawable/checkbox_selector" />
 
     </LinearLayout>
 </FrameLayout>

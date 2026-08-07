@@ -43,7 +43,7 @@ public class MenuFragment {
             SAMP.getInstance().connectEdgar();
             hide();
         });
-        ((TextView)viewGroup.findViewById(R.id.uidtext)).setText(SAMP.getInstance().mAuth.getUid());
+        ((TextView) viewGroup.findViewById(R.id.uidtext)).setText(SAMP.getInstance().mAuth.getUid());
         btn_play.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, btn_play));
         viewGroup.setLayoutParams(layoutParams);
         viewGroup.setVisibility(View.VISIBLE);
