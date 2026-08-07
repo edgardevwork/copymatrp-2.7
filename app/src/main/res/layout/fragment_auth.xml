@@ -80,13 +80,27 @@
 
         </FrameLayout>
 
-        <com.vk.id.onetap.xml.OneTap
-            android:id="@+id/vk_one_tap_button"
-            android:layout_width="@dimen/_230sdp"
+        <FrameLayout
+            android:id="@+id/main_btn_vknew"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/_28sdp"
             android:layout_marginTop="@dimen/_8sdp"
-            app:vkid_buttonsCornerRadius="@dimen/_33sdp"
-            app:vkid_onetapScenario="SignIn" />
+            android:clickable="false"
+            android:focusable="false">
+
+            <com.vk.id.onetap.xml.OneTap
+                android:id="@+id/vk_one_tap_button"
+                android:layout_width="@dimen/_230sdp"
+                android:layout_height="@dimen/_28sdp"
+                app:vkid_buttonsCornerRadius="@dimen/_33sdp"
+                app:vkid_onetapScenario="SignIn" />
+
+            <View
+                android:layout_width="@dimen/_230sdp"
+                android:layout_height="@dimen/_28sdp"
+                android:background="#000" />
+
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/main_btn_vk"

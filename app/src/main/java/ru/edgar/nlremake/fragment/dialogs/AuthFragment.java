@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -42,7 +43,7 @@ import ru.edgar.space.InterfacesManager;
 public class AuthFragment {
 
     public ViewGroup viewGroup;
-    private FrameLayout main_btn_google;
+    private FrameLayout main_btn_google, main_btn_vknew;
     private OneTap vk_onetap;
     private CheckBox checkBox, checkBox1;
     private LinearLayout main_btn_email;
@@ -60,6 +61,20 @@ public class AuthFragment {
 
         checkBox = viewGroup.findViewById(R.id.checkBox);
         checkBox1 = viewGroup.findViewById(R.id.checkBox1);
+
+        vk_onetap = viewGroup.findViewById(R.id.vk_one_tap_button);
+
+        CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                boolean isAllChecked = checkBox.isChecked() && checkBox1.isChecked();
+
+                vk_onetap.setEnabled(isAllChecked);
+            }
+        };
+
+        checkBox.setOnCheckedChangeListener(checkListener);
+        checkBox1.setOnCheckedChangeListener(checkListener);
 
         StringBuilder sb1 = new StringBuilder();
         String str1 = String.format("Я принимаю <a href=\"https://crmp.pro\">%s</a>", "Пользовательское соглашение (EULA)");
@@ -93,9 +108,18 @@ public class AuthFragment {
             }
         });
 
-        vk_onetap = viewGroup.findViewById(R.id.vk_one_tap_button);
+        main_btn_vknew = viewGroup.findViewById(R.id.main_btn_vknew);
+        main_btn_vknew.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_vknew));
+        main_btn_vknew.setOnClickListener(v -> {
+            if (checkBox.isChecked() && checkBox1.isChecked()) {
+                vk_onetap.performClick();
+            } else {
+                // Уточняющий диалог
+            }
+        });
+
         vk_onetap.setScenario(OneTapTitleScenario.SignIn);
-        vk_onetap.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), vk_onetap));
+        vk_onetap.setEnabled(false);
         vk_onetap.setCallbacks(
                 (oAuth, accessToken) -> {
                     if (accessToken != null /*&& !TextUtils.isEmpty(accessToken.getToken())*/) {
