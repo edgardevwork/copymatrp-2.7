@@ -460,7 +460,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                         {
                             if(response.body() != null) {
                                 if(response.body().getLauncherVersion() != 73) {
-                                    dialogManager.showDialog("Доступна новая версия клиента!\nЗагрузить обновление?", "", "Да", "Нет", new View.OnClickListener() {
+                                    dialogManager.showDialog("Доступна новая\nверсия клиента!", "Скачать обновление и продолжить играть", "Скачать обновление", "Отмена", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             dialogManager.hideDialog();
@@ -478,7 +478,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                                 } else {
                                     if (response.body().getIsTest()) {
                                         if (!response.body().getTestApi()) {
-                                            dialogManager.showDialog("Тестовая версия клиента закрыта!\nОжидайте следующих тестов...", "", "Понял", null, new View.OnClickListener() {
+                                            dialogManager.showDialog("Тестовая версия\nклиента закрыта!", "Ожидайте следующих тестов...", "Понял", null, new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
                                                     finish();
