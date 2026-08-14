@@ -91,6 +91,7 @@
             android:layout_width="@dimen/_28sdp"
             android:layout_height="@dimen/_28sdp"
             android:layout_marginStart="@dimen/_18sdp"
+            android:layout_marginBottom="@dimen/_1sdp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/nick_name_layout"
             app:layout_constraintStart_toEndOf="@+id/nick_name_layout"
@@ -114,7 +115,7 @@
             android:id="@+id/btn_support"
             android:layout_width="@dimen/_28sdp"
             android:layout_height="@dimen/_28sdp"
-            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginStart="@dimen/_15sdp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/btn_settings"
             app:layout_constraintStart_toEndOf="@+id/btn_settings"
@@ -135,23 +136,25 @@
         </FrameLayout>
 
         <ImageView
-            android:layout_width="@dimen/_8sdp"
-            android:layout_height="@dimen/_8sdp"
-            android:layout_marginRight="@dimen/_4sdp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_balance"
+            android:layout_width="@dimen/_9sdp"
+            android:layout_height="@dimen/_9sdp"
+            android:layout_marginRight="@dimen/_3sdp"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_balance"
             app:layout_constraintEnd_toStartOf="@+id/tv_balance"
-            app:layout_constraintTop_toTopOf="@+id/tv_balance"
+            app:layout_constraintTop_toTopOf="@+id/btn_balance"
             app:srcCompat="@drawable/ic_rub" />
 
         <TextView
             android:id="@+id/tv_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
             android:fontFamily="@font/geologica_semibold"
             android:text="2 610"
+            android:letterSpacing="0.05"
             android:textColor="#ffffff"
-            android:textSize="@dimen/_12sdp"
+            android:textSize="@dimen/_10sdp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/btn_balance"
             app:layout_constraintEnd_toStartOf="@+id/btn_balance"
@@ -162,7 +165,7 @@
             android:id="@+id/btn_balance"
             android:layout_width="@dimen/_28sdp"
             android:layout_height="@dimen/_28sdp"
-            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_18sdp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/btn_support"
             app:layout_constraintEnd_toStartOf="@+id/mcoin"
@@ -185,23 +188,25 @@
         <ImageView
             android:id="@+id/mcoin"
             android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"
+            android:layout_height="@dimen/_19sdp"
             android:layout_marginRight="@dimen/_4sdp"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_donate"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_donate"
             app:layout_constraintEnd_toStartOf="@+id/tv_donate"
-            app:layout_constraintTop_toTopOf="@+id/tv_donate"
+            app:layout_constraintTop_toTopOf="@+id/btn_donate"
             app:srcCompat="@drawable/ic_mc" />
 
         <TextView
             android:id="@+id/tv_donate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="@dimen/_7sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
             android:fontFamily="@font/geologica_semibold"
             android:text="5"
             android:textColor="#ffffff"
-            android:textSize="@dimen/_12sdp"
+            android:letterSpacing="0.05"
+            android:textSize="@dimen/_10sdp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/btn_donate"
             app:layout_constraintEnd_toStartOf="@+id/btn_donate"
@@ -212,7 +217,6 @@
             android:layout_width="@dimen/_28sdp"
             android:layout_height="@dimen/_28sdp"
             android:layout_marginEnd="@dimen/_24sdp"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/btn_balance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btn_balance">
@@ -229,6 +233,50 @@
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/ic_plus" />
         </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/imageView27"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/btn_donate"
+            app:layout_constraintTop_toBottomOf="@+id/btn_donate">
+
+            <ImageView
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginRight="@dimen/_7sdp"
+                app:srcCompat="@drawable/ic_gift" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/geologica_medium"
+                android:letterSpacing="0.08"
+                android:text="Получи бонус!"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/_8sdp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/geologica_semibold"
+            android:text="\u0414\u0430\u043d\u043d\u0430\u044f\u0020\u0432\u0435\u0440\u0441\u0438\u044f\u0020\u043a\u043b\u0438\u0435\u043d\u0442\u0430\u0020\u0442\u0435\u0441\u0442\u043e\u0432\u0430\u044f\n\u043a\u0020\u0432\u0441\u0435\u0020\u043e\u0431\u0449\u0435\u043c\u0443\u0020\u0440\u0430\u0441\u043f\u0440\u043e\u0441\u0442\u0440\u0430\u043d\u0435\u043d\u0438\u044e\u0020\n\u043d\u0435\u0020\u043f\u043e\u0434\u043b\u0435\u0436\u0438\u0442\u0021\u0021"
+            android:textColor="#CE3A3A"
+            android:textSize="@dimen/_12sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/imageView27"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/imageView27"
+            app:layout_constraintTop_toBottomOf="@+id/imageView27"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/news_title"
@@ -487,28 +535,21 @@
             </LinearLayout>
         </FrameLayout>
 
-        <ImageView
-            android:id="@+id/imageView27"
-            android:layout_width="@dimen/_120sdp"
-            android:layout_height="@dimen/_42sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintEnd_toEndOf="@+id/btn_donate"
-            app:layout_constraintTop_toBottomOf="@+id/btn_donate"
-            app:srcCompat="@drawable/ic_gift" />
-
         <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/geologica_semibold"
-            android:textSize="@dimen/_12sdp"
-            android:textColor="#CE3A3A"
             android:text="\u0414\u0430\u043d\u043d\u0430\u044f\u0020\u0432\u0435\u0440\u0441\u0438\u044f\u0020\u043a\u043b\u0438\u0435\u043d\u0442\u0430\u0020\u0442\u0435\u0441\u0442\u043e\u0432\u0430\u044f\n\u043a\u0020\u0432\u0441\u0435\u0020\u043e\u0431\u0449\u0435\u043c\u0443\u0020\u0440\u0430\u0441\u043f\u0440\u043e\u0441\u0442\u0440\u0430\u043d\u0435\u043d\u0438\u044e\u0020\n\u043d\u0435\u0020\u043f\u043e\u0434\u043b\u0435\u0436\u0438\u0442\u0021\u0021"
+            android:textColor="#CE3A3A"
+            android:textSize="@dimen/_12sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/imageView27"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/imageView27"
-            app:layout_constraintTop_toBottomOf="@+id/imageView27" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView27"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
