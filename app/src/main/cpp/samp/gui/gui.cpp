@@ -98,11 +98,11 @@ bool UI::initialize()
 
     char text3[228];
 
-    sprintf(text3, "SA:MP Mobile 2.10 x64 By EDGAR 3.0 space 2.2\nStreamed Objects: %d", uiStreamedObject);
+    sprintf(text3, "SA:MP Mobile 2.10 x64 By EDGAR 3.0 space 2.7\nStreamed Objects: %d", uiStreamedObject);
 
 	d_label1 = new Label(text3, ImColor(1.0f, 1.0f, 1.0f), true, UISettings::fontSize() / 3);
-	this->addChild(d_label1);
-	d_label1->setPosition(ImVec2(3.0, 3.0));
+	//this->addChild(d_label1);
+	//d_label1->setPosition(ImVec2(3.0, 3.0));
     // ==== version ==== //
     //d_label = new Label("", ImColor(1.0f, 1.0f, 1.0f), true, UISettings::fontSize() / 2);
     //this->addChild(d_label);

@@ -272,7 +272,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
             }
         });
 
-        mVideoView.start();
+        //mVideoView.start();
 
         SurfaceHolder holder = view.getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
