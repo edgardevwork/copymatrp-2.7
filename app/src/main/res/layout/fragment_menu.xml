@@ -31,13 +31,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/_58sdp">
+        android:layout_marginLeft="@dimen/_39sdp">
 
         <FrameLayout
             android:id="@+id/nick_name_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginLeft="@dimen/_19sdp"
             android:background="@drawable/ic_alpha_bg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -151,7 +152,7 @@
             android:layout_marginEnd="@dimen/_8sdp"
             android:layout_marginBottom="@dimen/_2sdp"
             android:fontFamily="@font/geologica_semibold"
-            android:text="2 610"
+            android:text="2 610 709 168"
             android:letterSpacing="0.05"
             android:textColor="#ffffff"
             android:textSize="@dimen/_10sdp"
@@ -203,7 +204,7 @@
             android:layout_marginRight="@dimen/_7sdp"
             android:layout_marginBottom="@dimen/_2sdp"
             android:fontFamily="@font/geologica_semibold"
-            android:text="5"
+            android:text="5 093 007"
             android:textColor="#ffffff"
             android:letterSpacing="0.05"
             android:textSize="@dimen/_10sdp"
@@ -254,8 +255,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/geologica_medium"
-                android:letterSpacing="0.08"
+                android:fontFamily="@font/geologica_semibold"
+                android:letterSpacing="0.07"
                 android:text="Получи бонус!"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/_8sdp" />
@@ -278,70 +279,81 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView27"
             app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/news_title"
+        <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_13sdp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Новости 2-го апр."
-            android:textColor="#ffffff"
-            android:textSize="@dimen/_9sdp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@+id/nick_status"
-            app:layout_constraintTop_toBottomOf="@+id/nickName" />
+            android:layout_marginTop="@dimen/_4sdp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/nick_name_layout"
+            app:layout_constraintTop_toBottomOf="@+id/nick_name_layout">
+
+            <TextView
+                android:id="@+id/news_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/geologica_medium"
+                android:text="Новости"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/_9sdp" />
+
+            <TextView
+                android:id="@+id/news_title_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.02"
+                android:layout_marginLeft="@dimen/_4sdp"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:fontFamily="@font/geologica_medium"
+                android:text="30-го июля"
+                android:textColor="#80FFFFFF"
+                android:textSize="@dimen/_7sdp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/_140sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:src="@drawable/news_light"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_news"
+            app:layout_constraintEnd_toEndOf="@+id/iv_news"
+            app:layout_constraintStart_toStartOf="@+id/iv_news"
+            app:layout_constraintTop_toTopOf="@+id/iv_news" />
 
         <FrameLayout
             android:id="@+id/iv_news"
-            android:layout_width="@dimen/_99sdp"
-            android:layout_height="@dimen/_55sdp"
+            android:layout_width="@dimen/_102sdp"
+            android:layout_height="@dimen/_58sdp"
             android:layout_marginTop="@dimen/_4sdp"
-            android:background="@drawable/news_light"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@+id/news_title"
-            app:layout_constraintTop_toBottomOf="@+id/news_title">
+            app:layout_constraintStart_toStartOf="@+id/linearLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/view_pager"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/tab_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="#ff0000" />
 
         </FrameLayout>
 
-        <!-- Социальные кнопки заголовок -->
         <TextView
             android:id="@+id/tv_social_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:alpha="0.7"
-            android:fontFamily="sans-serif-medium"
-            android:text="Спейс в соцсетях"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:fontFamily="@font/geologica_semibold"
+            android:letterSpacing="0.05"
+            android:text="Матрешка в соцсетях"
             android:textColor="#ffffff"
-            android:textSize="@dimen/_9sdp"
-            android:visibility="gone"
+            android:textSize="@dimen/_8sdp"
             app:layout_constraintStart_toStartOf="@+id/iv_news"
             app:layout_constraintTop_toBottomOf="@+id/iv_news" />
 
-        <!-- Кнопка VK -->
         <FrameLayout
             android:id="@+id/btn_vk"
-            android:layout_width="@dimen/_48sdp"
+            android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_26sdp"
             android:layout_marginTop="@dimen/_2sdp"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@+id/tv_social_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_social_title">
 
@@ -362,10 +374,9 @@
 
         <FrameLayout
             android:id="@+id/btn_telegram"
-            android:layout_width="@dimen/_48sdp"
+            android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_26sdp"
             android:layout_marginLeft="@dimen/_4sdp"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/btn_vk"
             app:layout_constraintStart_toEndOf="@+id/btn_vk"
             app:layout_constraintTop_toTopOf="@+id/btn_vk">
@@ -376,10 +387,9 @@
                 android:alpha="0.7"
                 android:background="@drawable/ic_btn_light_blue" />
 
-            <!-- Иконка Telegram -->
             <ImageView
                 android:layout_width="@dimen/_12sdp"
-                android:layout_height="@dimen/_10sdp"
+                android:layout_height="@dimen/_12sdp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_telegram"
                 app:layout_constraintStart_toStartOf="parent"
