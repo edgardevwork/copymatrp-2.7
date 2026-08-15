@@ -312,6 +312,7 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/imageView2"
             android:layout_width="@dimen/_140sdp"
             android:layout_height="@dimen/_100sdp"
             android:src="@drawable/news_light"
@@ -322,9 +323,9 @@
 
         <FrameLayout
             android:id="@+id/iv_news"
-            android:layout_width="@dimen/_102sdp"
-            android:layout_height="@dimen/_58sdp"
-            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_width="@dimen/_104sdp"
+            android:layout_height="@dimen/_59sdp"
+            android:layout_marginTop="@dimen/_2sdp"
             app:layout_constraintStart_toStartOf="@+id/linearLayout2"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
@@ -340,7 +341,7 @@
             android:id="@+id/tv_social_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_4sdp"
             android:fontFamily="@font/geologica_semibold"
             android:letterSpacing="0.05"
             android:text="Матрешка в соцсетях"
@@ -349,97 +350,86 @@
             app:layout_constraintStart_toStartOf="@+id/iv_news"
             app:layout_constraintTop_toBottomOf="@+id/iv_news" />
 
-        <FrameLayout
-            android:id="@+id/btn_vk"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_26sdp"
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/iv_news"
             app:layout_constraintStart_toStartOf="@+id/tv_social_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_social_title">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.7"
-                android:background="@drawable/ic_btn_blue" />
+            <FrameLayout
+                android:id="@+id/btn_vk"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_marginRight="@dimen/_4sdp">
 
-            <ImageView
-                android:layout_width="@dimen/_12sdp"
-                android:layout_height="@dimen/_12sdp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_vk"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </FrameLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0.7"
+                    android:background="@drawable/ic_btn_blue" />
 
-        <FrameLayout
-            android:id="@+id/btn_telegram"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_26sdp"
-            android:layout_marginLeft="@dimen/_4sdp"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_vk"
-            app:layout_constraintStart_toEndOf="@+id/btn_vk"
-            app:layout_constraintTop_toTopOf="@+id/btn_vk">
+                <ImageView
+                    android:layout_width="@dimen/_12sdp"
+                    android:layout_height="@dimen/_12sdp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_vk"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </FrameLayout>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.7"
-                android:background="@drawable/ic_btn_light_blue" />
+            <FrameLayout
+                android:id="@+id/btn_telegram"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_26sdp">
 
-            <ImageView
-                android:layout_width="@dimen/_12sdp"
-                android:layout_height="@dimen/_12sdp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_telegram"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </FrameLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0.7"
+                    android:background="@drawable/ic_btn_light_blue" />
 
+                <ImageView
+                    android:layout_width="@dimen/_12sdp"
+                    android:layout_height="@dimen/_12sdp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_telegram"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </FrameLayout>
 
-        <!-- Кнопка Магазин -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/btn_shop"
-            android:layout_width="@dimen/_104sdp"
-            android:layout_height="@dimen/_37sdp"
-            android:layout_marginBottom="@dimen/_21sdp"
-            android:visibility="gone"
+            android:layout_width="@dimen/_108sdp"
+            android:layout_height="@dimen/_38sdp"
+            android:layout_marginBottom="@dimen/_24sdp"
+            android:background="@drawable/ic_btn_dark"
+            android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/btn_vk">
+            app:layout_constraintStart_toStartOf="@+id/iv_news">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/ic_btn_dark"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_width="@dimen/_11sdp"
+                android:layout_height="@dimen/_11sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:src="@drawable/ic_shop" />
 
             <TextView
                 android:id="@+id/textView35"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/_16sdp"
-                android:fontFamily="@font/ttnorms_bold"
-                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/geologica_semibold"
                 android:text="Магазин"
                 android:textColor="#ffffff"
-                android:textSize="@dimen/_12sdp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="@dimen/_14sdp" />
 
-            <!-- Иконка Магазин -->
-            <ImageView
-                android:layout_width="@dimen/_12sdp"
-                android:layout_height="@dimen/_12sdp"
-                android:src="@drawable/ic_shop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/textView35"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
         <FrameLayout
             android:id="@+id/frame_server"
@@ -458,9 +448,9 @@
                     android:id="@+id/tv_server"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ttnorms_bold"
+                    android:fontFamily="@font/geologica_semibold"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/_6sdp"
+                    android:layout_marginRight="@dimen/_5sdp"
                     android:text="Сервер"
                     android:textColor="#ffffff"
                     android:textSize="@dimen/_14sdp" />
@@ -468,12 +458,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/_9sdp">
+                    android:layout_marginRight="@dimen/_10sdp">
 
                     <ImageView
                         android:id="@+id/imageView28"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/_2sdp"
                         android:background="@drawable/ic_green_indicator"
                         app:layout_constraintStart_toStartOf="@+id/tv_server_num"
                         app:layout_constraintTop_toTopOf="@+id/tv_server_num"
@@ -485,7 +476,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:fontFamily="@font/montserrat_bold"
+                        android:fontFamily="@font/geologica_semibold"
                         android:text="#10"
                         android:textColor="#000000"
                         android:textSize="@dimen/_14sdp"
@@ -501,16 +492,16 @@
                 <ImageView
                     android:layout_width="@dimen/_8sdp"
                     android:layout_height="@dimen/_21sdp"
-                    android:layout_gravity="center"
+                    android:layout_gravity="bottom"
                     android:src="@drawable/ic_arrow_right" />
             </LinearLayout>
         </FrameLayout>
 
         <FrameLayout
             android:id="@+id/btn_play"
-            android:layout_width="@dimen/_136sdp"
+            android:layout_width="@dimen/_140sdp"
             android:layout_height="@dimen/_54sdp"
-            android:layout_marginRight="@dimen/_22sdp"
+            android:layout_marginRight="@dimen/_23sdp"
             app:layout_constraintBottom_toBottomOf="@+id/btn_shop"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -529,7 +520,7 @@
                     android:layout_width="@dimen/_15sdp"
                     android:layout_height="@dimen/_18sdp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_2sdp"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_launcher_play" />
 
@@ -537,7 +528,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
                     android:textStyle="bold"
                     android:text="Играть"
                     android:textColor="#ffffff"
