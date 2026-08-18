@@ -313,7 +313,7 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="@dimen/_140sdp"
+            android:layout_width="@dimen/_142sdp"
             android:layout_height="@dimen/_100sdp"
             android:src="@drawable/news_light"
             app:layout_constraintBottom_toBottomOf="@+id/iv_news"
@@ -330,10 +330,75 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:id="@+id/progress_bar"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
                 android:layout_gravity="center"
-                android:background="#ff0000" />
+                android:indeterminate="true"
+                android:background="@drawable/ic_loadingmenu_load"
+                android:rotationY="180" />
+
+
+            <ImageView
+                android:id="@id/story_item_stroke"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/ic_story_stroke" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginStart="@dimen/_1sdp"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_marginEnd="@dimen/_1sdp"
+                android:layout_marginBottom="@dimen/_1sdp"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="@dimen/_10sdp"
+                app:cardElevation="0.0dip"
+                app:cardMaxElevation="0.0dip"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="false">
+
+                <ImageView
+                    android:id="@id/story_item_image"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY"
+                    android:background="#000"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:layout_marginLeft="@dimen/_16sdp"
+                    android:layout_marginRight="@dimen/_16sdp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/_1sdp"
+                        android:layout_marginRight="@dimen/_1sdp"
+                        android:background="@drawable/white_line"
+                        android:layout_gravity="bottom" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/_1sdp"
+                        android:layout_marginRight="@dimen/_1sdp"
+                        android:background="@drawable/white_line"
+                        android:layout_gravity="bottom" />
+
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
 
         </FrameLayout>
 
@@ -417,7 +482,7 @@
             <ImageView
                 android:layout_width="@dimen/_11sdp"
                 android:layout_height="@dimen/_11sdp"
-                android:layout_marginRight="@dimen/_8sdp"
+                android:layout_marginRight="@dimen/_6sdp"
                 android:src="@drawable/ic_shop" />
 
             <TextView
