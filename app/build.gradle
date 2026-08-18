@@ -152,9 +152,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.mikhaellopez:circularprogressbar:3.1.0'
     implementation 'com.liulishuo.filedownloader:library:1.7.7'
-    implementation 'com.github.Triggertrap:SeekArc:v1.1'
     implementation 'com.github.bumptech.glide:glide:5.0.5'
-    implementation 'com.github.smarteist:autoimageslider:1.4.0'
     implementation 'com.github.skydoves:colorpickerview:2.3.0'
 
     implementation platform('com.google.firebase:firebase-bom:34.16.0')

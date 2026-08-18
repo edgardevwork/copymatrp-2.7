@@ -6,7 +6,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
         maven { url 'https://artifacts.applovin.com/android' }
     }
     dependencies {
@@ -41,9 +40,6 @@ vkidManifestPlaceholders {
 allprojects {
     repositories {
         mavenCentral()
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://mint.splunk.com/gradle/'}
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url 'https://artifactory-external.vkpartner.ru/artifactory/vkid-sdk-android/' }
         maven { url 'https://artifactory-external.vkpartner.ru/artifactory/maven/' }
         maven { url 'https://artifactory-external.vkpartner.ru/artifactory/vk-id-captcha/android/' }

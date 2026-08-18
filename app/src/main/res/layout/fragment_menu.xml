@@ -372,16 +372,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="@dimen/_3sdp"
-                    android:layout_marginLeft="@dimen/_16sdp"
-                    android:layout_marginRight="@dimen/_16sdp"
+                    android:layout_marginLeft="@dimen/_17sdp"
+                    android:layout_marginRight="@dimen/_17sdp"
                     android:orientation="horizontal">
 
                     <View
                         android:layout_width="0dp"
                         android:layout_height="@dimen/_1sdp"
                         android:layout_weight="1"
-                        android:layout_marginLeft="@dimen/_1sdp"
-                        android:layout_marginRight="@dimen/_1sdp"
+                        android:alpha="0.5"
                         android:background="@drawable/white_line"
                         android:layout_gravity="bottom" />
 
@@ -389,14 +388,51 @@
                         android:layout_width="0dp"
                         android:layout_height="@dimen/_1sdp"
                         android:layout_weight="1"
-                        android:layout_marginLeft="@dimen/_1sdp"
-                        android:layout_marginRight="@dimen/_1sdp"
+                        android:layout_marginLeft="@dimen/_3sdp"
                         android:background="@drawable/white_line"
                         android:layout_gravity="bottom" />
 
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:background="@drawable/white_line"
+                        android:layout_gravity="bottom" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:background="@drawable/white_line"
+                        android:layout_gravity="bottom" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:background="@drawable/white_line"
+                        android:layout_gravity="bottom" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:background="@drawable/white_line"
+                        android:layout_gravity="bottom" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:background="@drawable/white_line"
+                        android:layout_gravity="bottom" />
 
                 </LinearLayout>
-
 
             </androidx.cardview.widget.CardView>
 
