@@ -1,0 +1,115 @@
+{
+    "enablePaymentSending": false,
+    "enableCustomPurchaseSending": false,
+    "enableOrigPurchaseSending": false,
+    "client_version"            : 2551,
+    "apple_client_version"      : 1315,
+    "google_client_version"     : 1043,
+    "appgallery_client_version" : 724,
+    "rustore_client_version"    : 766,
+    
+    "google_panic": false,
+    "appgallery_panic": false,
+    "rustore_panic": false,
+
+    "appgallery_review" : false,
+    "google_review"     : false,
+    "apple_review"      : false,
+    "rustore_review"    : false,
+    "apk_review"        : false,
+    "review_api_socket" : "ws://212.46.36.53:7002",
+
+    "moderator_apple_ws" : "ws://85.90.192.76:7050",
+    "moderator_apple_code": 0,
+
+    "moderator_prod_ws" : "ws://85.90.192.76:7050",
+    "moderator_prod_code": 0,
+
+    "review_files_list":    "https://edgecdn.matrp.ru/matrp_mobile/builds/build_6-1-45_9be365c9/files_list.json", 
+    "files_list":           "https://edgecdn.matrp.ru/matrp_mobile/builds/build_6-1-45_9be365c9/files_list.json",
+
+    "client_url":               "https://edgecdn.matrp.ru/matreshka-prod-2551.apk",
+    "apple_client_url":         "https://apps.apple.com/app/id6474574017",
+    "google_client_url":        "https://play.google.com/store/apps/details?id=com.jekmant.matrplauncher",
+    "appgallery_client_url":    "https://edgecdn.matrp.ru/matreshka-appgallery.apk",
+    "appgallery_client_url_no_panic":    "https://appgallery.huawei.com/app/C111520735",
+    "rustore_client_url":    "https://edgecdn.matrp.ru/matreshka-rustore.apk",
+    "rustore_client_url_no_panic":       "https://apps.rustore.ru/app/com.matreshkarp.game",
+    
+    "use_s2s_for_adjust":false,
+    "updateState":false,
+    "api_support":"wss://supportws.matrp.ru",
+
+    "cdn_url": "https://edgecdn.matrp.ru/matrp_mobile",
+    "api": "https://moblauncher.matrp.ru/api/main.json",
+    "api_socket": "wss://api-main-two.matrp.online",
+    "api_socket_new": "wss://api-main-two.matrp.online",
+    "socketSentryLoggingEnabled":false,
+     
+    "archive_size": 1714376127,
+    "archive_url": "https://edgecdn.matrp.ru/matrp_mobile/builds/build0703-prodall/archive/cache_full.zip",
+
+    "socialFaq": "https://vk.ru/matrp_help",
+    "socialVk": "https://vk.com/matreshka",
+    "socialYouTube": "https://www.youtube.com/@matrpru",
+    "socialInstagram": "https://www.instagram.com/matrp.ru",
+    "socialTelegram": "https://t.me/matrp_t",
+    "socialDiscord": "https://discord.gg/e8FFmcd9Hu",
+    "socialOfferta": "https://matrp.ru/offerta",
+    "socialPrivacy": "https://matrp.ru/privacy",
+    "socialForum": "https://forum.matrp.ru",
+    "socialForumRules": "https://forum.matrp.ru/index.php?threads/obsie-pravila-serverov.1241604/",
+    "mLeaderboardUrl": "https://matrp.ru/leaderboard",
+    "mForumUrl": "https://forum.matrp.ru/index.php",
+
+    "analyticsConfig": {
+        "host": "analytics.matrp.ru",
+        "port": 443,
+        "batchSize": 200,
+        "safeBatchDelay": 5000
+    },
+    "dnsEnabled": false,
+    "enableVideo": false,
+    "enableTheme": true,
+    "launcherScene": {
+        "playerPosX": -847.367,
+        "playerPosY": -398.356,
+        "playerPosZ": 34.408,
+        "playerRotation": 221.172, 
+        "playerInvalidPosX": -847.367,
+        "playerInvalidPosY": -398.356,
+        "playerInvalidPosZ": 34.408,
+        "vehiclePosX": -849.719,
+        "vehiclePosY": -397.863,
+        "vehiclePosZ": 33.843,
+        "vehicleRotation": 199.925,
+        "cameraPosX": -841.67,
+        "cameraPosY": -403.776,
+        "cameraPosZ": 34.7279,
+        "cameraLookX": -850.764,
+        "cameraLookY": -397.274,
+        "cameraLookZ": 34.6955,
+        "cameraFOV": 40.0,
+        "interior": 0,
+        "weather": 0,
+        "hour": 5,
+        "minute": 0,
+        "regPlayerPosX": -847.367,
+        "regPlayerPosY": -398.356,
+        "regPlayerPosZ": 34.408,
+        "regPlayerRotation": 221.172,
+        "regCameraPosX": -841.526,
+        "regCameraPosY": -402.551,
+        "regCameraPosZ": 34.7279,
+        "regCameraLookX": -848.926,
+        "regCameraLookY": -396.049,
+        "regCameraLookZ": 34.6864,
+        "regCameraFOV": 40.0
+    },
+    "tgBannerUrl": "https://edgecdn.matrp.ru/matrp_mobile/images/tgpic.webp",
+    "graphicsAnalyticsEnabled": true
+}
+
+
+
+

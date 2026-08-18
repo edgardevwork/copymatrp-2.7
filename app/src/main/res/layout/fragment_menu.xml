@@ -236,7 +236,7 @@
         </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/imageView27"
+            android:id="@+id/gift_window"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
@@ -273,10 +273,10 @@
             android:textColor="#CE3A3A"
             android:textSize="@dimen/_12sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imageView27"
+            app:layout_constraintEnd_toEndOf="@+id/gift_window"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/imageView27"
-            app:layout_constraintTop_toBottomOf="@+id/imageView27"
+            app:layout_constraintStart_toStartOf="@+id/gift_window"
+            app:layout_constraintTop_toBottomOf="@+id/gift_window"
             app:layout_constraintVertical_bias="0.0" />
 
         <LinearLayout
@@ -316,27 +316,25 @@
             android:layout_width="@dimen/_142sdp"
             android:layout_height="@dimen/_100sdp"
             android:src="@drawable/news_light"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_news"
-            app:layout_constraintEnd_toEndOf="@+id/iv_news"
-            app:layout_constraintStart_toStartOf="@+id/iv_news"
-            app:layout_constraintTop_toTopOf="@+id/iv_news" />
+            app:layout_constraintBottom_toBottomOf="@+id/news"
+            app:layout_constraintEnd_toEndOf="@+id/news"
+            app:layout_constraintStart_toStartOf="@+id/news"
+            app:layout_constraintTop_toTopOf="@+id/news" />
 
         <FrameLayout
-            android:id="@+id/iv_news"
+            android:id="@+id/news"
             android:layout_width="@dimen/_104sdp"
             android:layout_height="@dimen/_59sdp"
             android:layout_marginTop="@dimen/_2sdp"
             app:layout_constraintStart_toStartOf="@+id/linearLayout2"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
-            <ImageView
-                android:id="@+id/progress_bar"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
+            <ProgressBar
+                android:layout_width="@dimen/_26sdp"
+                android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
                 android:indeterminate="true"
-                android:background="@drawable/ic_loadingmenu_load"
-                android:rotationY="180" />
+                android:indeterminateDrawable="@drawable/loading_progress_bar" />
 
 
             <ImageView
@@ -361,14 +359,21 @@
                 app:cardUseCompatPadding="false">
 
                 <ImageView
-                    android:id="@id/story_item_image"
+                    android:id="@+id/news_image"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_gravity="center"
-                    android:scaleType="fitXY"
-                    android:background="#000"/>
+                    android:scaleType="fitXY"/>
+
+                <ImageView
+                    android:id="@+id/news_image_two"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY"/>
 
                 <LinearLayout
+                    android:id="@+id/bars"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="@dimen/_3sdp"
@@ -448,8 +453,8 @@
             android:text="Матрешка в соцсетях"
             android:textColor="#ffffff"
             android:textSize="@dimen/_8sdp"
-            app:layout_constraintStart_toStartOf="@+id/iv_news"
-            app:layout_constraintTop_toBottomOf="@+id/iv_news" />
+            app:layout_constraintStart_toStartOf="@+id/news"
+            app:layout_constraintTop_toBottomOf="@+id/news" />
 
         <LinearLayout
             android:id="@+id/linearLayout3"
@@ -457,7 +462,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="@+id/iv_news"
+            app:layout_constraintEnd_toEndOf="@+id/news"
             app:layout_constraintStart_toStartOf="@+id/tv_social_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_social_title">
 
@@ -513,7 +518,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/iv_news">
+            app:layout_constraintStart_toStartOf="@+id/news">
 
             <ImageView
                 android:layout_width="@dimen/_11sdp"
@@ -647,10 +652,10 @@
             android:textColor="#CE3A3A"
             android:textSize="@dimen/_12sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imageView27"
+            app:layout_constraintEnd_toEndOf="@+id/gift_window"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/imageView27"
-            app:layout_constraintTop_toBottomOf="@+id/imageView27"
+            app:layout_constraintStart_toStartOf="@+id/gift_window"
+            app:layout_constraintTop_toBottomOf="@+id/gift_window"
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

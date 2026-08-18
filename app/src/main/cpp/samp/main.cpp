@@ -285,13 +285,18 @@ void DoInitStuff()
         } else {
             pPlayerPed->m_pPed->SetPosn(1722.57f, -2348.90f, 12.0f);
         }
-        CCamera::SetPosition(1724.57f, -2348.90f, 11.3f, 0.0f, 0.0f, 0.0f);
-        CCamera::LookAtPoint(1728.00f, -2356.82f, 11.2f, 2);
-        pGame->SetWorldWeather(1);
-        pGame->DisplayHUD(false);
-        pPlayerPed->TogglePlayerControllable(false);
-        fufy = new CPlayerPed(34, 98, 1725.1f, -2352.7f, 11.00f, 7.0f);
-        //pNetGame = new CNetGame("80.242.59.112", 1969, "Edgar_Tgg", pSettings->Get().szPassword);
+		//CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
+
+		CCamera::SetPosition(1724.4135f, -2347.7783f, 11.3886f, 0.0f, 0.0f, 0.0f);
+		CCamera::LookAtPoint(1729.0125f, -2359.1579f, 11.1705f, 2);
+		/*TheCamera.m_aCams[0].FOV = 40.0f;
+		*(float *)(g_libGTASA + (VER_x32 ? 0x006B1CB8 : 0x88E6BC)) = 40.0f;*/
+		pGame->SetWorldWeather(0);
+		pGame->SetWorldTime(5,0);
+		pGame->DisplayHUD(false);
+		pPlayerPed->TogglePlayerControllable(false);
+		fufy = new CPlayerPed(34, 98, 1725.1f, -2352.7f, 11.00f, 7.0f);
+		//pNetGame = new CNetGame("80.242.59.112", 1969, "Edgar_Tgg", pSettings->Get().szPassword);
         pJavaWrapper->hideSplash();
 
         bNetworkInited = true;
