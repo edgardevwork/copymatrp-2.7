@@ -2190,7 +2190,7 @@ void CPlayerPed::ProcessCuffAndCarry()
 	m_pPed->UpdateRpHAnim();
 }
 
-void CPlayerPed::SetCurrentWeapon(uint8_t weaponType)
+void CPlayerPed::SetCurrentWeapon(uint8_t weaponType) // Краш один адрес!
 {
 	((int(*)(uintptr_t, uint8_t))(g_libGTASA + 0x4A51AC + 1))((uintptr_t)m_pPed, weaponType);
 }
