@@ -143,7 +143,7 @@ public class MainScreenActivity  extends AppCompatActivity {
         loading.setVisibility(View.VISIBLE);
         downloadBar.setVisibility(View.GONE);
 
-        //setupVideoPlayer();
+        setupVideoPlayer();
 
         dialogManager = new DialogManager();
 
@@ -201,7 +201,7 @@ public class MainScreenActivity  extends AppCompatActivity {
     }
 
     private void setupVideoPlayer() {
-        mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading));
+        mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.edgarloop));
         mVideoView.setOnCompletionListener(mp -> mp.setLooping(true));
         mVideoView.setOnPreparedListener(mp -> {
             mp.setLooping(true);

@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/ic_dialog_newlauncher_bg"
+        android:background="@drawable/ic_dialog_nlremake"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +28,7 @@
                 android:layout_marginTop="@dimen/_12sdp"
                 android:layout_marginRight="@dimen/_18sdp"
                 android:fontFamily="@font/ttnorms_bold"
-                android:text="Доступно обновление!\nВайб Геймс Берите меня на работу"
+                android:text="Авторизация по эл. почте"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_19sdp" />
 
@@ -42,43 +42,47 @@
                 android:fontFamily="@font/montserrat_medium"
                 android:letterSpacing="0.02"
                 android:lineHeight="@dimen/_10sdp"
-                android:text="Размер обновления: 3.0 GB\nХочешь скачать его сейчас?"
+                android:text="Пожалуйста, введи свой адрес эл. почты, чтобы\nпродолжить процесс регистрации или авторизовать\nтвой аккаунт в игре."
                 android:textColor="#e9e9f3"
                 android:textSize="@dimen/_8sdp" />
 
-            <CheckBox
-                android:id="@+id/checkBox"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_28sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginLeft="@dimen/_18sdp"
-                android:layout_marginTop="@dimen/_12sdp"
                 android:layout_marginRight="@dimen/_18sdp"
-                android:text="Сообщить об ошибки"
-                android:textSize="@dimen/_7sdp"
-                android:checked="false"
-                android:textColor="#ffffff"
-                android:background="@null"
-                android:paddingStart="@dimen/_6sdp"
-                android:fontFamily="@font/ttnorms_medium"
-                android:button="@drawable/checkbox_selector" />
+                android:background="@drawable/ic_dialog_nl_input_bg"
+                android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/checkBox2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_18sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_18sdp"
-                android:layout_marginBottom="@dimen/_2sdp"
-                android:background="@null"
-                android:button="@drawable/checkbox_selector"
-                android:checked="false"
-                android:fontFamily="@font/ttnorms_medium"
-                android:paddingStart="@dimen/_6sdp"
-                android:text="Сообщить об ошибки"
-                android:textColor="#ffffff"
-                android:textSize="@dimen/_7sdp"
-                android:visibility="gone" />
+                <ImageView
+                    android:id="@+id/email_layout_email_image"
+                    android:layout_width="@dimen/_12sdp"
+                    android:layout_height="@dimen/_12sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    app:srcCompat="@drawable/ic_reg_email" />
+
+                <EditText
+                    android:id="@+id/email_layout_email_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:hint="Введите эл. адрес"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="#ffffff"
+                    android:textColorHighlight="#ffffff"
+                    android:textColorHint="#66ffffff"
+                    android:textColorLink="#ffffff"
+                    android:textSize="@dimen/_8sdp" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -103,7 +107,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/montserrat_medium"
-                        android:text="Да"
+                        android:text="Продолжить"
                         android:textColor="#ffffff"
                         android:letterSpacing="0.02"
                         android:textSize="@dimen/_8sdp" />
@@ -114,8 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_28sdp"
                     android:layout_marginLeft="@dimen/_8sdp"
-                    android:layout_marginBottom="@dimen/_18sdp"
-                    android:background="@drawable/ic_dialog_newbtnoff">
+                    android:layout_marginBottom="@dimen/_18sdp">
 
                     <TextView
                         android:id="@+id/b2"
@@ -126,7 +129,7 @@
                         android:layout_marginEnd="@dimen/_8sdp"
                         android:fontFamily="@font/montserrat_medium"
                         android:gravity="center"
-                        android:text="Нет"
+                        android:text="Я не помню пароль"
                         android:textColor="#ffffff"
                         android:letterSpacing="0.02"
                         android:textSize="@dimen/_8sdp" />

@@ -247,15 +247,15 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setAlpha(1.0f);
-        /*mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading));
+        mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.edgarloop));
         mVideoView.setVisibility(View.VISIBLE);
-        mVideoView.setAlpha(1.0f);*/
+        mVideoView.setAlpha(1.0f);
         logoBig.setVisibility(View.VISIBLE);
         logoBig.setAlpha(1.0f);
 
         lm_loadicon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation));
 
-       /* mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -270,9 +270,9 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
                 mp.setLooping(true);
                 mVideoView.start();
             }
-        });*/
+        });
 
-        //mVideoView.start();
+        mVideoView.start();
 
         SurfaceHolder holder = view.getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
