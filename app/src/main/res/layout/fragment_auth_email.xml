@@ -3,7 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C814141A">
+    android:background="#E6171921">
+
+    <FrameLayout
+        android:id="@+id/btn_back"
+        android:layout_width="@dimen/_28sdp"
+        android:layout_height="@dimen/_28sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginStart="@dimen/_50sdp"
+        android:background="@drawable/ic_dialog_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="@dimen/_11sdp"
+            android:layout_height="@dimen/_11sdp"
+            android:src="@drawable/ic_back"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -190,7 +209,7 @@
                     android:background="@null"
                     android:ellipsize="end"
                     android:fontFamily="@font/geologica_medium"
-                    android:hint="Веди код"
+                    android:hint="Введи код"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"

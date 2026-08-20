@@ -93,16 +93,11 @@
             android:layout_height="@dimen/_28sdp"
             android:layout_marginStart="@dimen/_18sdp"
             android:layout_marginBottom="@dimen/_1sdp"
+            android:background="@drawable/ic_circle_bg_dark"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/nick_name_layout"
             app:layout_constraintStart_toEndOf="@+id/nick_name_layout"
             app:layout_constraintTop_toTopOf="@+id/nick_name_layout">
-
-            <ImageView
-                android:layout_width="@dimen/_28sdp"
-                android:layout_height="@dimen/_28sdp"
-                android:background="@drawable/ic_circle_bg_dark"
-                tools:ignore="MissingConstraints" />
 
             <ImageView
                 android:layout_width="@dimen/_12sdp"
@@ -118,15 +113,10 @@
             android:layout_height="@dimen/_28sdp"
             android:layout_marginStart="@dimen/_15sdp"
             android:visibility="visible"
+            android:background="@drawable/ic_circle_bg_dark"
             app:layout_constraintBottom_toBottomOf="@+id/btn_settings"
             app:layout_constraintStart_toEndOf="@+id/btn_settings"
             app:layout_constraintTop_toTopOf="@+id/btn_settings">
-
-            <ImageView
-                android:layout_width="@dimen/_28sdp"
-                android:layout_height="@dimen/_28sdp"
-                android:background="@drawable/ic_circle_bg_dark"
-                tools:ignore="MissingConstraints" />
 
             <ImageView
                 android:layout_width="@dimen/_12sdp"
@@ -168,15 +158,10 @@
             android:layout_height="@dimen/_28sdp"
             android:layout_marginEnd="@dimen/_18sdp"
             android:visibility="visible"
+            android:background="@drawable/ic_circle_bg_dark"
             app:layout_constraintBottom_toBottomOf="@+id/btn_support"
             app:layout_constraintEnd_toStartOf="@+id/mcoin"
             app:layout_constraintTop_toTopOf="@+id/btn_support">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:srcCompat="@drawable/ic_circle_bg_dark"
-                tools:ignore="MissingConstraints" />
 
             <ImageView
                 android:layout_width="@dimen/_12sdp"
@@ -218,15 +203,10 @@
             android:layout_width="@dimen/_28sdp"
             android:layout_height="@dimen/_28sdp"
             android:layout_marginEnd="@dimen/_24sdp"
+            android:background="@drawable/ic_circle_bg_purple"
             app:layout_constraintBottom_toBottomOf="@+id/btn_balance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btn_balance">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:srcCompat="@drawable/ic_circle_bg_purple"
-                tools:ignore="MissingConstraints" />
 
             <ImageView
                 android:layout_width="@dimen/_12sdp"

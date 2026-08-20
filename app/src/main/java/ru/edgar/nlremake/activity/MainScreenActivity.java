@@ -34,6 +34,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
@@ -256,10 +257,18 @@ public class MainScreenActivity  extends AppCompatActivity {
             notifManager.createNotificationChannel(notificationChannel);
         }
         // Иницелизация фаир бейз
-        FirebaseAnalytics.getInstance(this);
-        FirebaseApp.initializeApp(this);
-        FileDownloader.init(this);
-        VKID.Companion.init(this);
+        try {
+            FirebaseAnalytics.getInstance(this);
+            FirebaseApp.initializeApp(this);
+            FileDownloader.init(this);
+            VKID.Companion.init(this);
+        } catch (Exception e) {
+            FirebaseAnalytics.getInstance(this);
+            FirebaseApp.initializeApp(this);
+            FileDownloader.init(this);
+            VKID.Companion.init(this);
+        }
+
         mAuth = FirebaseAuth.getInstance();
 
         Log.i("GOOGLE AUTH", "Init Google");
