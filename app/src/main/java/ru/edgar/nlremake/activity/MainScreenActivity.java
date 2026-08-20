@@ -257,17 +257,10 @@ public class MainScreenActivity  extends AppCompatActivity {
             notifManager.createNotificationChannel(notificationChannel);
         }
         // Иницелизация фаир бейз
-        try {
-            FirebaseAnalytics.getInstance(this);
-            FirebaseApp.initializeApp(this);
-            FileDownloader.init(this);
-            VKID.Companion.init(this);
-        } catch (Exception e) {
-            FirebaseAnalytics.getInstance(this);
-            FirebaseApp.initializeApp(this);
-            FileDownloader.init(this);
-            VKID.Companion.init(this);
-        }
+        FirebaseAnalytics.getInstance(this);
+        FirebaseApp.initializeApp(this);
+        FileDownloader.init(this);
+        VKID.Companion.init(this);
 
         mAuth = FirebaseAuth.getInstance();
 
