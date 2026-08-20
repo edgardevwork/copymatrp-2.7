@@ -8,14 +8,16 @@ import javax.annotation.Nullable;
 public class DialogManager {
 
     private static DialogManager instance;
+    private AuthFragment authFragment;
 
-    AuthFragment authFragment;
+    private AuthEmailFragment authEmailFragment;
+    private DialogFragment dialogFragment;
 
-    DialogFragment dialogFragment;
 
     public DialogManager() {
         instance = this;
         authFragment = new AuthFragment();
+        authEmailFragment = new AuthEmailFragment();
         dialogFragment = new DialogFragment();
     }
 
@@ -43,6 +45,14 @@ public class DialogManager {
         getAuthFragment().hideAuthDialog();
     }
 
+    public void showAuthEmailDialog() {
+        getAuthEmailFragment().showAuthEmailDialog();
+    }
+
+    public void hideAuthEmailDialog() {
+        getAuthEmailFragment().hideDialog();
+    }
+
 
     public static DialogManager getDialogManager() {
         return instance;
@@ -50,6 +60,10 @@ public class DialogManager {
 
     private AuthFragment getAuthFragment() {
         return authFragment;
+    }
+
+    private AuthEmailFragment getAuthEmailFragment() {
+        return authEmailFragment;
     }
 
     private DialogFragment getDialogFragment() {

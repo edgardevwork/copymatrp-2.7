@@ -15,7 +15,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -100,7 +99,7 @@ public class AuthFragment {
                         DialogManager.getDialogManager().hideDialog();
                         if(!checkBox.isChecked() && !checkBox1.isChecked()) {
                             // Открываем уведомление
-                        }
+                        } else onClickAuthGoogle();
                     }
                 }, new CheckBox[]{checkBox, checkBox1});
             }
@@ -140,7 +139,7 @@ public class AuthFragment {
                                 DialogManager.getDialogManager().hideDialog();
                                 if(!checkBox.isChecked() && !checkBox1.isChecked()) {
                                     // Открываем уведомление
-                                }
+                                } // Тут должно открываться вк вход, но у меня чет не получаеться отправить клик.
                             }
                         }, new CheckBox[]{checkBox, checkBox1});
                     }
@@ -316,7 +315,8 @@ public class AuthFragment {
         main_btn_email.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_email));
         main_btn_email.setOnClickListener(v -> {
             if(checkBox.isChecked() && checkBox1.isChecked()) {
-
+                hideAuthDialog();
+                DialogManager.getDialogManager().showAuthEmailDialog();
             } else {
                 // Уточняющий диалог
                 DialogManager.getDialogManager().showDialogCheckBoxes("Ошибка", "Чтобы продолжить, прими пользовательское\nсоглашение и политику конфиденциальности", "Продолжить", new View.OnClickListener() {
@@ -325,6 +325,9 @@ public class AuthFragment {
                         DialogManager.getDialogManager().hideDialog();
                         if(!checkBox.isChecked() && !checkBox1.isChecked()) {
                             // Открываем уведомление
+                        } else {
+                            hideAuthDialog();
+                            DialogManager.getDialogManager().showAuthEmailDialog();
                         }
                     }
                 }, new CheckBox[]{checkBox, checkBox1});
@@ -336,14 +339,9 @@ public class AuthFragment {
 
     private void resetVkButtonState() {
         if (vk_onetap != null) {
-            // 1. Принудительно очищаем любые запущенные анимации на этом View
             vk_onetap.clearAnimation();
-
-            // 2. Сбрасываем масштаб по осям X и Y к исходному значению (100%)
             vk_onetap.setScaleX(1.0f);
             vk_onetap.setScaleY(1.0f);
-
-            // 3. Сбрасываем прозрачность к полной видимости (на случай, если она менялась)
             vk_onetap.setAlpha(1.0f);
         }
     }

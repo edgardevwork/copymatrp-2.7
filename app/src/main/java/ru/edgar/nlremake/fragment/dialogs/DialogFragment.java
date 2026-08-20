@@ -30,7 +30,8 @@ import ru.edgar.space.InterfacesManager;
 public class DialogFragment extends AppCompatActivity {
 
     private ViewGroup viewGroup;
-    public CheckBox checkBox, checkBox2;
+    public CheckBox checkBox;
+    private CheckBox checkBox2;
 
     public DialogFragment() {
         if(viewGroup != null) {

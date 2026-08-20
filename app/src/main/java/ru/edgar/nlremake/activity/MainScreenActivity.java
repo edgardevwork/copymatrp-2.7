@@ -81,7 +81,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.edgar.nlremake.fragment.dialogs.AuthEmailFramgent;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Archive;
