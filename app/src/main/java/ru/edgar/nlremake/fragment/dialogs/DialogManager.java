@@ -1,6 +1,7 @@
 package ru.edgar.nlremake.fragment.dialogs;
 
 import android.view.View;
+import android.widget.CheckBox;
 
 import javax.annotation.Nullable;
 
@@ -26,12 +27,16 @@ public class DialogManager {
         getDialogFragment().showErrorDialog(name, dname, b1, click1, true, dCheckBox);
     }
 
+    public void showDialogCheckBoxes(String name, String dname, String b1, View.OnClickListener click1, CheckBox[] checkBoxes) {
+        getDialogFragment().showDialogCheckBoxes(name, dname, b1, click1, checkBoxes);
+    }
+
     public void hideDialog() {
         getDialogFragment().hideDialog();
     }
 
-    public void showAuthDialog() {
-        getAuthFragment().showAuthDialog();
+    public void showAuthDialog(boolean isOnce) {
+        getAuthFragment().showAuthDialog(isOnce);
     }
 
     public void hideAuthDialog() {

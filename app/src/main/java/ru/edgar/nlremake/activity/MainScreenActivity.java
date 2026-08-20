@@ -156,12 +156,13 @@ public class MainScreenActivity  extends AppCompatActivity {
                 // Этот блок выполнится ПОЗЖЕ, когда данные загрузятся
                 // Мы снова находимся в главном потоке, поэтому можем показывать диалоги
 
-                new AuthEmailFramgent();
-                if (!isAuthenticated) {
-                    //dialogManager.showAuthDialog();
+                /*if (!isAuthenticated) {
+                    dialogManager.showAuthDialog(true);
                 } else {
-                    //onRequestPermissions();
-                }
+                    onRequestPermissions();
+                }*/
+
+                dialogManager.showAuthDialog(true);
             }
         });
     }
@@ -1240,12 +1241,12 @@ public class MainScreenActivity  extends AppCompatActivity {
 
                 viewGroup.animate()
                         .alpha(1.0f)
-                        .setDuration(150)
+                        .setDuration(300)
                         .setListener(null); // Слушатель здесь больше не нужен для установки видимости
             } else {
                 viewGroup.animate()
                         .alpha(0.0f)
-                        .setDuration(150)
+                        .setDuration(300)
                         .setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
@@ -1296,7 +1297,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                                             }
                                             if(!isAuth) {
                                                 dialogManager.hideDialog();
-                                                dialogManager.showAuthDialog();
+                                                dialogManager.showAuthDialog(false);
                                             } else onRequestPermissions();
                                         }
                                     }, true, "Сообщить об ошибке");
@@ -1323,7 +1324,7 @@ public class MainScreenActivity  extends AppCompatActivity {
                         }
                         if(!isAuth) {
                             dialogManager.hideDialog();
-                            dialogManager.showAuthDialog();
+                            dialogManager.showAuthDialog(false);
                         } else onRequestPermissions();
                     }
                 }, true, "Сообщить об ошибке");

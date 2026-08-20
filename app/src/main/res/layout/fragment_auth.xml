@@ -33,7 +33,6 @@
             android:textSize="@dimen/_16sdp" />
 
         <TextView
-            android:id="@+id/tv_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_6sdp"
@@ -81,12 +80,9 @@
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/main_btn_vknew"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_28sdp"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:clickable="false"
-            android:focusable="false">
+            android:layout_marginTop="@dimen/_8sdp">
 
             <com.vk.id.onetap.xml.OneTap
                 android:id="@+id/vk_one_tap_button"
@@ -96,9 +92,10 @@
                 app:vkid_onetapScenario="SignIn" />
 
             <View
+                android:id="@+id/view_vk"
                 android:layout_width="@dimen/_230sdp"
                 android:layout_height="@dimen/_28sdp"
-                android:background="#000" />
+                android:background="@android:color/transparent"/>
 
         </FrameLayout>
 

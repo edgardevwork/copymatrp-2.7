@@ -26,6 +26,10 @@ public class AuthEmailFramgent {
         viewGroup.setVisibility(View.VISIBLE);
     }
 
+    void showAuthEmail() {
+        MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
+    }
+
     void hideDialog() {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.GONE);
     }

@@ -1,5 +1,7 @@
 package ru.edgar.nlremake.fragment.dialogs;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +11,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -43,7 +46,7 @@ import ru.edgar.space.InterfacesManager;
 public class AuthFragment {
 
     public ViewGroup viewGroup;
-    private FrameLayout main_btn_google, main_btn_vknew;
+    private FrameLayout main_btn_google;
     private OneTap vk_onetap;
     private CheckBox checkBox, checkBox1;
     private LinearLayout main_btn_email;
@@ -61,20 +64,6 @@ public class AuthFragment {
 
         checkBox = viewGroup.findViewById(R.id.checkBox);
         checkBox1 = viewGroup.findViewById(R.id.checkBox1);
-
-        vk_onetap = viewGroup.findViewById(R.id.vk_one_tap_button);
-
-        CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                boolean isAllChecked = checkBox.isChecked() && checkBox1.isChecked();
-
-                vk_onetap.setEnabled(isAllChecked);
-            }
-        };
-
-        checkBox.setOnCheckedChangeListener(checkListener);
-        checkBox1.setOnCheckedChangeListener(checkListener);
 
         StringBuilder sb1 = new StringBuilder();
         String str1 = String.format("Я принимаю <a href=\"https://crmp.pro\">%s</a>", "Пользовательское соглашение (EULA)");
@@ -105,16 +94,63 @@ public class AuthFragment {
                 onClickAuthGoogle();
             } else {
                 // Уточняющий диалог
+                DialogManager.getDialogManager().showDialogCheckBoxes("Ошибка", "Чтобы продолжить, прими пользовательское\nсоглашение и политику конфиденциальности", "Продолжить", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogManager.getDialogManager().hideDialog();
+                        if(!checkBox.isChecked() && !checkBox1.isChecked()) {
+                            // Открываем уведомление
+                        }
+                    }
+                }, new CheckBox[]{checkBox, checkBox1});
             }
         });
 
-        main_btn_vknew = viewGroup.findViewById(R.id.main_btn_vknew);
-        main_btn_vknew.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_vknew));
-        main_btn_vknew.setOnClickListener(v -> {
-            if (checkBox.isChecked() && checkBox1.isChecked()) {
-                vk_onetap.performClick();
-            } else {
-                // Уточняющий диалог
+        vk_onetap = viewGroup.findViewById(R.id.vk_one_tap_button);
+
+        View transparentView = viewGroup.findViewById(R.id.view_vk);
+        transparentView.setOnTouchListener(new View.OnTouchListener() {
+            AnimatorSet animatorSet = (AnimatorSet) AnimatorInflater.loadAnimator(MainScreenActivity.getInstance(), R.animator.reduce_size);
+            AnimatorSet animatorSet1 = (AnimatorSet) AnimatorInflater.loadAnimator(MainScreenActivity.getInstance(), R.animator.regain_size);
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                AnimatorSet animatorSet;
+                int action = event.getAction() & 255;
+                if (action == event.ACTION_DOWN) {
+                    if (this.animatorSet1.isRunning()) {
+                        this.animatorSet1.end();
+                    }
+                    this.animatorSet.setTarget(vk_onetap);
+                    animatorSet = this.animatorSet;
+                } else if (action != event.ACTION_UP && action != event.ACTION_CANCEL) {
+                    return false;
+                } else {
+                    if (this.animatorSet.isRunning()) {
+                        this.animatorSet.end();
+                    }
+                    this.animatorSet1.setTarget(vk_onetap);
+                    animatorSet = this.animatorSet1;
+
+                    if (!checkBox.isChecked() || !checkBox1.isChecked()) {
+                        // Уточняющий диалог
+                        DialogManager.getDialogManager().showDialogCheckBoxes("Ошибка", "Чтобы продолжить, прими пользовательское\nсоглашение и политику конфиденциальности", "Продолжить", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                DialogManager.getDialogManager().hideDialog();
+                                if(!checkBox.isChecked() && !checkBox1.isChecked()) {
+                                    // Открываем уведомление
+                                }
+                            }
+                        }, new CheckBox[]{checkBox, checkBox1});
+                    }
+                }
+                animatorSet.start();
+                if (checkBox.isChecked() && checkBox1.isChecked()) {
+                    return false;
+                } else {
+                    return true;
+                }
             }
         });
 
@@ -165,7 +201,7 @@ public class AuthFragment {
                                                             @Override
                                                             public void onClick(View v) {
                                                                 DialogManager.getDialogManager().hideDialog();
-                                                                DialogManager.getDialogManager().showAuthDialog();
+                                                                DialogManager.getDialogManager().showAuthDialog(false);
                                                             }
                                                         }, null);
 
@@ -207,7 +243,7 @@ public class AuthFragment {
                                                             CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), ".createUserWithEmailAndPassword( !task.isSuccessful()", task.toString());
                                                         }
                                                         DialogManager.getDialogManager().hideDialog();
-                                                        DialogManager.getDialogManager().showAuthDialog();
+                                                        DialogManager.getDialogManager().showAuthDialog(false);
                                                     }
                                                 }, true, "Сообщить об ошибке");
                                             }
@@ -226,7 +262,7 @@ public class AuthFragment {
                                             CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), "(oAuth, accessToken) - onCancelled", error.toString());
                                         }
                                         DialogManager.getDialogManager().hideDialog();
-                                        DialogManager.getDialogManager().showAuthDialog();
+                                        DialogManager.getDialogManager().showAuthDialog(false);
                                     }
                                 }, true, "Сообщить об ошибке");
 
@@ -245,7 +281,7 @@ public class AuthFragment {
                                     CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), "(oAuth, accessToken)", "Ошибка обработки токена(пустой)!");
                                 }
                                 DialogManager.getDialogManager().hideDialog();
-                                DialogManager.getDialogManager().showAuthDialog();
+                                DialogManager.getDialogManager().showAuthDialog(false);
                             }
                         }, true, "Сообщить об ошибке");
                     }
@@ -261,7 +297,7 @@ public class AuthFragment {
                                 CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), "(oAuth, fail)", "Ошибка обработки токена " + fail.getDescription());
                             }
                             DialogManager.getDialogManager().hideDialog();
-                            DialogManager.getDialogManager().showAuthDialog();
+                            DialogManager.getDialogManager().showAuthDialog(false);
                         }
                     }, true, "Сообщить об ошибке");
                     return null;
@@ -279,10 +315,37 @@ public class AuthFragment {
         main_btn_email = viewGroup.findViewById(R.id.main_btn_email);
         main_btn_email.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_email));
         main_btn_email.setOnClickListener(v -> {
+            if(checkBox.isChecked() && checkBox1.isChecked()) {
 
+            } else {
+                // Уточняющий диалог
+                DialogManager.getDialogManager().showDialogCheckBoxes("Ошибка", "Чтобы продолжить, прими пользовательское\nсоглашение и политику конфиденциальности", "Продолжить", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogManager.getDialogManager().hideDialog();
+                        if(!checkBox.isChecked() && !checkBox1.isChecked()) {
+                            // Открываем уведомление
+                        }
+                    }
+                }, new CheckBox[]{checkBox, checkBox1});
+            }
         });
 
         viewGroup.setVisibility(View.GONE);
+    }
+
+    private void resetVkButtonState() {
+        if (vk_onetap != null) {
+            // 1. Принудительно очищаем любые запущенные анимации на этом View
+            vk_onetap.clearAnimation();
+
+            // 2. Сбрасываем масштаб по осям X и Y к исходному значению (100%)
+            vk_onetap.setScaleX(1.0f);
+            vk_onetap.setScaleY(1.0f);
+
+            // 3. Сбрасываем прозрачность к полной видимости (на случай, если она менялась)
+            vk_onetap.setAlpha(1.0f);
+        }
     }
 
     private CharSequence removeUnderlines(CharSequence p_Text) {
@@ -311,10 +374,13 @@ public class AuthFragment {
         return p_Text;
     }
 
-    void showAuthDialog() {
+    void showAuthDialog(boolean isOnce) {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
-        checkBox.setChecked(false);
-        checkBox1.setChecked(false);
+        resetVkButtonState();
+        if(isOnce) {
+            checkBox.setChecked(false);
+            checkBox1.setChecked(false);
+        }
     }
 
     void hideAuthDialog() {
