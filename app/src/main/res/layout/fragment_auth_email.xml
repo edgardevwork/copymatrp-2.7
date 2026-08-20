@@ -21,32 +21,33 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView45"
+                android:id="@+id/bigText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_18sdp"
-                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_11sdp"
                 android:layout_marginRight="@dimen/_18sdp"
-                android:fontFamily="@font/ttnorms_bold"
+                android:fontFamily="@font/geologica_bold"
                 android:text="Авторизация по эл. почте"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_19sdp" />
+                android:textSize="@dimen/_17sdp" />
 
             <TextView
-                android:id="@+id/dname"
+                android:id="@+id/littleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_18sdp"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_2sdp"
                 android:layout_marginRight="@dimen/_18sdp"
-                android:fontFamily="@font/montserrat_medium"
-                android:letterSpacing="0.02"
-                android:lineHeight="@dimen/_10sdp"
+                android:fontFamily="@font/geologica_light"
+                android:letterSpacing="0.04"
+                android:lineHeight="@dimen/_11sdp"
                 android:text="Пожалуйста, введи свой адрес эл. почты, чтобы\nпродолжить процесс регистрации или авторизовать\nтвой аккаунт в игре."
-                android:textColor="#e9e9f3"
+                android:textColor="#E6E9E9F3"
                 android:textSize="@dimen/_8sdp" />
 
             <LinearLayout
+                android:id="@+id/email_layout_email"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_28sdp"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -57,22 +58,22 @@
 
                 <ImageView
                     android:id="@+id/email_layout_email_image"
-                    android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_14sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
                     app:srcCompat="@drawable/ic_reg_email" />
 
                 <EditText
                     android:id="@+id/email_layout_email_input"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_7sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     android:background="@null"
                     android:ellipsize="end"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:hint="Введите эл. адрес"
+                    android:fontFamily="@font/geologica_medium"
+                    android:hint="Введи эл. адрес"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"
@@ -80,7 +81,124 @@
                     android:textColorHighlight="#ffffff"
                     android:textColorHint="#66ffffff"
                     android:textColorLink="#ffffff"
-                    android:textSize="@dimen/_8sdp" />
+                    android:textSize="@dimen/_9sdp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/email_layout_pass"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_28sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginRight="@dimen/_18sdp"
+                android:background="@drawable/ic_dialog_nl_input_bg"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/email_layout_pass_image"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    app:srcCompat="@drawable/ic_reg_password" />
+
+                <EditText
+                    android:id="@+id/email_layout_pass_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/geologica_medium"
+                    android:hint="Введи пароль"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="#ffffff"
+                    android:textColorHighlight="#ffffff"
+                    android:textColorHint="#66ffffff"
+                    android:textColorLink="#ffffff"
+                    android:textSize="@dimen/_9sdp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/email_layout_pass2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_28sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginRight="@dimen/_18sdp"
+                android:background="@drawable/ic_dialog_nl_input_bg"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/email_layout_pass2_image"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    app:srcCompat="@drawable/ic_reg_password" />
+
+                <EditText
+                    android:id="@+id/email_layout_pass2_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/geologica_medium"
+                    android:hint="Повтори пароль"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="#ffffff"
+                    android:textColorHighlight="#ffffff"
+                    android:textColorHint="#66ffffff"
+                    android:textColorLink="#ffffff"
+                    android:textSize="@dimen/_9sdp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/email_layout_code"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_28sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginRight="@dimen/_18sdp"
+                android:background="@drawable/ic_dialog_nl_input_bg"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/email_layout_code_image"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    app:srcCompat="@drawable/ic_reg_code" />
+
+                <EditText
+                    android:id="@+id/email_layout_code_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/geologica_medium"
+                    android:hint="Веди код"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="#ffffff"
+                    android:textColorHighlight="#ffffff"
+                    android:textColorHint="#66ffffff"
+                    android:textColorLink="#ffffff"
+                    android:textSize="@dimen/_9sdp" />
 
             </LinearLayout>
 
@@ -96,9 +214,9 @@
                 <FrameLayout
                     android:id="@+id/main_btn_yes"
                     android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="@dimen/_28sdp"
                     android:layout_marginBottom="@dimen/_18sdp"
-                    android:layout_weight="1"
                     android:background="@drawable/ic_dialog_newbtnin">
 
                     <TextView
@@ -106,16 +224,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:fontFamily="@font/montserrat_medium"
+                        android:fontFamily="@font/geologica_medium"
                         android:text="Продолжить"
                         android:textColor="#ffffff"
-                        android:letterSpacing="0.02"
+                        android:letterSpacing="0.05"
                         android:textSize="@dimen/_8sdp" />
                 </FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/main_btn_no"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="@dimen/_28sdp"
                     android:layout_marginLeft="@dimen/_8sdp"
                     android:layout_marginBottom="@dimen/_18sdp">
@@ -125,13 +244,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/_8sdp"
-                        android:layout_marginEnd="@dimen/_8sdp"
-                        android:fontFamily="@font/montserrat_medium"
+                        android:fontFamily="@font/geologica_medium"
                         android:gravity="center"
                         android:text="Я не помню пароль"
                         android:textColor="#ffffff"
-                        android:letterSpacing="0.02"
+                        android:letterSpacing="0.05"
                         android:textSize="@dimen/_8sdp" />
                 </FrameLayout>
 

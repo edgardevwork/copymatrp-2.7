@@ -247,7 +247,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setAlpha(1.0f);
-        mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.edgarloop));
+        mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading));
         mVideoView.setVisibility(View.VISIBLE);
         mVideoView.setAlpha(1.0f);
         logoBig.setVisibility(View.VISIBLE);
