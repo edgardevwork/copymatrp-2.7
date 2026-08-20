@@ -90,49 +90,56 @@ public class AuthEmailFragment {
         viewGroup.setVisibility(View.GONE);
     }
 
-    private void animateViewSlideUp(View view) {
-        if (view == null || view.getVisibility() == View.VISIBLE) {
+    private void animateViewSlideUp(final View view) {
+        // Если вьюха уже видна, анимацию не запускаем
+        if (view.getVisibility() == View.VISIBLE) {
             return;
         }
 
+        // Сбрасываем старую анимацию, если она идет прямо сейчас
         if (view.getAnimation() != null) {
-            view.clearAnimation();
+            view.getAnimation().setAnimationListener(null);
+            view.getAnimation().cancel();
         }
+        view.clearAnimation();
+        view.setVisibility(View.VISIBLE);
 
-        // Делаем видимым перед измерением, иначе высота будет 0
-        view.setVisibility(View.INVISIBLE);
-
-        // Измеряем высоту (параметры из вашего старого кода: width=-1/-2(MATCH_PARENT/AT_MOST), height=-2(UNSPECIFIED))
-        int parentWidth = (view.getParent() instanceof ViewGroup) ? ((ViewGroup) view.getParent()).getMeasuredWidth() : 0;
-        int widthSpec = View.MeasureSpec.makeMeasureSpec(parentWidth, View.MeasureSpec.AT_MOST);
-        int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        view.measure(widthSpec, heightSpec);
+        int fixedHeight = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._28sdp);
+        int parentWidth = ((View) view.getParent()).getWidth();
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(parentWidth, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(fixedHeight, View.MeasureSpec.EXACTLY)
+        );
 
         final int measuredHeight = view.getMeasuredHeight();
-
-        float density = view.getResources().getDisplayMetrics().density;
-        final int marginOffsetDp = 12;
-        final int topMarginStart = (int) (marginOffsetDp * density);
+        final int topMarginTarget = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._8sdp);
+        final int totalHeightDelta = measuredHeight + topMarginTarget;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+        params.topMargin = 0;
+        params.height = 0;
+        view.requestLayout();
 
         Animation animation = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
 
                 if (interpolatedTime == 1.0f) {
-                    // Финал анимации: раскрываем полностью
-                    params.topMargin = 0;
-                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // -2
-                    view.setVisibility(View.VISIBLE);
-                } else {
-                    // Процесс анимации
-                    int currentTotal = (int) (measuredHeight * interpolatedTime);
-
-                    int min = Math.min(topMarginStart, currentTotal);
-                    params.topMargin = min;
-                    params.height = currentTotal - min;
+                    lp.topMargin = topMarginTarget;
+                    // ИСПРАВЛЕНИЕ: Вместо жесткого R.dimen._28sdp ставим реальную измеренную высоту.
+                    // Это убирает резкий рывок/скачок в самом конце анимации.
+                    lp.height = measuredHeight;
+                    view.requestLayout();
+                    view.setVisibility(View.VISIBLE); // Исход false
+                    return;
                 }
 
+                // Рассчитываем шаги для исходного значения false (без инверсии времени)
+                int currentDelta = (int) (totalHeightDelta * interpolatedTime);
+                int calculatedMargin = Math.min(topMarginTarget, currentDelta);
+
+                lp.topMargin = calculatedMargin;
+                lp.height = currentDelta - calculatedMargin;
                 view.requestLayout();
             }
 
@@ -142,9 +149,9 @@ public class AuthEmailFragment {
             }
         };
 
-        animation.setDuration(300L); // Так как z6=false, всегда 300L
-        animation.setInterpolator(new DecelerateInterpolator());
-
+        // Настройки плавности и времени
+        animation.setDuration(300L);
+        animation.setInterpolator(new DecelerateInterpolator()); // Плавное замедление к концу
         view.startAnimation(animation);
     }
 
