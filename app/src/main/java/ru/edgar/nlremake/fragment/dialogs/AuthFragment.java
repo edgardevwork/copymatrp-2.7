@@ -239,7 +239,7 @@ public class AuthFragment {
                                                     @Override
                                                     public void onClick(View v) {
                                                         if(DialogManager.getDialogManager().getIsChecked()) {
-                                                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), ".createUserWithEmailAndPassword( !task.isSuccessful()", task.toString());
+                                                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), ".createUserWithEmailAndPassword( !task.isSuccessful()", task.getException().toString());
                                                         }
                                                         DialogManager.getDialogManager().hideDialog();
                                                         DialogManager.getDialogManager().showAuthDialog(false);

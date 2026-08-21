@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -30,14 +31,22 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.nlremake.fragment.LoadingFragment;
 import ru.edgar.nlremake.network.CrashReporter;
+import ru.edgar.nlremake.network.Interface;
+import ru.edgar.nlremake.network.Lists;
 import ru.edgar.space.InterfacesManager;
 
 public class AuthEmailFragment {
 
+    private String codeMail;
     private ViewGroup viewGroup;
     private static final String PASSWORD_REGEX = "^[a-zA-Z0-9]{6,30}$";
     private AuthStatus status_auth = AuthStatus.EMAIL_CHECK; // 0 - email, 1 - login, 2 - pases, 3 - code, 4 - recover code;
@@ -214,6 +223,37 @@ public class AuthEmailFragment {
                     }
                     break;
                 case EMAIL_LOGIN:
+                    String pass = email_layout_pass_input.getText().toString().trim();
+
+                    if (pass.isEmpty()) {
+                        email_pass_error_text.setText("Введите пароль");
+                        email_layout_pass.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                        animateViewSlideUp(email_pass_error_text);
+                        return;
+                    } else {
+                        if (!pass.matches(PASSWORD_REGEX)) {
+                            DialogManager.getDialogManager().showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DialogManager.getDialogManager().hideDialog();
+                                }
+                            }, null);
+                            return;
+                        }
+                    }
+
+                    MainScreenActivity.getInstance().mAuth.signInWithEmailAndPassword(email_layout_email_input.getText().toString().trim(), email_layout_pass_input.getText().toString().trim())
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        hideAuthEmailDialog();
+                                        MainScreenActivity.getInstance().loadSettings();
+                                    } else {
+                                        // Не удача
+                                    }
+                                }
+                            });
                     break;
                 case EMAIL_CREATE_PASS:
                     String p1 = email_layout_pass_input.getText().toString().trim();
@@ -261,45 +301,103 @@ public class AuthEmailFragment {
                     }
 
                     // Отпрака кода
+                    LoadingFragment.getInstance().show();
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("https://crmp.pro/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    Interface sInterface = retrofit.create(Interface.class);
+                    String mail = email_layout_email_input.getText().toString();
+
+                    Lists.verifyAuthUrl = "https://crmp.pro/files/matrp/space/Requests/VerifyAuth.php";
+
+                    Call<String> call = sInterface.authMail(Lists.verifyAuthUrl, mail);
+
+                    call.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+
+                            if (response.body() != null && response.isSuccessful()) {
+                                LoadingFragment.getInstance().hide();
+                                codeMail = response.body();
+                                status_auth = AuthStatus.EMAIL_CHECK_CODE;
+
+                                email_layout_pass_input.setEnabled(false);
+                                email_layout_pass_input.setFocusable(false);
+                                email_layout_pass_input.setFocusableInTouchMode(false);;
+                                email_layout_pass.setAlpha(0.5f);
+
+                                email_layout_pass2_input.setEnabled(false);
+                                email_layout_pass2_input.setFocusable(false);
+                                email_layout_pass2_input.setFocusableInTouchMode(false);;
+                                email_layout_pass2.setAlpha(0.5f);
+
+                                animateViewSlideUp(email_layout_code);
+
+                                InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
+                            } else {
+                                LoadingFragment.getInstance().hide();
+                                Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     break;
                 case EMAIL_CHECK_CODE:
                     // Сверка кода
+                    if(email_layout_code_input.getText().toString().isEmpty()) {
+                        //Пустой
+                        return;
+                    }
 
+                    if (!codeMail.equals(email_layout_code_input.getText().toString())) {
+                        email_error_text.setText("Введен неправильный код");
+                        animateViewSlideUp(email_error_text);
+                        email_error_text.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                        return;
+                    }
 
                     // Регистрация почты
-                    MainScreenActivity.getInstance().mAuth.createUserWithEmailAndPassword(email_layout_email_input.getText().toString().trim(), p1).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
-                                FirebaseUser currentUser = MainScreenActivity.getInstance().mAuth.getCurrentUser();
-                                if(currentUser != null) {
-                                    MainScreenActivity.isAuth = true;
-                                } else {
-                                    MainScreenActivity.isAuth = false;
-                                }
-
-                                HashMap<String, Object> Info = new HashMap<>();
-                                Info.put("email", email_layout_email_input.getText().toString().trim());
-                                Info.put("way", 1);
-                                FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
-                                // EDGAR 3.0 NLRemake version от 21.08.2026
-                                DialogManager.getDialogManager().hideAuthEmailDialog();
-                                MainScreenActivity.getInstance().loadSettings();
-                            } else {
-                                DialogManager.getDialogManager().hideAuthEmailDialog();
-                                DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через почту!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if(DialogManager.getDialogManager().getIsChecked()) {
-                                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), ".createUserWithEmailAndPassword(email_layout_email_input", task.toString());
+                    MainScreenActivity.getInstance().mAuth.createUserWithEmailAndPassword(email_layout_email_input.getText().toString().trim(), email_layout_pass_input.getText().toString().trim())
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if(task.isSuccessful()){
+                                        FirebaseUser currentUser = MainScreenActivity.getInstance().mAuth.getCurrentUser();
+                                        if(currentUser != null) {
+                                            MainScreenActivity.isAuth = true;
+                                        } else {
+                                            MainScreenActivity.isAuth = false;
                                         }
-                                        DialogManager.getDialogManager().hideDialog();
-                                        DialogManager.getDialogManager().showAuthDialog(false);
+
+                                        HashMap<String, Object> Info = new HashMap<>();
+                                        Info.put("email", email_layout_email_input.getText().toString().trim());
+                                        Info.put("way", 1);
+                                        FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+                                        // EDGAR 3.0 NLRemake version от 21.08.2026
+                                        DialogManager.getDialogManager().hideAuthEmailDialog();
+                                        MainScreenActivity.getInstance().loadSettings();
+                                    } else {
+                                        DialogManager.getDialogManager().hideAuthEmailDialog();
+                                        DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через почту!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if(DialogManager.getDialogManager().getIsChecked()) {
+                                                    CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), ".createUserWithEmailAndPassword(email_layout_email_input", task.getException().toString());
+                                                }
+                                                DialogManager.getDialogManager().hideDialog();
+                                                DialogManager.getDialogManager().showAuthDialog(false);
+                                            }
+                                        }, true, "Сообщить об ошибке");
                                     }
-                                }, true, "Сообщить об ошибке");
-                            }
-                        }
-                    });
+                                }
+                            });
                     break;
                 case EMAIL_RECOVER_CODE:
                     break;
