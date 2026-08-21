@@ -1284,6 +1284,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                                     } else {
                                         isAuth = false;
                                     }
+                                    HashMap<String, Object> Info = new HashMap<>();
+                                    Info.put("google-email", mAuth.getCurrentUser().getEmail());
+                                    Info.put("way", 2);
+                                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
                                     onRequestPermissions();
                                 } else {
                                     dialogManager.hideAuthDialog();

@@ -327,6 +327,7 @@ public class AuthFragment {
                             // Открываем уведомление
                         } else {
                             hideAuthDialog();
+                            MainScreenActivity.getInstance().mAuth.signOut();
                             DialogManager.getDialogManager().showAuthEmailDialog();
                         }
                     }
