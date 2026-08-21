@@ -1,28 +1,67 @@
 package ru.edgar.nlremake.fragment.dialogs;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.vk.id.group.subscription.compose.util.UserImageTransformation;
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.nlremake.fragment.LoadingFragment;
+import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.space.InterfacesManager;
 
 public class AuthEmailFragment {
 
     private ViewGroup viewGroup;
-    private int status_auth = 0; // 0 - email, 1 - passes, 2 - code;
-    private TextView bigText, littleText;
+    private static final String PASSWORD_REGEX = "^[a-zA-Z0-9]{6,30}$";
+    private AuthStatus status_auth = AuthStatus.EMAIL_CHECK; // 0 - email, 1 - login, 2 - pases, 3 - code, 4 - recover code;
+
+    public enum AuthStatus {
+        EMAIL_CHECK(0),
+        EMAIL_LOGIN(1),
+        EMAIL_CREATE_PASS(2),
+        EMAIL_CHECK_CODE(3),
+        EMAIL_RECOVER_CODE(4);
+
+        private final int code;
+
+        AuthStatus(int code) {
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+    }
+
+    public boolean isFreeEmail = true;
+    private TextView bigText, littleText, email_error_text, email_pass_error_text;
     private FrameLayout btn_back, main_btn_yes, main_btn_no;
     private LinearLayout email_layout_email, email_layout_pass, email_layout_pass2, email_layout_code;
     private EditText email_layout_email_input, email_layout_pass_input, email_layout_pass2_input, email_layout_code_input;
@@ -41,6 +80,9 @@ public class AuthEmailFragment {
         bigText = viewGroup.findViewById(R.id.bigText);
         littleText = viewGroup.findViewById(R.id.littleText);
 
+        email_error_text = viewGroup.findViewById(R.id.email_error_text);
+        email_pass_error_text = viewGroup.findViewById(R.id.email_pass_error_text);
+
         email_layout_email = viewGroup.findViewById(R.id.email_layout_email);
         email_layout_pass = viewGroup.findViewById(R.id.email_layout_pass);
         email_layout_pass2 = viewGroup.findViewById(R.id.email_layout_pass2);
@@ -51,25 +93,215 @@ public class AuthEmailFragment {
         email_layout_pass2_input = viewGroup.findViewById(R.id.email_layout_pass2_input);
         email_layout_code_input = viewGroup.findViewById(R.id.email_layout_code_input);
 
+        email_layout_email_input.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                animateViewSlideUpHide(email_error_text);
+                email_layout_email.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
+            }
+        });
+
+        email_layout_pass_input.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                animateViewSlideUpHide(email_pass_error_text);
+                email_layout_pass.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
+            }
+        });
+
+        email_layout_pass2_input.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                animateViewSlideUpHide(email_error_text);
+                email_layout_pass2.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
+            }
+        });
+
+        email_layout_code_input.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                animateViewSlideUpHide(email_error_text);
+                email_layout_code.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
+            }
+        });
+
         main_btn_yes = viewGroup.findViewById(R.id.main_btn_yes);
         main_btn_yes.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_yes));
         main_btn_yes.setOnClickListener(v -> {
             switch (status_auth) {
-                case 0:
+                case EMAIL_CHECK:
                     String textEmail = email_layout_email_input.getText().toString();
-                    int index = textEmail.indexOf("@");
-                    if (index != -1 && email_layout_email_input.getText().toString().length() > 4) {
-                        email_layout_email_input.setEnabled(false);
-                        email_layout_email_input.setFocusable(false);
-                        email_layout_email_input.setFocusableInTouchMode(false);
-                        //email_layout_email_input.setTextColor(872415231);
-                        email_layout_email.setAlpha(0.5f);
+                    if (Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
+                        LoadingFragment.getInstance().show();
+                        FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                    String paramValue = userSnapshot.child("email").getValue(String.class);
+                                    if (paramValue != null) {
+                                        System.out.println(email_layout_email_input.getText().toString());
+                                        if (email_layout_email_input.getText().toString().equals(paramValue.toString())) {
+                                            LoadingFragment.getInstance().hide();
 
-                        animateViewSlideUp(email_layout_pass);
-                        animateViewSlideUp(email_layout_pass2);
+                                            isFreeEmail = false;
+                                            status_auth = AuthStatus.EMAIL_LOGIN;
+
+                                            email_layout_email_input.setEnabled(false);
+                                            email_layout_email_input.setFocusable(false);
+                                            email_layout_email_input.setFocusableInTouchMode(false);
+                                            //email_layout_email_input.setTextColor(872415231);
+                                            email_layout_email.setAlpha(0.5f);
+
+                                            animateViewSlideUp(email_layout_pass);
+
+                                            bigText.setText("Авторизация по эл. почте");
+                                            littleText.setText("Пожалуйста, введи свой адрес эл. почты, чтобы продолжить\nпроцесс регистрации или авторизовать твой аккаунт\nв игре.");
+
+                                            InputMethodManager immm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            immm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
+
+                                            return;
+                                        }
+                                    }
+                                }
+                                if (isFreeEmail) {
+                                    LoadingFragment.getInstance().hide();
+
+                                    status_auth = AuthStatus.EMAIL_CREATE_PASS;
+
+                                    email_layout_email_input.setEnabled(false);
+                                    email_layout_email_input.setFocusable(false);
+                                    email_layout_email_input.setFocusableInTouchMode(false);
+                                    //email_layout_email_input.setTextColor(872415231);
+                                    email_layout_email.setAlpha(0.5f);
+
+                                    animateViewSlideUp(email_layout_pass);
+                                    animateViewSlideUp(email_layout_pass2);
+
+                                    main_btn_no.setVisibility(View.GONE);
+
+                                    bigText.setText("Зарегистрироваться по\nэл. почте");
+                                    littleText.setText("Введи свой пароль, чтобы создать аккаунт.");
+
+                                    InputMethodManager immm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    immm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                System.out.println("The read failed: " + databaseError.getCode());
+                            }
+                        });
+
                     } else {
                         // Ошибка Неправильный формат почты.
+                        email_error_text.setText("Неправильный формат эл. адреса");
+                        email_layout_email.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                        animateViewSlideUp(email_error_text);
                     }
+                    break;
+                case EMAIL_LOGIN:
+                    break;
+                case EMAIL_CREATE_PASS:
+                    String p1 = email_layout_pass_input.getText().toString().trim();
+                    String p2 = email_layout_pass2_input.getText().toString().trim();
+
+                    if (p1.isEmpty()) {
+                        email_pass_error_text.setText("Введите пароль");
+                        email_layout_pass.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                        animateViewSlideUp(email_pass_error_text);
+                        return;
+                    } else {
+                        if (!p1.matches(PASSWORD_REGEX)) {
+                            DialogManager.getDialogManager().showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DialogManager.getDialogManager().hideDialog();
+                                }
+                            }, null);
+                            return;
+                        }
+                    }
+
+                    if (p2.isEmpty()) {
+                        email_error_text.setText("Повторите введенный пароль");
+                        email_layout_pass2.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                        animateViewSlideUp(email_error_text);
+                        return;
+                    } else {
+                        if (!p2.matches(PASSWORD_REGEX)) {
+                            DialogManager.getDialogManager().showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DialogManager.getDialogManager().hideDialog();
+                                }
+                            }, null);
+                            return;
+                        }
+                    }
+
+                    if (!p1.equals(p2)) {
+                        email_error_text.setText("Пароли не совпадают");
+                        email_layout_pass2.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                        animateViewSlideUp(email_error_text);
+                        return;
+                    }
+
+                    // Отпрака кода
+                    break;
+                case EMAIL_CHECK_CODE:
+                    // Сверка кода
+
+
+                    // Регистрация почты
+                    MainScreenActivity.getInstance().mAuth.createUserWithEmailAndPassword(email_layout_email_input.getText().toString().trim(), p1).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                FirebaseUser currentUser = MainScreenActivity.getInstance().mAuth.getCurrentUser();
+                                if(currentUser != null) {
+                                    MainScreenActivity.isAuth = true;
+                                } else {
+                                    MainScreenActivity.isAuth = false;
+                                }
+
+                                HashMap<String, Object> Info = new HashMap<>();
+                                Info.put("email", email_layout_email_input.getText().toString().trim());
+                                Info.put("way", 1);
+                                FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+                                // EDGAR 3.0 NLRemake version от 21.08.2026
+                                DialogManager.getDialogManager().hideAuthEmailDialog();
+                                MainScreenActivity.getInstance().loadSettings();
+                            } else {
+                                DialogManager.getDialogManager().hideAuthEmailDialog();
+                                DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через почту!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if(DialogManager.getDialogManager().getIsChecked()) {
+                                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), ".createUserWithEmailAndPassword(email_layout_email_input", task.toString());
+                                        }
+                                        DialogManager.getDialogManager().hideDialog();
+                                        DialogManager.getDialogManager().showAuthDialog(false);
+                                    }
+                                }, true, "Сообщить об ошибке");
+                            }
+                        }
+                    });
+                    break;
+                case EMAIL_RECOVER_CODE:
                     break;
             }
         });
@@ -83,7 +315,7 @@ public class AuthEmailFragment {
         btn_back = viewGroup.findViewById(R.id.btn_back);
         btn_back.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), btn_back));
         btn_back.setOnClickListener(v -> {
-            hideDialog();
+            hideAuthEmailDialog();
             DialogManager.getDialogManager().showAuthDialog(false);
         });
 
@@ -91,12 +323,10 @@ public class AuthEmailFragment {
     }
 
     private void animateViewSlideUp(final View view) {
-        // Если вьюха уже видна, анимацию не запускаем
         if (view.getVisibility() == View.VISIBLE) {
             return;
         }
 
-        // Сбрасываем старую анимацию, если она идет прямо сейчас
         if (view.getAnimation() != null) {
             view.getAnimation().setAnimationListener(null);
             view.getAnimation().cancel();
@@ -104,15 +334,21 @@ public class AuthEmailFragment {
         view.clearAnimation();
         view.setVisibility(View.VISIBLE);
 
-        int fixedHeight = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._28sdp);
-        int parentWidth = ((View) view.getParent()).getWidth();
-        view.measure(
-                View.MeasureSpec.makeMeasureSpec(parentWidth, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(fixedHeight, View.MeasureSpec.EXACTLY)
-        );
+        boolean isTextView = view instanceof TextView;
+
+        if(isTextView) {
+            view.measure(-2, -2);
+        } else {
+            int fixedHeight = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._28sdp);
+            int parentWidth = ((View) view.getParent()).getWidth();
+            view.measure(
+                    View.MeasureSpec.makeMeasureSpec(parentWidth, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(fixedHeight, View.MeasureSpec.EXACTLY)
+            );
+        }
 
         final int measuredHeight = view.getMeasuredHeight();
-        final int topMarginTarget = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._8sdp);
+        final int topMarginTarget = isTextView ? MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._2sdp) : MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._8sdp);
         final int totalHeightDelta = measuredHeight + topMarginTarget;
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
         params.topMargin = 0;
@@ -126,15 +362,12 @@ public class AuthEmailFragment {
 
                 if (interpolatedTime == 1.0f) {
                     lp.topMargin = topMarginTarget;
-                    // ИСПРАВЛЕНИЕ: Вместо жесткого R.dimen._28sdp ставим реальную измеренную высоту.
-                    // Это убирает резкий рывок/скачок в самом конце анимации.
                     lp.height = measuredHeight;
                     view.requestLayout();
-                    view.setVisibility(View.VISIBLE); // Исход false
+                    view.setVisibility(View.VISIBLE);
                     return;
                 }
 
-                // Рассчитываем шаги для исходного значения false (без инверсии времени)
                 int currentDelta = (int) (totalHeightDelta * interpolatedTime);
                 int calculatedMargin = Math.min(topMarginTarget, currentDelta);
 
@@ -149,9 +382,76 @@ public class AuthEmailFragment {
             }
         };
 
-        // Настройки плавности и времени
-        animation.setDuration(300L);
-        animation.setInterpolator(new DecelerateInterpolator()); // Плавное замедление к концу
+        animation.setDuration(isTextView ? 150L : 300L);
+        animation.setInterpolator(new DecelerateInterpolator());
+        view.startAnimation(animation);
+    }
+
+    private void animateViewSlideUpHide(final View view) {
+        if (view.getVisibility() != View.VISIBLE || view.getAnimation() != null) {
+            return;
+        }
+
+        view.clearAnimation();
+
+        boolean isTextView = view instanceof TextView;
+
+        int measuredHeight;
+        if (isTextView) {
+            view.measure(-2, -2);
+            measuredHeight = view.getMeasuredHeight();
+        } else {
+            int fixedHeight = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._28sdp);
+            measuredHeight = fixedHeight;
+        }
+
+        final int topMarginTarget = isTextView
+                ? MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._2sdp)
+                : MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._8sdp);
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+
+        final int startTopMargin = params.topMargin;
+        final int totalDelta = measuredHeight + Math.abs(startTopMargin - topMarginTarget);
+
+        params.height = measuredHeight;
+        params.topMargin = 0;
+        view.requestLayout();
+
+        Animation animation = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
+
+                if (interpolatedTime == 1.0f) {
+                    lp.height = 0;
+                    lp.topMargin = topMarginTarget;
+                    view.setVisibility(View.GONE);
+                    view.requestLayout();
+                    return;
+                }
+
+                int currentDelta = (int) (totalDelta * interpolatedTime);
+
+                int calculatedMargin = (startTopMargin < topMarginTarget)
+                        ? Math.min(topMarginTarget, startTopMargin + currentDelta)
+                        : Math.max(topMarginTarget, startTopMargin - currentDelta);
+
+                int visibleHeight = Math.max(0, measuredHeight - currentDelta);
+
+                lp.topMargin = calculatedMargin;
+                lp.height = visibleHeight;
+                view.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        animation.setDuration(isTextView ? 150L : 300L);
+        animation.setInterpolator(new DecelerateInterpolator());
         view.startAnimation(animation);
     }
 
@@ -161,6 +461,15 @@ public class AuthEmailFragment {
         email_layout_pass.setVisibility(View.GONE);
         email_layout_pass2.setVisibility(View.GONE);
         email_layout_code.setVisibility(View.GONE);
+        email_error_text.setVisibility(View.GONE);
+        email_pass_error_text.setVisibility(View.GONE);
+
+        email_layout_email.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
+        email_layout_pass.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
+        email_layout_pass2.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
+        email_layout_code.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
+        main_btn_no.setVisibility(View.VISIBLE);
+
         bigText.setText("Авторизация по эл. почте");
         littleText.setText("Пожалуйста, введи свой адрес эл. почты, чтобы\nпродолжить процесс регистрации или авторизовать\nтвой аккаунт в игре.");
         returnToZero();
@@ -191,10 +500,10 @@ public class AuthEmailFragment {
         email_layout_code_input.setTextColor(-1);
         email_layout_code_input.setText("");
 
-        status_auth = 0;
+        status_auth = AuthStatus.EMAIL_CHECK;
     }
 
-    void hideDialog() {
+    void hideAuthEmailDialog() {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.GONE);
     }
 }

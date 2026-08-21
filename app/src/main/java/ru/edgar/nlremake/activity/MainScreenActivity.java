@@ -61,6 +61,9 @@ import com.vk.id.VKID;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -81,6 +84,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.edgar.nlremake.fragment.LoadingFragment;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Archive;
@@ -106,6 +110,7 @@ public class MainScreenActivity  extends AppCompatActivity {
     private NotificationManager notifManager = null;
     private FullHeightVideoView mVideoView;
     private DialogManager dialogManager;
+    private LoadingFragment loadingFragment;
     public static boolean isAuth = false;
     private ImageView lm_loadicon;
     private LinearLayout loading, downloadBar;
@@ -147,6 +152,7 @@ public class MainScreenActivity  extends AppCompatActivity {
         //setupVideoPlayer();
 
         dialogManager = new DialogManager();
+        loadingFragment = new LoadingFragment();
 
         // 3. Запускаем тяжелую проверку асинхронно
         checkAuthInBackground(new AuthCallback() {

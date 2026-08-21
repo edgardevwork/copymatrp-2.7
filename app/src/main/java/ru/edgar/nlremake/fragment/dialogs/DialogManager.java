@@ -50,7 +50,7 @@ public class DialogManager {
     }
 
     public void hideAuthEmailDialog() {
-        getAuthEmailFragment().hideDialog();
+        getAuthEmailFragment().hideAuthEmailDialog();
     }
 
 

@@ -159,7 +159,7 @@ public class AuthFragment {
                 (oAuth, accessToken) -> {
                     if (accessToken != null /*&& !TextUtils.isEmpty(accessToken.getToken())*/) {
                         // Обработка успешного входа с токеном
-                        //Log.e("VK_AUTH", "Пользователь успешно вошел, токен: " + accessToken.getToken() + accessToken.getScopes());
+                        // Log.e("VK_AUTH", "Пользователь успешно вошел, токен: " + accessToken.getToken() + accessToken.getScopes());
                         // Использование обработчика:
 
                         Long id = accessToken.getUserID();
