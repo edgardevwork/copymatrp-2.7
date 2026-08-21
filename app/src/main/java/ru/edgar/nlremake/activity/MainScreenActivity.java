@@ -149,7 +149,7 @@ public class MainScreenActivity  extends AppCompatActivity {
         loading.setVisibility(View.VISIBLE);
         downloadBar.setVisibility(View.GONE);
 
-        //setupVideoPlayer();
+        setupVideoPlayer();
 
         dialogManager = new DialogManager();
         loadingFragment = new LoadingFragment();
@@ -161,13 +161,11 @@ public class MainScreenActivity  extends AppCompatActivity {
                 // Этот блок выполнится ПОЗЖЕ, когда данные загрузятся
                 // Мы снова находимся в главном потоке, поэтому можем показывать диалоги
 
-                /*if (!isAuthenticated) {
+                if (!isAuthenticated) {
                     dialogManager.showAuthDialog(true);
                 } else {
                     onRequestPermissions();
-                }*/
-
-                dialogManager.showAuthDialog(true);
+                }
             }
         });
     }

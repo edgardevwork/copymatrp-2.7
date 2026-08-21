@@ -193,7 +193,7 @@ public class AuthEmailFragment {
                                         animateViewSlideUp(email_layout_pass);
 
                                         bigText.setText("Авторизация по эл. почте");
-                                        littleText.setText("Пожалуйста, введи свой адрес эл. почты, чтобы продолжить\nпроцесс регистрации или авторизовать твой аккаунт\nв игре.");
+                                        littleText.setText("Введи свой адрес эл. почты, чтобы продолжить\nпроцесс регистрации или авторизовать твой аккаунт\nв игре.");
 
                                         InputMethodManager immm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
                                         immm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
@@ -346,11 +346,10 @@ public class AuthEmailFragment {
                                 resetCodeLayout();
                                 animateViewSlideUp(email_layout_code);
 
-                                littleText.setText("Мы отправили код на твой email. Пожалуйста,\nпроверь также папку \"Спам\"");
+                                littleText.setText("Мы отправили код на твой email. Пожалуйста,\nпроверь также папку \"Спам\". ");
 
                                 ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
                                 main_btn_no.setVisibility(View.VISIBLE);
-                                isSendCode = true;
 
                                 InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
@@ -460,9 +459,10 @@ public class AuthEmailFragment {
                                                     resetCodeLayout();
                                                     animateViewSlideUp(email_layout_code);
 
+                                                    littleText.setText("Введи код подтверждения, который был направлен\nна твою эл. почту.");
+
                                                     ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
                                                     main_btn_no.setVisibility(View.VISIBLE);
-                                                    isSendCode = true;
 
                                                     InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
                                                     imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
@@ -513,6 +513,8 @@ public class AuthEmailFragment {
                     animateViewSlideUpHide(email_layout_code);
                     animateViewSlideUp(email_layout_pass);
                     animateViewSlideUp(email_layout_pass2);
+
+                    main_btn_no.setVisibility(View.GONE);
 
                     status_auth = AuthStatus.EMAIL_RECOVER_CREATE_PASS;
 
@@ -565,26 +567,26 @@ public class AuthEmailFragment {
                     }
 
                     // Смена пароля
-                    Call<String> call1 = sInterface.resetPassword("crmp.pro/files/matrp/space/Requests/ResetPassword.php", email_layout_email_input.getText().toString().trim(), pass1);
+                    Call<String> call1 = sInterface.resetPassword("https://crmp.pro/files/matrp/space/Requests/ResetPassword.php", email_layout_email_input.getText().toString().trim(), pass1);
 
                     call1.enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
 
                             if (response.body() != null && response.isSuccessful()) {
-                                hideAuthEmailDialog();
                                 showAuthEmailDialog();
 
                                 InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
                             } else {
+                                //System.out.println("edgar + " + call.toString() + " r " + response.body().toString());
                                 Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при смене пароля", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
-                            LoadingFragment.getInstance().hide();
+                            //System.out.println("edgar + " + call.toString() + " r " + t.getMessage().toString());
                             Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при смене пароля", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -599,11 +601,11 @@ public class AuthEmailFragment {
             switch (status_auth) {
                 case EMAIL_LOGIN:
                     animateViewSlideUpHide(email_layout_pass);
+
                     email_layout_email_input.setEnabled(true);
                     email_layout_email_input.setFocusable(true);
                     email_layout_email_input.setFocusableInTouchMode(true);
                     email_layout_email_input.setTextColor(-1);
-                    email_layout_email_input.setText("");
                     email_layout_email.setAlpha(1.0f);
                 case EMAIL_CHECK:
                     status_auth = AuthStatus.EMAIL_RECOVER;
@@ -829,7 +831,13 @@ public class AuthEmailFragment {
         email_layout_pass.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
         email_layout_pass2.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
         email_layout_code.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
+        ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
+        mHandler.removeCallbacksAndMessages(null);
         main_btn_no.setVisibility(View.VISIBLE);
+        main_btn_no.setAlpha(1.0f);
+        isFreeEmail = false;
+        isSendCode = false;
+        secs = 60;
 
         bigText.setText("Авторизация по эл. почте");
         littleText.setText("Пожалуйста, введи свой адрес эл. почты, чтобы\nпродолжить процесс регистрации или авторизовать\nтвой аккаунт в игре.");
