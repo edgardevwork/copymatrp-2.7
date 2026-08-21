@@ -260,7 +260,6 @@
                     android:background="@drawable/ic_dialog_newbtnin">
 
                     <TextView
-                        android:id="@+id/b1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -272,17 +271,17 @@
 
                 <FrameLayout
                     android:id="@+id/main_btn_no"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/_28sdp"
                     android:layout_marginLeft="@dimen/_8sdp"
                     android:layout_marginBottom="@dimen/_18sdp">
 
                     <TextView
-                        android:id="@+id/b2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_13sdp"
+                        android:layout_marginRight="@dimen/_13sdp"
                         android:fontFamily="@font/geologica_medium"
                         android:gravity="center"
                         android:text="Я не помню пароль"

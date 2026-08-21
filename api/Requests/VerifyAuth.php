@@ -87,13 +87,13 @@ $mail->Body    = '<html lang="en">
                     <td align="center" style="padding: 0; Margin: 0"> 
                     <table class="v1m_5929352369080053265es-header-body" cellspacing="0" cellpadding="0" bgcolor="#ffffff" align="center" style="border-collapse: collapse; border-spacing: 0px; background-color: #ffffff; width: 600px"> 
                       <tbody><tr> 
-                        <td align="center" style="Margin: 0; padding-left: 20px; padding-right: 20px; padding-top: 40px; padding-bottom: 40px; background-image: url(https://ci5.googleusercontent.com/proxy/nsJ2QkugY6R8rAxfQ9r9ScNuomWNuJ_yq18Y43dXVMpqOTvOc3GeXVBsoFnwK15k41Pe_YhFmZrHEpemdSf5CVtzSw6WSQ=s0-d-e1-ft#https://edgecdn.matrp.ru/email/client/bg_header.png); background-repeat: no-repeat; background-position: left top" background="https://edgecdn.matrp.ru/email/client/bg_header.png"> 
+                        <td align="center" style="Margin: 0; padding-left: 20px; padding-right: 20px; padding-top: 40px; padding-bottom: 40px; background-image: url(https://crmp.pro/files/matrp/space/email/client/bg_header.png); background-repeat: no-repeat; background-position: left top" background="https://crmp.pro/files/matrp/space/email/client/bg_header.png">
                         <table cellspacing="0" cellpadding="0" width="100%" style="border-collapse: collapse; border-spacing: 0px"> 
                           <tbody><tr> 
                             <td align="center" style="padding: 0; Margin: 0; width: 560px"> 
                             <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border-spacing: 0px"> 
                               <tbody><tr> 
-                                <td align="center" style="padding: 0; Margin: 0; font-size: 0px"><a href="https://matrp.ru/" style="text-decoration: underline; color: #2cb543; font-size: 14px" rel="noreferrer" target="_blank"><img class="v1m_5929352369080053265adapt-img" src="https://edgars.site/matrp/auth/EDGAR-3.0-STAR-LITELE.png" style="display: block; border: 0; outline: none; text-decoration: none" width="256"></a></td> 
+                                <td align="center" style="padding: 0; Margin: 0; font-size: 0px"><a href="https://matrp.ru/" style="text-decoration: underline; color: #2cb543; font-size: 14px" rel="noreferrer" target="_blank"><img class="v1m_5929352369080053265adapt-img" src="https://crmp.pro/files/matrp/space/email/parnter/logo.png" style="display: block; border: 0; outline: none; text-decoration: none" width="256"></a></td>
                               </tr> 
                             </tbody></table></td> 
                           </tr> 
@@ -131,7 +131,7 @@ $mail->Body    = '<html lang="en">
                         <table cellspacing="0" cellpadding="0" width="100%" style="border-collapse: collapse; border-spacing: 0px"> 
                           <tbody><tr> 
                             <td align="center" style="padding: 0; Margin: 0; width: 600px"> 
-                            <table width="100%" cellspacing="0" cellpadding="0" background="https://edgecdn.matrp.ru/email/client/bg_text.png" style="border-collapse: collapse; border-spacing: 0px; background-image: url(https://ci6.googleusercontent.com/proxy/vxZ2lSqeTBT3nz8woyOQeod-g3Y11Hs4ani6N-iTHS8v6GjhnQePC_9ZFLRKUuWPpgEMey0T6IaCDuTZqYpDcDuVxxY=s0-d-e1-ft#https://edgecdn.matrp.ru/email/client/bg_text.png); background-repeat: no-repeat; background-position: center top; background-size: contain"> 
+                            <table width="100%" cellspacing="0" cellpadding="0" background="https://crmp.pro/files/matrp/space/email/client/bg_text.png" style="border-collapse: collapse; border-spacing: 0px; background-image: url(https://crmp.pro/files/matrp/space/email/client/bg_text.png); background-repeat: no-repeat; background-position: center top; background-size: contain">
                               <tbody><tr> 
                                 <td align="center" style="padding: 0; Margin: 0; padding-bottom: 25px; padding-top: 30px"><h2 style="Margin: 0; line-height: 29px; font-family: lucida sans unicode,lucida grande,sans-serif; font-size: 24px; font-style: normal; font-weight: normal; color: #333333; text-align: center; text-alHhgn: center" ><strong>'.$randomCode.'</strong></h2></td> 
                               </tr> 

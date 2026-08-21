@@ -1,6 +1,8 @@
 package ru.edgar.nlremake.fragment.dialogs;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -46,27 +48,23 @@ import ru.edgar.space.InterfacesManager;
 
 public class AuthEmailFragment {
 
+    public int secs = 60;
     private String codeMail;
     private ViewGroup viewGroup;
+
+    public boolean isSendCode = false;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private static final String PASSWORD_REGEX = "^[a-zA-Z0-9]{6,30}$";
-    private AuthStatus status_auth = AuthStatus.EMAIL_CHECK; // 0 - email, 1 - login, 2 - pases, 3 - code, 4 - recover code;
+    private AuthStatus status_auth = AuthStatus.EMAIL_CHECK; // 0 - email, 1 - login, 2 - pases, 3 - code, 4 - recover email, 5 - recover code, 6 - recover creste pass;
 
     public enum AuthStatus {
-        EMAIL_CHECK(0),
-        EMAIL_LOGIN(1),
-        EMAIL_CREATE_PASS(2),
-        EMAIL_CHECK_CODE(3),
-        EMAIL_RECOVER_CODE(4);
-
-        private final int code;
-
-        AuthStatus(int code) {
-            this.code = code;
-        }
-
-        public int getCode() {
-            return code;
-        }
+        EMAIL_CHECK,
+        EMAIL_LOGIN,
+        EMAIL_CREATE_PASS,
+        EMAIL_CHECK_CODE,
+        EMAIL_RECOVER,
+        EMAIL_RECOVER_CODE,
+        EMAIL_RECOVER_CREATE_PASS;
     }
 
     public boolean isFreeEmail = true;
@@ -88,6 +86,15 @@ public class AuthEmailFragment {
 
         bigText = viewGroup.findViewById(R.id.bigText);
         littleText = viewGroup.findViewById(R.id.littleText);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://crmp.pro/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        Interface sInterface = retrofit.create(Interface.class);
+
+        Lists.verifyAuthUrl = "https://crmp.pro/files/matrp/space/Requests/VerifyAuth.php";
 
         email_error_text = viewGroup.findViewById(R.id.email_error_text);
         email_pass_error_text = viewGroup.findViewById(R.id.email_pass_error_text);
@@ -151,78 +158,81 @@ public class AuthEmailFragment {
         main_btn_yes.setOnClickListener(v -> {
             switch (status_auth) {
                 case EMAIL_CHECK:
+                    // Проверка формата почты
                     String textEmail = email_layout_email_input.getText().toString();
-                    if (Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
-                        LoadingFragment.getInstance().show();
-                        FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                                    String paramValue = userSnapshot.child("email").getValue(String.class);
-                                    if (paramValue != null) {
-                                        System.out.println(email_layout_email_input.getText().toString());
-                                        if (email_layout_email_input.getText().toString().equals(paramValue.toString())) {
-                                            LoadingFragment.getInstance().hide();
 
-                                            isFreeEmail = false;
-                                            status_auth = AuthStatus.EMAIL_LOGIN;
-
-                                            email_layout_email_input.setEnabled(false);
-                                            email_layout_email_input.setFocusable(false);
-                                            email_layout_email_input.setFocusableInTouchMode(false);
-                                            //email_layout_email_input.setTextColor(872415231);
-                                            email_layout_email.setAlpha(0.5f);
-
-                                            animateViewSlideUp(email_layout_pass);
-
-                                            bigText.setText("Авторизация по эл. почте");
-                                            littleText.setText("Пожалуйста, введи свой адрес эл. почты, чтобы продолжить\nпроцесс регистрации или авторизовать твой аккаунт\nв игре.");
-
-                                            InputMethodManager immm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                            immm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
-
-                                            return;
-                                        }
-                                    }
-                                }
-                                if (isFreeEmail) {
-                                    LoadingFragment.getInstance().hide();
-
-                                    status_auth = AuthStatus.EMAIL_CREATE_PASS;
-
-                                    email_layout_email_input.setEnabled(false);
-                                    email_layout_email_input.setFocusable(false);
-                                    email_layout_email_input.setFocusableInTouchMode(false);
-                                    //email_layout_email_input.setTextColor(872415231);
-                                    email_layout_email.setAlpha(0.5f);
-
-                                    animateViewSlideUp(email_layout_pass);
-                                    animateViewSlideUp(email_layout_pass2);
-
-                                    main_btn_no.setVisibility(View.GONE);
-
-                                    bigText.setText("Зарегистрироваться по\nэл. почте");
-                                    littleText.setText("Введи свой пароль, чтобы создать аккаунт.");
-
-                                    InputMethodManager immm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    immm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                System.out.println("The read failed: " + databaseError.getCode());
-                            }
-                        });
-
-                    } else {
+                    if (!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
                         // Ошибка Неправильный формат почты.
                         email_error_text.setText("Неправильный формат эл. адреса");
                         email_layout_email.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
                         animateViewSlideUp(email_error_text);
+                        return;
                     }
+
+                    // Проверка зарегистрирована ли почта
+                    LoadingFragment.getInstance().show();
+                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                String paramValue = userSnapshot.child("email").getValue(String.class);
+                                if (paramValue != null) {
+                                    if (email_layout_email_input.getText().toString().equals(paramValue.toString())) {
+                                        LoadingFragment.getInstance().hide();
+
+                                        isFreeEmail = false;
+                                        status_auth = AuthStatus.EMAIL_LOGIN;
+
+                                        email_layout_email_input.setEnabled(false);
+                                        email_layout_email_input.setFocusable(false);
+                                        email_layout_email_input.setFocusableInTouchMode(false);
+                                        //email_layout_email_input.setTextColor(872415231);
+                                        email_layout_email.setAlpha(0.5f);
+
+                                        animateViewSlideUp(email_layout_pass);
+
+                                        bigText.setText("Авторизация по эл. почте");
+                                        littleText.setText("Пожалуйста, введи свой адрес эл. почты, чтобы продолжить\nпроцесс регистрации или авторизовать твой аккаунт\nв игре.");
+
+                                        InputMethodManager immm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        immm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
+
+                                        return;
+                                    }
+                                }
+                            }
+                            if (isFreeEmail) {
+                                LoadingFragment.getInstance().hide();
+
+                                status_auth = AuthStatus.EMAIL_CREATE_PASS;
+
+                                email_layout_email_input.setEnabled(false);
+                                email_layout_email_input.setFocusable(false);
+                                email_layout_email_input.setFocusableInTouchMode(false);
+                                //email_layout_email_input.setTextColor(872415231);
+                                email_layout_email.setAlpha(0.5f);
+
+                                animateViewSlideUp(email_layout_pass);
+                                animateViewSlideUp(email_layout_pass2);
+
+                                main_btn_no.setVisibility(View.GONE);
+
+                                bigText.setText("Зарегистрироваться по\nэл. почте");
+                                littleText.setText("Введи свой пароль, чтобы создать аккаунт.");
+
+                                InputMethodManager immm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                immm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            System.out.println("The read failed: " + databaseError.getCode());
+                        }
+                    });
                     break;
                 case EMAIL_LOGIN:
+                    // Проверка пароля
                     String pass = email_layout_pass_input.getText().toString().trim();
 
                     if (pass.isEmpty()) {
@@ -242,7 +252,8 @@ public class AuthEmailFragment {
                         }
                     }
 
-                    MainScreenActivity.getInstance().mAuth.signInWithEmailAndPassword(email_layout_email_input.getText().toString().trim(), email_layout_pass_input.getText().toString().trim())
+                    // Вход
+                    MainScreenActivity.getInstance().mAuth.signInWithEmailAndPassword("mail:" + email_layout_email_input.getText().toString().trim(), email_layout_pass_input.getText().toString().trim())
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -250,12 +261,15 @@ public class AuthEmailFragment {
                                         hideAuthEmailDialog();
                                         MainScreenActivity.getInstance().loadSettings();
                                     } else {
-                                        // Не удача
+                                        email_pass_error_text.setText("Введен неправильный пароль");
+                                        email_layout_pass.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                                        animateViewSlideUp(email_pass_error_text);
                                     }
                                 }
                             });
                     break;
                 case EMAIL_CREATE_PASS:
+                    // Проверка пароля
                     String p1 = email_layout_pass_input.getText().toString().trim();
                     String p2 = email_layout_pass2_input.getText().toString().trim();
 
@@ -300,17 +314,10 @@ public class AuthEmailFragment {
                         return;
                     }
 
-                    // Отпрака кода
+                    // Отправка кода
                     LoadingFragment.getInstance().show();
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("https://crmp.pro/")
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
 
-                    Interface sInterface = retrofit.create(Interface.class);
                     String mail = email_layout_email_input.getText().toString();
-
-                    Lists.verifyAuthUrl = "https://crmp.pro/files/matrp/space/Requests/VerifyAuth.php";
 
                     Call<String> call = sInterface.authMail(Lists.verifyAuthUrl, mail);
 
@@ -333,7 +340,15 @@ public class AuthEmailFragment {
                                 email_layout_pass2_input.setFocusableInTouchMode(false);;
                                 email_layout_pass2.setAlpha(0.5f);
 
+                                resetCodeLayout();
                                 animateViewSlideUp(email_layout_code);
+
+                                littleText.setText("Мы отправили код на твой email. Пожалуйста,\nпроверь также папку \"Спам\"");
+
+                                mHandler.post(new Secynds());
+                                main_btn_no.setVisibility(View.GONE);
+                                main_btn_no.setAlpha(0.5f);
+                                isSendCode = true;
 
                                 InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
@@ -345,26 +360,22 @@ public class AuthEmailFragment {
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
+                            LoadingFragment.getInstance().hide();
                             Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
                         }
                     });
                     break;
                 case EMAIL_CHECK_CODE:
                     // Сверка кода
-                    if(email_layout_code_input.getText().toString().isEmpty()) {
-                        //Пустой
-                        return;
-                    }
-
-                    if (!codeMail.equals(email_layout_code_input.getText().toString())) {
+                    if (!codeMail.equals(email_layout_code_input.getText().toString()) || email_layout_code_input.getText().toString().isEmpty()) {
                         email_error_text.setText("Введен неправильный код");
                         animateViewSlideUp(email_error_text);
-                        email_error_text.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                        email_layout_code.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
                         return;
                     }
 
                     // Регистрация почты
-                    MainScreenActivity.getInstance().mAuth.createUserWithEmailAndPassword(email_layout_email_input.getText().toString().trim(), email_layout_pass_input.getText().toString().trim())
+                    MainScreenActivity.getInstance().mAuth.createUserWithEmailAndPassword("mail:" + email_layout_email_input.getText().toString().trim(), email_layout_pass_input.getText().toString().trim())
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -399,7 +410,107 @@ public class AuthEmailFragment {
                                 }
                             });
                     break;
+                case EMAIL_RECOVER:
+                    // Проверка почты
+                    String email = email_layout_email_input.getText().toString();
+
+                    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        // Ошибка Неправильный формат почты.
+                        email_error_text.setText("Неправильный формат эл. адреса");
+                        email_layout_email.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                        animateViewSlideUp(email_error_text);
+                        return;
+                    }
+
+                    // Проверка зарегистрирована ли почта
+                    isFreeEmail = true;
+                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                String paramValue = userSnapshot.child("email").getValue(String.class);
+                                if (paramValue != null) {
+                                    if (email.equals(paramValue.toString())) {
+                                        isFreeEmail = false;
+                                    }
+                                }
+                            }
+                            if (isFreeEmail) {
+                                email_error_text.setText("Данная почта не зарегистрирована!");
+                                email_layout_email.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                                animateViewSlideUp(email_error_text);
+                                return;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            System.out.println("The read failed: " + databaseError.getCode());
+                        }
+                    });
+
+                    // Отправка кода
+                    LoadingFragment.getInstance().show();
+
+                    Lists.verifyAuthUrl = "https://crmp.pro/files/matrp/space/Requests/VerifyAuth.php";
+
+                    Call<String> call1 = sInterface.authMail(Lists.verifyAuthUrl, email);
+
+                    call1.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+
+                            if (response.body() != null && response.isSuccessful()) {
+                                LoadingFragment.getInstance().hide();
+                                codeMail = response.body();
+                                status_auth = AuthStatus.EMAIL_RECOVER_CODE;
+
+                                email_layout_email_input.setEnabled(false);
+                                email_layout_email_input.setFocusable(false);
+                                email_layout_email_input.setFocusableInTouchMode(false);
+                                //email_layout_email_input.setTextColor(872415231);
+                                email_layout_email.setAlpha(0.5f);
+
+                                resetCodeLayout();
+                                animateViewSlideUp(email_layout_code);
+
+                                mHandler.post(new Secynds());
+                                main_btn_no.setAlpha(0.5f);
+                                isSendCode = true;
+
+                                InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
+                            } else {
+                                LoadingFragment.getInstance().hide();
+                                Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            LoadingFragment.getInstance().hide();
+                            Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    break;
                 case EMAIL_RECOVER_CODE:
+                    // Сверка кода
+                    if (!codeMail.equals(email_layout_code_input.getText().toString()) || email_layout_code_input.getText().toString().isEmpty()) {
+                        email_error_text.setText("Введен неправильный код");
+                        animateViewSlideUp(email_error_text);
+                        email_layout_code.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
+                        return;
+                    }
+
+                    // Смена пароля
+                    animateViewSlideUpHide(email_layout_code);
+                    animateViewSlideUp(email_layout_pass);
+                    animateViewSlideUp(email_layout_pass2);
+
+                    littleText.setText("Введи новый пароль, который будет связан с твоим\nаккаунтом.");
+
+                    break;
+                case EMAIL_RECOVER_CREATE_PASS:
                     break;
             }
         });
@@ -407,7 +518,61 @@ public class AuthEmailFragment {
         main_btn_no = viewGroup.findViewById(R.id.main_btn_no);
         main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
         main_btn_no.setOnClickListener(v -> {
+            switch (status_auth) {
+                case EMAIL_LOGIN:
+                    animateViewSlideUpHide(email_layout_pass);
+                    email_layout_email_input.setEnabled(true);
+                    email_layout_email_input.setFocusable(true);
+                    email_layout_email_input.setFocusableInTouchMode(true);
+                    email_layout_email_input.setTextColor(-1);
+                    email_layout_email_input.setText("");
+                    email_layout_email.setAlpha(1.0f);
+                case EMAIL_CHECK:
+                    status_auth = AuthStatus.EMAIL_RECOVER;
+                    bigText.setText("Восстановить пароль");
+                    littleText.setText("Введи адрес эл. почты от аккаунта.");
+                    main_btn_no.setVisibility(View.GONE);
+                    break;
+                case EMAIL_CHECK_CODE:
+                case EMAIL_RECOVER_CODE:
+                    if(!isSendCode) {
+                        // Отправка кода
+                        LoadingFragment.getInstance().show();
+                        String email = email_layout_email_input.getText().toString();
 
+                        Lists.verifyAuthUrl = "https://crmp.pro/files/matrp/space/Requests/VerifyAuth.php";
+
+                        Call<String> call = sInterface.authMail(Lists.verifyAuthUrl, email);
+
+                        call.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+
+                                if (response.body() != null && response.isSuccessful()) {
+                                    LoadingFragment.getInstance().hide();
+                                    codeMail = response.body();
+
+                                    mHandler.post(new Secynds());
+                                    main_btn_no.setAlpha(0.5f);
+                                    isSendCode = true;
+
+                                    InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
+                                } else {
+                                    LoadingFragment.getInstance().hide();
+                                    Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                LoadingFragment.getInstance().hide();
+                                Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    break;
+            }
         });
 
         btn_back = viewGroup.findViewById(R.id.btn_back);
@@ -418,6 +583,26 @@ public class AuthEmailFragment {
         });
 
         viewGroup.setVisibility(View.GONE);
+    }
+
+    public class Secynds implements Runnable {
+        public Secynds() {
+        }
+
+        @Override
+        public final void run() {
+            if (secs > 0) {
+                ((TextView) main_btn_no.getChildAt(0)).setText("Отправить еще раз: " + secs+ "c");
+                secs = secs + (-1);
+                mHandler.postDelayed(this, 1000L);
+            } else {
+                ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
+                main_btn_no.setAlpha(1.0f);
+                isSendCode = false;
+                secs = 60;
+            }
+
+        }
     }
 
     private void animateViewSlideUp(final View view) {
@@ -570,35 +755,47 @@ public class AuthEmailFragment {
 
         bigText.setText("Авторизация по эл. почте");
         littleText.setText("Пожалуйста, введи свой адрес эл. почты, чтобы\nпродолжить процесс регистрации или авторизовать\nтвой аккаунт в игре.");
-        returnToZero();
+        status_auth = AuthStatus.EMAIL_CHECK;
+        resetEmailLayout();
+        resetPassLayout();
+        resetPass2Layout();
+        resetCodeLayout();
     }
 
-    void returnToZero() {
+    private void resetEmailLayout() {
         email_layout_email_input.setEnabled(true);
         email_layout_email_input.setFocusable(true);
         email_layout_email_input.setFocusableInTouchMode(true);
         email_layout_email_input.setTextColor(-1);
         email_layout_email_input.setText("");
+        email_layout_email.setAlpha(1.0f);
+    }
 
+    private void resetPassLayout() {
         email_layout_pass_input.setEnabled(true);
         email_layout_pass_input.setFocusable(true);
         email_layout_pass_input.setFocusableInTouchMode(true);
         email_layout_pass_input.setTextColor(-1);
         email_layout_pass_input.setText("");
+        email_layout_pass.setAlpha(1.0f);
+    }
 
+    private void resetPass2Layout() {
         email_layout_pass2_input.setEnabled(true);
         email_layout_pass2_input.setFocusable(true);
         email_layout_pass2_input.setFocusableInTouchMode(true);
         email_layout_pass2_input.setTextColor(-1);
         email_layout_pass2_input.setText("");
+        email_layout_pass2.setAlpha(1.0f);
+    }
 
+    private void resetCodeLayout() {
         email_layout_code_input.setEnabled(true);
         email_layout_code_input.setFocusable(true);
         email_layout_code_input.setFocusableInTouchMode(true);
         email_layout_code_input.setTextColor(-1);
         email_layout_code_input.setText("");
-
-        status_auth = AuthStatus.EMAIL_CHECK;
+        email_layout_code.setAlpha(1.0f);
     }
 
     void hideAuthEmailDialog() {

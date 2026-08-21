@@ -46,6 +46,10 @@ public interface Interface {
 
     @POST
     @FormUrlEncoded
+    Call<String> resetPassword(@Url String url, @Field("user_email") String user_email, @Field("new_pass") String new_pass);
+
+    @POST
+    @FormUrlEncoded
     Call<List<Details>> getAccountDetails(@Url String url, @Field("name") String name);
 
     @POST
