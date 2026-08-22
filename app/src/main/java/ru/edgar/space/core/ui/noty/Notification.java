@@ -47,7 +47,7 @@ public class Notification {
 
     public Notification (Activity activity) {
         aactivity = activity;
-        constraintLayout = activity.findViewById(R.id.constt);
+        //constraintLayout = activity.findViewById(R.id.constt);
         button = activity.findViewById(R.id.noty_btn_1);
         ruble = activity.findViewById(R.id.noty_bg_image);
         text_notif = activity.findViewById(R.id.noty_text);

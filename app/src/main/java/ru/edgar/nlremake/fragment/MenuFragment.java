@@ -137,6 +137,7 @@ public class MenuFragment {
         nick_name_layout.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, nick_name_layout));
         nick_name_layout.setOnClickListener(v -> {
             // Переход на персонажа
+            SAMP.getInstance().mAuth.signOut();
         });
 
         news = viewGroup.findViewById(R.id.news);

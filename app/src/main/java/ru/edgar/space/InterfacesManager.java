@@ -16,6 +16,7 @@ import com.nvidia.devtech.NvEventQueueActivity;
 import org.json.JSONObject;
 
 import ru.edgar.matrp.R;
+import ru.edgar.nlremake.fragment.LoadingFragment;
 import ru.edgar.nlremake.fragment.MenuFragment;
 import ru.edgar.space.core.ui.chatedgar.ChatManager;
 import ru.edgar.space.core.ui.dialogs.Dialog;
@@ -77,7 +78,7 @@ public class InterfacesManager {
             getHudManager().hud_map_bg.setVisibility(View.INVISIBLE);
         });
     }
-
+    
     public void AnimVisibale(ViewGroup viewGroup, int view) {
         if (viewGroup != null) {
             if (view == View.VISIBLE) {

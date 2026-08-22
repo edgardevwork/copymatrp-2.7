@@ -39,6 +39,7 @@ import java.util.HashMap;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.nlremake.fragment.Noty;
 import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.space.InterfacesManager;
 
@@ -311,6 +312,7 @@ public class AuthFragment {
                 }
         );
 
+        Noty oo = new Noty();
         main_btn_email = viewGroup.findViewById(R.id.main_btn_email);
         main_btn_email.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_email));
         main_btn_email.setOnClickListener(v -> {
@@ -323,8 +325,9 @@ public class AuthFragment {
                     @Override
                     public void onClick(View v) {
                         DialogManager.getDialogManager().hideDialog();
-                        if(!checkBox.isChecked() && !checkBox1.isChecked()) {
+                        if(!checkBox.isChecked() || !checkBox1.isChecked()) {
                             // Открываем уведомление
+                            oo.show();
                         } else {
                             hideAuthDialog();
                             //MainScreenActivity.getInstance().mAuth.signOut(); - debug

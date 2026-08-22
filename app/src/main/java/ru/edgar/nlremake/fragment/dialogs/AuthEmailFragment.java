@@ -219,6 +219,7 @@ public class AuthEmailFragment {
                                 animateViewSlideUp(email_layout_pass2);
 
                                 main_btn_no.setVisibility(View.GONE);
+                                main_btn_no.setOnTouchListener(null);
 
                                 bigText.setText("Зарегистрироваться по\nэл. почте");
                                 littleText.setText("Введи свой пароль, чтобы создать аккаунт.");
@@ -348,6 +349,7 @@ public class AuthEmailFragment {
 
                                 littleText.setText("Мы отправили код на твой email. Пожалуйста,\nпроверь также папку \"Спам\". ");
 
+                                main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
                                 ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
                                 main_btn_no.setVisibility(View.VISIBLE);
 
@@ -461,6 +463,7 @@ public class AuthEmailFragment {
 
                                                     littleText.setText("Введи код подтверждения, который был направлен\nна твою эл. почту.");
 
+                                                    main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
                                                     ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
                                                     main_btn_no.setVisibility(View.VISIBLE);
 
@@ -515,6 +518,7 @@ public class AuthEmailFragment {
                     animateViewSlideUp(email_layout_pass2);
 
                     main_btn_no.setVisibility(View.GONE);
+                    main_btn_no.setOnTouchListener(null);
 
                     status_auth = AuthStatus.EMAIL_RECOVER_CREATE_PASS;
 
@@ -574,7 +578,7 @@ public class AuthEmailFragment {
                         public void onResponse(Call<String> call, Response<String> response) {
 
                             if (response.body() != null && response.isSuccessful()) {
-                                showAuthEmailDialog();
+                                showAuthEmailDialog(); // Конец
 
                                 InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
@@ -612,6 +616,7 @@ public class AuthEmailFragment {
                     bigText.setText("Восстановить пароль");
                     littleText.setText("Введи адрес эл. почты от аккаунта.");
                     main_btn_no.setVisibility(View.GONE);
+                    main_btn_no.setOnTouchListener(null);
                     break;
                 case EMAIL_CHECK_CODE:
                 case EMAIL_RECOVER_CODE:
@@ -632,6 +637,7 @@ public class AuthEmailFragment {
                                     LoadingFragment.getInstance().hide();
                                     codeMail = response.body();
 
+                                    main_btn_no.setOnTouchListener(null);
                                     mHandler.post(new Secynds());
                                     main_btn_no.setAlpha(0.5f);
                                     isSendCode = true;
@@ -676,6 +682,7 @@ public class AuthEmailFragment {
                 secs = secs + (-1);
                 mHandler.postDelayed(this, 1000L);
             } else {
+                main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
                 ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
                 main_btn_no.setAlpha(1.0f);
                 isSendCode = false;
@@ -831,7 +838,8 @@ public class AuthEmailFragment {
         email_layout_pass.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
         email_layout_pass2.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
         email_layout_code.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
-        ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
+        ((TextView) main_btn_no.getChildAt(0)).setText("Я не помню пароль");
+        main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
         mHandler.removeCallbacksAndMessages(null);
         main_btn_no.setVisibility(View.VISIBLE);
         main_btn_no.setAlpha(1.0f);
