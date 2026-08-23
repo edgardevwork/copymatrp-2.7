@@ -37,12 +37,15 @@ public class Noty {
 
     int size = 0;
     int ittt = 0;
+    private ViewGroup oldViewGroup;
     public void show() {
 
         if(ittt != 0) {
-            if(size != 0) {
+            /*if(size != 0) {
                 size = size + MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._40sdp);
-            } else size = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._40sdp);
+            } else size = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._40sdp);*/
+            oldViewGroup = viewGroup;
+            animateViewSlideUpHide(oldViewGroup);
         }
         ittt++;
         viewGroup = (ViewGroup) ((LayoutInflater) MainScreenActivity.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.noty, (ViewGroup) null);
@@ -59,9 +62,11 @@ public class Noty {
         viewGroup.clearAnimation();
         viewGroup.setTranslationY(point.y);
         viewGroup.setVisibility(View.VISIBLE);
+        viewGroup.setAlpha(0.0f);// если увед есть уже тип тот же то мы добавляем на открытие анимацию альфы
         viewGroup.animate()
                 .translationY(0.0f)
-                .setDuration(150L)
+                .setDuration(300L) /// 300
+                .alpha(1.0f)
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
@@ -78,59 +83,48 @@ public class Noty {
     }
 
     private void animateViewSlideUpHide(final View view) {
-        if (view.getVisibility() != View.VISIBLE || view.getAnimation() != null) {
+        if (view.getVisibility() != View.VISIBLE) {
             return;
         }
 
+        if (view.getAnimation() != null) {
+            view.getAnimation().setAnimationListener(null);
+            view.getAnimation().cancel();
+        }
         view.clearAnimation();
 
-        boolean isTextView = view instanceof TextView;
+        // Получаем текущие размеры и целевой отступ, который был при раскрытом состоянии
+        final int measuredHeight = view.getHeight() > 0 ? view.getHeight() : view.getMeasuredHeight();
+        final int topMarginTarget = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._8sdp);
 
-        int measuredHeight;
-        if (isTextView) {
-            view.measure(-2, -2);
-            measuredHeight = view.getMeasuredHeight();
-        } else {
-            //int fixedHeight = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._28sdp);
-            measuredHeight = view.getMeasuredHeight();
-        }
-
-        final int topMarginTarget = isTextView
-                ? MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._2sdp)
-                : MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._8sdp);
-
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
-
-        final int startTopMargin = params.topMargin;
-        final int totalDelta = measuredHeight + Math.abs(startTopMargin - topMarginTarget);
-
-        params.height = measuredHeight;
-        params.topMargin = 0;
-        view.requestLayout();
+        // Общая дельта высоты, которую нужно убрать в 0
+        final int totalHeightDelta = measuredHeight + topMarginTarget;
 
         Animation animation = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) view.getLayoutParams();
 
+                // При завершении анимации полностью обнуляем размеры и скрываем View
                 if (interpolatedTime == 1.0f) {
+                    lp.topMargin = 0;
                     lp.height = 0;
-                    lp.topMargin = topMarginTarget;
-                    view.setVisibility(View.GONE);
                     view.requestLayout();
+                    view.setAlpha(0.0f);
+                    view.setVisibility(View.GONE);
                     return;
                 }
 
-                int currentDelta = (int) (totalDelta * interpolatedTime);
+                // interpolatedTime идет от 0.0 до 1.0.
+                // Для закрытия нам нужно обратное значение (от 1.0 до 0.0)
+                float reverseTime = 1.0f - interpolatedTime;
 
-                int calculatedMargin = (startTopMargin < topMarginTarget)
-                        ? Math.min(topMarginTarget, startTopMargin + currentDelta)
-                        : Math.max(topMarginTarget, startTopMargin - currentDelta);
-
-                int visibleHeight = Math.max(0, measuredHeight - currentDelta);
+                int currentDelta = (int) (totalHeightDelta * reverseTime);
+                int calculatedMargin = Math.min(topMarginTarget, currentDelta);
 
                 lp.topMargin = calculatedMargin;
-                lp.height = visibleHeight;
+                lp.height = currentDelta - calculatedMargin;
+                view.setAlpha(reverseTime);
                 view.requestLayout();
             }
 
@@ -140,8 +134,10 @@ public class Noty {
             }
         };
 
-        animation.setDuration(isTextView ? 150L : 300L);
+        // Фиксированная длительность 150 мс для всех типов View
+        animation.setDuration(150L);
         animation.setInterpolator(new DecelerateInterpolator());
         view.startAnimation(animation);
     }
+
 }
