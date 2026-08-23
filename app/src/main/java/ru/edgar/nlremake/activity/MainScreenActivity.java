@@ -264,7 +264,13 @@ public class MainScreenActivity  extends AppCompatActivity {
         FirebaseAnalytics.getInstance(this);
         FirebaseApp.initializeApp(this);
         FileDownloader.init(this);
-        VKID.Companion.init(this);
+
+        try {
+            VKID.Companion.init(this);
+        } catch (IllegalStateException e) {
+            Log.w("VKID_INIT", "VKID уже был инициализирован ранее");
+        }
+
 
         mAuth = FirebaseAuth.getInstance();
 

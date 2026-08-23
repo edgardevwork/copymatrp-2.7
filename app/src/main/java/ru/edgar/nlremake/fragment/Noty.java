@@ -14,6 +14,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.viewbinding.ViewBinding;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,14 +41,14 @@ public class Noty {
 
         if(ittt != 0) {
             if(size != 0) {
-                size = size + MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._48sdp);
-            } else size = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._48sdp);
+                size = size + MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._40sdp);
+            } else size = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._40sdp);
         }
         ittt++;
         viewGroup = (ViewGroup) ((LayoutInflater) MainScreenActivity.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.noty, (ViewGroup) null);
         MainScreenActivity.getInstance().getMainScreen().addView(viewGroup, -1, -1);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) viewGroup.getLayoutParams();
-        layoutParams.bottomMargin = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._8sdp) + size;
+        layoutParams.bottomMargin = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._9sdp) + size;
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
         layoutParams.width = -2;
         layoutParams.height = -2;
@@ -68,7 +70,7 @@ public class Noty {
                         viewGroup.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                animateViewSlideUpHide(viewGroup);
+                                //animateViewSlideUpHide(viewGroup);
                             }
                         }, 3000L);
                     }

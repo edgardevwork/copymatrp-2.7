@@ -1,46 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:background="@drawable/ic_btn_dark"
-	android:paddingLeft="@dimen/_14sdp"
-	android:paddingRight="@dimen/_14sdp"
-	android:paddingTop="@dimen/_8sdp"
-	android:paddingBottom="@dimen/_8sdp">
+	android:background="@drawable/noty_bg">
 
-	<!-- Контейнер для иконки (i или треугольник) -->
 	<FrameLayout
-		android:id="@+id/iconContainer"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="@drawable/ic_dialog_nl_input_bg_error"
-		android:padding="@dimen/_6sdp"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent">
+		android:layout_gravity="center"
+		android:layout_marginLeft="@dimen/_4sdp"
+		android:layout_marginTop="@dimen/_2sdp"
+		android:layout_marginBottom="@dimen/_2sdp"
+		android:background="@drawable/noty_bg_icon">
 
 		<ImageView
-			android:id="@+id/notificationIcon"
 			android:layout_width="@dimen/_14sdp"
 			android:layout_height="@dimen/_14sdp"
+			android:layout_margin="@dimen/_9sdp"
 			android:layout_gravity="center"
-			android:src="@drawable/ic_nopremium" />
+			android:src="@drawable/ic_noty_picture_1" />
+
 	</FrameLayout>
 
-	<!-- Текст уведомления -->
+
 	<TextView
-		android:id="@+id/notificationText"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="@dimen/_10sdp"
-		android:text="Чтобы продолжить, прими пользовательское соглашение и политику конфиденциальности"
+		android:text="Чтобы продолжить, прими пользовательское соглашение и                 \nполитику конфиденциальности"
 		android:textColor="@color/white"
-		android:textSize="@dimen/_11sdp"
-		android:gravity="left|center_vertical"
-		app:layout_constrainedWidth="true"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toEndOf="@id/iconContainer"
-		app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+		android:textSize="@dimen/_9sdp"
+		android:fontFamily="@font/ttnorms_medium"
+		android:letterSpacing="0.01"
+		android:layout_gravity="center"
+		android:layout_marginLeft="@dimen/_12sdp"
+		android:layout_marginRight="@dimen/_12sdp"/>
+</LinearLayout>
