@@ -36,6 +36,7 @@ import com.vk.id.onetap.compose.onetap.OneTapTitleScenario;
 import com.vk.id.onetap.xml.OneTap;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
@@ -312,7 +313,6 @@ public class AuthFragment {
                 }
         );
 
-        Noty oo = new Noty();
         main_btn_email = viewGroup.findViewById(R.id.main_btn_email);
         main_btn_email.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_email));
         main_btn_email.setOnClickListener(v -> {
@@ -327,7 +327,9 @@ public class AuthFragment {
                         DialogManager.getDialogManager().hideDialog();
                         if(!checkBox.isChecked() || !checkBox1.isChecked()) {
                             // Открываем уведомление
-                            oo.show();
+                            Random random = new Random();
+                            int oi = random.nextInt(0, 3);
+                            Noty.show(MainScreenActivity.getInstance(), oi, "уувед + "+oi, 7);
                         } else {
                             hideAuthDialog();
                             //MainScreenActivity.getInstance().mAuth.signOut(); - debug

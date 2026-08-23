@@ -13,6 +13,7 @@
 		android:background="@drawable/noty_bg_icon">
 
 		<ImageView
+			android:id="@+id/noty_icon"
 			android:layout_width="@dimen/_14sdp"
 			android:layout_height="@dimen/_14sdp"
 			android:layout_margin="@dimen/_9sdp"
@@ -23,6 +24,7 @@
 
 
 	<TextView
+		android:id="@+id/noty_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="Чтобы продолжить, прими пользовательское соглашение и                 \nполитику конфиденциальности"
