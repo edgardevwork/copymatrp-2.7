@@ -101,7 +101,7 @@ public class AuthFragment {
                         DialogManager.getDialogManager().hideDialog();
                         if(!checkBox.isChecked() && !checkBox1.isChecked()) {
                             // Открываем уведомление
-                            MainScreenActivity.getInstance().getNoty().show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, 5);
+                            MainScreenActivity.getInstance().getNoty().show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, null, 5);
                         } else onClickAuthGoogle();
                     }
                 }, new CheckBox[]{checkBox, checkBox1});
@@ -142,7 +142,7 @@ public class AuthFragment {
                                 DialogManager.getDialogManager().hideDialog();
                                 if(!checkBox.isChecked() && !checkBox1.isChecked()) {
                                     // Открываем уведомление
-                                    MainScreenActivity.getInstance().getNoty().show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, 5);
+                                    MainScreenActivity.getInstance().getNoty().show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, null, 5);
                                 } // Тут должно открываться вк вход, но у меня чет не получаеться отправить клик.
                             }
                         }, new CheckBox[]{checkBox, checkBox1});
@@ -318,7 +318,7 @@ public class AuthFragment {
                     public void onClick(View v) {
                         DialogManager.getDialogManager().hideDialog();
                         if(!checkBox.isChecked() || !checkBox1.isChecked()) {
-                            MainScreenActivity.getInstance().getNoty().show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, 5);
+                            MainScreenActivity.getInstance().getNoty().show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, null, 5);
                         } else {
                             hideAuthDialog();
                             //MainScreenActivity.getInstance().mAuth.signOut(); - debug

@@ -13,6 +13,10 @@ import android.view.animation.Transformation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.nvidia.devtech.NvEventQueueActivity;
+
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +50,7 @@ public class Noty {
         }
     }
 
-    public void show(int id, String text, String btnText, int delaySeconds) { // TODO: сделать не статичным или хз - сделать кнопку!!!!!
+    public void show(int id, String text, String btnText, String btnCmd, int delaySeconds) { // TODO: сделать не статичным или хз - сделать кнопку!!!!!
         for (int i = 0; i < activeNoties.size(); i++) {
             if (activeNoties.get(i).id == id && activeNoties.get(i).text.equals(text)) {
                 removeNoty(activeNoties.get(i), true);
@@ -95,7 +99,12 @@ public class Noty {
         });
 
         if(isBtn) {
-            notyBtn.setOnClickListener(v -> removeNoty(instance, true));
+            notyBtn.setOnClickListener(v -> {
+                if(btnCmd != null) {
+                    ((SAMP)context).sendCommand(btnCmd.getBytes(StandardCharsets.UTF_8));
+                }
+                removeNoty(instance, true);
+            });
         }
 
         contentView.addView(viewGroup, -1, -1);
