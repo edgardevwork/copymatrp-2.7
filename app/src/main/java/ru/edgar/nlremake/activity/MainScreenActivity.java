@@ -85,6 +85,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.edgar.nlremake.fragment.LoadingFragment;
+import ru.edgar.nlremake.fragment.Noty;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Archive;
@@ -109,6 +110,7 @@ public class MainScreenActivity  extends AppCompatActivity {
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private NotificationManager notifManager = null;
     private FullHeightVideoView mVideoView;
+    private Noty noty;
     private DialogManager dialogManager;
     private LoadingFragment loadingFragment;
     public static boolean isAuth = false;
@@ -152,7 +154,9 @@ public class MainScreenActivity  extends AppCompatActivity {
         //setupVideoPlayer();
 
         dialogManager = new DialogManager();
+        noty = new Noty();
         loadingFragment = new LoadingFragment();
+
 
         // 3. Запускаем тяжелую проверку асинхронно
         checkAuthInBackground(new AuthCallback() {
@@ -176,6 +180,10 @@ public class MainScreenActivity  extends AppCompatActivity {
 
     public FrameLayout getMainScreen() {
         return mainScreen;
+    }
+
+    public Noty getNoty() {
+        return noty;
     }
 
     private void checkAuthInBackground(final AuthCallback callback) {

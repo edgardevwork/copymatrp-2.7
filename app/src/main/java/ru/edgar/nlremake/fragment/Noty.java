@@ -1,5 +1,6 @@
 package ru.edgar.nlremake.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.view.Gravity;
@@ -14,23 +15,40 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
+
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.space.InterfacesManager;
+import ru.edgar.space.SAMP;
 
 public class Noty {
 
-    private static final List<NotyInstance> activeNoties = new ArrayList<>();
-    private static final int MAX_NOTIES = 4;
+    private final List<NotyInstance> activeNoties = new ArrayList<>();
+    private final int MAX_NOTIES = 4;
+    private FrameLayout contentView;
+    private Activity context;
 
-    private static class NotyInstance {
+    private class NotyInstance {
         int id;
+        String text;
+        String btnText;
         ViewGroup viewGroup;
         Runnable autoHideRunnable;
     }
 
-    public static void show(Context context, int id, String text, int delaySeconds) { // TODO: сделать не статичным или хз - сделать кнопку!!!!!
+    public Noty() {
+        try {
+            context = SAMP.getInstance();
+            contentView = ((SAMP)context).getFrontUILayout();
+        } catch (Exception e) {
+            context = MainScreenActivity.getInstance();
+            contentView = ((MainScreenActivity)context).getMainScreen();
+        }
+    }
+
+    public void show(int id, String text, String btnText, int delaySeconds) { // TODO: сделать не статичным или хз - сделать кнопку!!!!!
         for (int i = 0; i < activeNoties.size(); i++) {
-            if (activeNoties.get(i).id == id) {
+            if (activeNoties.get(i).id == id && activeNoties.get(i).text.equals(text)) {
                 removeNoty(activeNoties.get(i), true);
                 break;
             }
@@ -40,12 +58,24 @@ public class Noty {
             removeNoty(activeNoties.get(0), true);
         }
 
-        final MainScreenActivity activity = MainScreenActivity.getInstance();
-        final ViewGroup mainScreen = activity.getMainScreen();
-        final ViewGroup notyView = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.noty, mainScreen, false);
+        ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.noty, contentView, false);
 
-        ImageView iconView = notyView.findViewById(R.id.noty_icon);
-        TextView textView = notyView.findViewById(R.id.noty_text);
+        ImageView iconView = viewGroup.findViewById(R.id.noty_icon);
+        TextView textView = viewGroup.findViewById(R.id.noty_text);
+        FrameLayout notyBtn = viewGroup.findViewById(R.id.noty_btn);
+        TextView notyBtnText = viewGroup.findViewById(R.id.noty_btn_text);
+
+        boolean isBtn;
+        if(btnText != null) {
+            isBtn = true;
+            notyBtnText.setText(btnText);
+            notyBtn.setVisibility(View.VISIBLE);
+            notyBtn.setOnTouchListener(new InterfacesManager.animClickBtn(context, notyBtn));
+        } else {
+            isBtn = false;
+            notyBtn.setVisibility(View.GONE);
+        }
+
 
         int boundedId = Math.max(0, Math.min(id, 67));
         int resId = context.getResources().getIdentifier("ic_noty_picture_" + boundedId, "drawable", context.getPackageName());
@@ -54,18 +84,28 @@ public class Noty {
 
         final NotyInstance instance = new NotyInstance();
         instance.id = id;
-        instance.viewGroup = notyView;
+        instance.text = text;
+        instance.btnText = btnText;
+        instance.viewGroup = viewGroup;
 
-        notyView.setOnClickListener(v -> removeNoty(instance, true));
+        viewGroup.setOnClickListener(v -> {
+            if(!isBtn) {
+                removeNoty(instance, true);
+            }
+        });
 
-        mainScreen.addView(notyView, -1, -1);
+        if(isBtn) {
+            notyBtn.setOnClickListener(v -> removeNoty(instance, true));
+        }
+
+        contentView.addView(viewGroup, -1, -1);
         activeNoties.add(instance);
 
         updatePositions(context);
-        animateShow(notyView, delaySeconds, instance);
+        animateShow(viewGroup, delaySeconds, instance);
     }
 
-    private static void updatePositions(Context context) {
+    private void updatePositions(Context context) {
         int step = context.getResources().getDimensionPixelSize(R.dimen._40sdp);
         int baseMargin = context.getResources().getDimensionPixelSize(R.dimen._9sdp);
 
@@ -91,7 +131,7 @@ public class Noty {
         }
     }
 
-    private static void removeNoty(NotyInstance instance, boolean animate) {
+    private void removeNoty(NotyInstance instance, boolean animate) {
         if (!activeNoties.contains(instance)) return;
         activeNoties.remove(instance);
 
@@ -115,9 +155,9 @@ public class Noty {
         }
     }
 
-    private static void animateShow(final ViewGroup view, int delaySeconds, final NotyInstance instance) {
+    private void animateShow(final ViewGroup view, int delaySeconds, final NotyInstance instance) {
         Point point = new Point();
-        MainScreenActivity.getInstance().getWindowManager().getDefaultDisplay().getSize(point);
+        context.getWindowManager().getDefaultDisplay().getSize(point);
         view.clearAnimation();
         view.setTranslationY(point.y);
         view.setAlpha(0.0f);
@@ -133,7 +173,7 @@ public class Noty {
                 });
     }
 
-    private static void animateViewSlideUpHide(final View view, final Runnable onEnd) {
+    private void animateViewSlideUpHide(final View view, final Runnable onEnd) {
         if (view.getVisibility() != View.VISIBLE) {
             if (onEnd != null) onEnd.run();
             return;
