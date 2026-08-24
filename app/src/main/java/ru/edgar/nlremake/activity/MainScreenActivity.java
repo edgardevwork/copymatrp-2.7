@@ -1321,26 +1321,7 @@ public class MainScreenActivity  extends AppCompatActivity {
             } catch (ApiException e) {
                 //e.printStackTrace();
                 //Log.e("GOOGLE AUTH", "Error - " + e.getMessage());
-                dialogManager.hideAuthDialog();
-                dialogManager.showErrorDialog("Ошибка авторизации через Google!", "Попробуйте ещё раз.", "Понятно", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(dialogManager.getIsChecked()) {
-                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), mAuth.getUid(), "signInWithCredential() catch (ApiException e)", e.toString());
-                        }
-                        dialogManager.hideDialog();
-                        FirebaseUser currentUser = mAuth.getCurrentUser();
-                        if(currentUser != null) {
-                            isAuth = true;
-                        } else {
-                            isAuth = false;
-                        }
-                        if(!isAuth) {
-                            dialogManager.hideDialog();
-                            dialogManager.showAuthDialog(false);
-                        } else onRequestPermissions();
-                    }
-                }, true, "Сообщить об ошибке");
+                // ФИКС ДИАЛОГА ОШИБКИ! (КНОПКА НАЗАД - ОШИБКА)
             }
         }
     }

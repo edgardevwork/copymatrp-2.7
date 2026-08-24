@@ -292,17 +292,7 @@ public class AuthFragment {
                 },
                 (oAuth, fail) -> {
                     //Log.e("VK_AUTH", "Ошибка обработки токена " + fail.getDescription());
-                    DialogManager.getDialogManager().hideAuthDialog();
-                    DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(DialogManager.getDialogManager().getIsChecked()) {
-                                CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), "(oAuth, fail)", "Ошибка обработки токена " + fail.getDescription());
-                            }
-                            DialogManager.getDialogManager().hideDialog();
-                            DialogManager.getDialogManager().showAuthDialog(false);
-                        }
-                    }, true, "Сообщить об ошибке");
+                    // ФИКС ДИАЛОГА ОШИБКИ! (КНОПКА НАЗАД - ОШИБКА)
                     return null;
                 },
                 (data, completion) -> {
