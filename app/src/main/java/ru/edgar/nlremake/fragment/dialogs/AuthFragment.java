@@ -101,6 +101,7 @@ public class AuthFragment {
                         DialogManager.getDialogManager().hideDialog();
                         if(!checkBox.isChecked() && !checkBox1.isChecked()) {
                             // Открываем уведомление
+                            Noty.show(MainScreenActivity.getInstance(), 1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", 5);
                         } else onClickAuthGoogle();
                     }
                 }, new CheckBox[]{checkBox, checkBox1});
@@ -141,6 +142,7 @@ public class AuthFragment {
                                 DialogManager.getDialogManager().hideDialog();
                                 if(!checkBox.isChecked() && !checkBox1.isChecked()) {
                                     // Открываем уведомление
+                                    Noty.show(MainScreenActivity.getInstance(), 1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", 5);
                                 } // Тут должно открываться вк вход, но у меня чет не получаеться отправить клик.
                             }
                         }, new CheckBox[]{checkBox, checkBox1});
@@ -326,10 +328,7 @@ public class AuthFragment {
                     public void onClick(View v) {
                         DialogManager.getDialogManager().hideDialog();
                         if(!checkBox.isChecked() || !checkBox1.isChecked()) {
-                            // Открываем уведомление
-                            Random random = new Random();
-                            int oi = random.nextInt(0, 3);
-                            Noty.show(MainScreenActivity.getInstance(), oi, "уувед + "+oi, 7);
+                            Noty.show(MainScreenActivity.getInstance(), 1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", 5);
                         } else {
                             hideAuthDialog();
                             //MainScreenActivity.getInstance().mAuth.signOut(); - debug

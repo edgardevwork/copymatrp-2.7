@@ -158,6 +158,9 @@ public class Noty {
                     view.requestLayout();
                     view.setAlpha(0.0f);
                     view.setVisibility(View.GONE);
+                    /*view.post(() -> {
+                        MainScreenActivity.getInstance().getMainScreen().removeView(view);
+                    });*/
                     // ПРАВКА: Колбэк теперь безопасно отработает после завершения кадра
                     if (onEnd != null) onEnd.run();
                     return;

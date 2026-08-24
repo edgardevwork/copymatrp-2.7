@@ -22,7 +22,6 @@
 
 	</FrameLayout>
 
-
 	<TextView
 		android:id="@+id/noty_text"
 		android:layout_width="wrap_content"
@@ -30,8 +29,8 @@
 		android:text="Чтобы продолжить, прими пользовательское соглашение и                 \nполитику конфиденциальности"
 		android:textColor="@color/white"
 		android:textSize="@dimen/_9sdp"
-		android:fontFamily="@font/ttnorms_medium"
-		android:letterSpacing="0.01"
+		android:letterSpacing="-0.02"
+		android:fontFamily="@font/geologica_light"
 		android:layout_gravity="center"
 		android:layout_marginLeft="@dimen/_12sdp"
 		android:layout_marginRight="@dimen/_12sdp"/>
