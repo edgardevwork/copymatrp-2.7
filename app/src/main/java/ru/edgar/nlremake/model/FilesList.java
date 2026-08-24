@@ -24,7 +24,7 @@ public class FilesList {
     @Expose
     private String url;
 
-    // copy matrp by EDGAR DEVELOPER / by EDGAR 3.0 https://github.com/edgar-code
+    // copy matrp by EDGAR DEVELOPER / by EDGAR 3.0 https://github.com/edgardevwork
     // created at 13.01.2024
 
     // Конструктор

@@ -3,51 +3,67 @@ package ru.edgar.nlremake.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * copy matrp by EDGAR DEVELOPER / by EDGAR 3.0 https://github.com/edgardevwork
+ * created at 04.01.2024
+ */
 public class Main {
     @SerializedName("servers")
     @Expose
-    private String servers;
+    private String servers; // update at 06.01.24
 
     @SerializedName("stories")
     @Expose
-    private String stories;
+    private String stories; // update at 06.01.24
 
-    @SerializedName("faq")
+    @SerializedName("verifyAuth")
     @Expose
-    private String faq;
+    private String verifyAuth; // update at 06.01.24
 
-    @SerializedName("createCharacter") // update at 06.01.24
+    @SerializedName("resetPassword")
     @Expose
-    private String createCharacter;
+    private String resetPassword; // update at 24.08.26
 
-    @SerializedName("verifyAuth") // update at 06.01.24
+    @SerializedName("character")
     @Expose
-    private String verifyAuth;
+    private String character; // update at 24.08.26
 
-    @SerializedName("accountDetails") // update at 06.01.24
+    @SerializedName("accountDetails")
     @Expose
-    private String accountDetails;
+    private String accountDetails; // update at 06.01.24
 
-    @SerializedName("isAcc") // update at 06.01.24
+    @SerializedName("isAcc")
     @Expose
-    private String isAcc;
+    private String isAcc; // update at 06.01.24
 
-    @SerializedName("skinsCDN") // update at 09.01.24
+    @SerializedName("skinsCDN")
     @Expose
-    private String skinsCDN;
+    private String skinsCDN; // update at 09.01.24
 
-    // copy matrp by EDGAR DEVELOPER / by EDGAR 3.0 https://github.com/edgar-code
-    // created at 04.01.2024
+    @SerializedName("deleteAcc")
+    @Expose
+    private String deleteAcc; // update at 24.08.26
 
-    public Main(String servers, String stories, String faq, String createCharacter, String verifyAuth, String accountDetails, String isAcc, String skinsCDN) {
+    public Main(
+            String servers,
+            String stories,
+            String verifyAuth,
+            String resetPassword,
+            String character,
+            String accountDetails,
+            String isAcc,
+            String skinsCDN,
+            String deleteAcc
+    ) {
         this.servers = servers;
         this.stories = stories;
-        this.faq = faq;
-        this.createCharacter = createCharacter;
         this.verifyAuth = verifyAuth;
+        this.resetPassword = resetPassword;
+        this.character = character;
         this.accountDetails = accountDetails;
         this.isAcc = isAcc;
         this.skinsCDN = skinsCDN;
+        this.deleteAcc = deleteAcc;
     }
 
     public String getServers() {
@@ -58,16 +74,16 @@ public class Main {
         return stories;
     }
 
-    public String getFaq() {
-        return faq;
-    }
-
-    public String getCreateCharacter() {
-        return createCharacter;
-    }
-
     public String getVerifyAuth() {
         return verifyAuth;
+    }
+
+    public String getResetPassword() {
+        return resetPassword;
+    }
+
+    public String getCharacter() {
+        return character;
     }
 
     public String getAccountDetails() {
@@ -80,5 +96,9 @@ public class Main {
 
     public String getSkinsCDN() {
         return skinsCDN;
+    }
+
+    public String getDeleteAcc() {
+        return deleteAcc;
     }
 }

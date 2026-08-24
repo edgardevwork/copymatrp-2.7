@@ -11,17 +11,17 @@ import retrofit2.http.Url;
 import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Details;
 import ru.edgar.nlremake.model.Main;
-import ru.edgar.nlremake.model.News;
 import ru.edgar.nlremake.model.Servers;
+import ru.edgar.nlremake.model.Stories;
 import ru.edgar.nlremake.model.edgar;
 
 public interface Interface {
 
-    @GET
-    Call<Api> getApi(@Url String url);
+    /*@GET
+    Call<edgar> getAuth(@Url String url);*/
 
     @GET
-    Call<edgar> getAuth(@Url String url);
+    Call<Api> getApi(@Url String url);
 
     @GET
     Call<Main> getMain(@Url String url);
@@ -30,19 +30,19 @@ public interface Interface {
     Call<List<Servers>> getServers(@Url String url);
 
     @GET
-    Call<List<News>> getStories(@Url String url);
+    Call<List<Stories>> getStories(@Url String url);
 
     @POST
     @FormUrlEncoded
-    Call<String> createCharacter(@Url String url, @Field("nick") String nick, @Field("sex") String sex, @Field("skin") String skin, @Field("promo") String promo);
-
-    @POST
-    @FormUrlEncoded
-    Call<String> authMail(@Url String url, @Field("user_email") String user_email);
+    Call<String> verifyAuth(@Url String url, @Field("user_email") String user_email);
 
     @POST
     @FormUrlEncoded
     Call<String> resetPassword(@Url String url, @Field("user_email") String user_email, @Field("new_pass") String new_pass);
+
+    @POST
+    @FormUrlEncoded
+    Call<String> сharacter(@Url String url, @Field("nick") String nick, @Field("sex") String sex, @Field("skin") String skin, @Field("promo") String promo);
 
     @POST
     @FormUrlEncoded
@@ -52,4 +52,7 @@ public interface Interface {
     @FormUrlEncoded
     Call<String> getIsAcc(@Url String url, @Field("user_name") String user_name);
 
+    @POST
+    @FormUrlEncoded
+    Call<String> getDeleteAcc(@Url String url, @Field("nick") String name);
 }

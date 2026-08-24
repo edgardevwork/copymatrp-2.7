@@ -1,0 +1,25 @@
+package ru.edgar.nlremake.network;
+
+import java.util.ArrayList;
+
+public class ConfigLinks {
+	public static ArrayList archives = new ArrayList<>();
+	public static ArrayList deleted = new ArrayList<>();
+
+	public static ArrayList msglist = new ArrayList<>();
+	public static ArrayList faqlist = new ArrayList<>();
+	public static ArrayList detailslist = new ArrayList<>();
+	public static ArrayList storyList = new ArrayList<>();
+	public static ArrayList serverList = new ArrayList<>();
+
+	public static String characterUrl;
+	public static String verifyAuthUrl;//добавь ид код реги авторизации и т д
+	public static String resetPassword;
+	public static String accountDetailsUrl;
+	public static String isAccUrl;
+	public static String skinsCDNUrl;
+	public static String deleteAcc;
+	public static String[] launcher_dan = new String[5];
+
+	public static boolean testApi = false;
+}

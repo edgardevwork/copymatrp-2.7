@@ -43,7 +43,7 @@ import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.nlremake.fragment.LoadingFragment;
 import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.nlremake.network.Interface;
-import ru.edgar.nlremake.network.Lists;
+import ru.edgar.nlremake.network.ConfigLinks;
 import ru.edgar.space.InterfacesManager;
 
 public class AuthEmailFragment {
@@ -93,8 +93,6 @@ public class AuthEmailFragment {
                 .build();
 
         Interface sInterface = retrofit.create(Interface.class);
-
-        Lists.verifyAuthUrl = "https://crmp.pro/files/matrp/space/Requests/VerifyAuth.php";
 
         email_error_text = viewGroup.findViewById(R.id.email_error_text);
         email_pass_error_text = viewGroup.findViewById(R.id.email_pass_error_text);
@@ -263,7 +261,7 @@ public class AuthEmailFragment {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         hideAuthEmailDialog();
-                                        MainScreenActivity.getInstance().loadSettings();
+                                        MainScreenActivity.getInstance().onRequestPermissions();
                                     } else {
                                         email_pass_error_text.setText("Введен неправильный пароль");
                                         email_layout_pass.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
@@ -323,7 +321,7 @@ public class AuthEmailFragment {
 
                     String mail = email_layout_email_input.getText().toString();
 
-                    Call<String> call = sInterface.authMail(Lists.verifyAuthUrl, mail);
+                    Call<String> call = sInterface.verifyAuth(ConfigLinks.verifyAuthUrl, mail);
 
                     call.enqueue(new Callback<String>() {
                         @Override
@@ -394,9 +392,9 @@ public class AuthEmailFragment {
                                         Info.put("email", email_layout_email_input.getText().toString().trim());
                                         Info.put("way", 1);
                                         FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
-                                        // EDGAR 3.0 NLRemake version от 21.08.2026
+                                        // EDGAR 3.0 NLRemake version от 24.08.2026
                                         DialogManager.getDialogManager().hideAuthEmailDialog();
-                                        MainScreenActivity.getInstance().loadSettings();
+                                        MainScreenActivity.getInstance().onRequestPermissions();
                                     } else {
                                         DialogManager.getDialogManager().hideAuthEmailDialog();
                                         DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через почту!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
@@ -439,9 +437,7 @@ public class AuthEmailFragment {
                                         // Отправка кода
                                         LoadingFragment.getInstance().show();
 
-                                        Lists.verifyAuthUrl = "https://crmp.pro/files/matrp/space/Requests/VerifyAuth.php";
-
-                                        Call<String> call1 = sInterface.authMail(Lists.verifyAuthUrl, email);
+                                        Call<String> call1 = sInterface.verifyAuth(ConfigLinks.verifyAuthUrl, email);
 
                                         call1.enqueue(new Callback<String>() {
                                             @Override
@@ -477,6 +473,7 @@ public class AuthEmailFragment {
 
                                             @Override
                                             public void onFailure(Call<String> call, Throwable t) {
+                                                //System.out.println(t.getMessage());
                                                 LoadingFragment.getInstance().hide();
                                                 Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
                                             }
@@ -571,7 +568,7 @@ public class AuthEmailFragment {
                     }
 
                     // Смена пароля
-                    Call<String> call1 = sInterface.resetPassword("https://crmp.pro/files/matrp/space/Requests/ResetPassword.php", email_layout_email_input.getText().toString().trim(), pass1);
+                    Call<String> call1 = sInterface.resetPassword(ConfigLinks.resetPassword, email_layout_email_input.getText().toString().trim(), pass1);
 
                     call1.enqueue(new Callback<String>() {
                         @Override
@@ -583,14 +580,14 @@ public class AuthEmailFragment {
                                 InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
                             } else {
-                                //System.out.println("edgar + " + call.toString() + " r " + response.body().toString());
+                                System.out.println("edgar + " + call.toString() + " r " + response.body().toString());
                                 Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при смене пароля", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
-                            //System.out.println("edgar + " + call.toString() + " r " + t.getMessage().toString());
+                            System.out.println("edgar + " + call.toString() + " r " + t.getMessage().toString());
                             Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при смене пароля", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -625,9 +622,7 @@ public class AuthEmailFragment {
                         LoadingFragment.getInstance().show();
                         String email = email_layout_email_input.getText().toString();
 
-                        Lists.verifyAuthUrl = "https://crmp.pro/files/matrp/space/Requests/VerifyAuth.php";
-
-                        Call<String> call = sInterface.authMail(Lists.verifyAuthUrl, email);
+                        Call<String> call = sInterface.verifyAuth(ConfigLinks.verifyAuthUrl, email);
 
                         call.enqueue(new Callback<String>() {
                             @Override

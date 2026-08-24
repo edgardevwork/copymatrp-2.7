@@ -1,11 +1,11 @@
 {
-	"launcher_version": 57,
-	"launcher_url": "https://crmp.pro/files/matrp/new/launcher_space.apk",
+	"launcher_version": 73,
+	"launcher_url": "https://crmp.pro/files/matrp/space/launcher_space.apk",
 	"launcher_path": "/storage/emulated/0/Android/data/ru.edgar.matrp/files/launcher_space.apk",
 	"launcher_name": "/launcher_space.apk",
 	"isTest": true,
 	"test_api": true,
-    "api": "https://crmp.pro/files/matrp/space/main.json",
+    "api": "https://crmp.pro/files/matrp/2-7nlremake/main.json",
 	"archives": [
         {
             "type": "/storage/emulated/0/Android/data/ru.edgar.matrp/files/texdb",
@@ -85,8 +85,8 @@
         {
             "type": "/storage/emulated/0/Android/data/ru.edgar.matrp/files",
             "zip_path": "/storage/emulated/0/Android/data/ru.edgar.matrp/files/archive_lite.zip",
-            "size": 119570433,
-            "urls": "https://crmp.pro/files/matrp/new/files/build8/archive_lite.zip",
+            "size": 119578595,
+            "urls": "https://crmp.pro/files/matrp/new/files/build8-1/archive_lite.zip",
             "paths": [
                 {
                     "path": "/storage/emulated/0/Android/data/ru.edgar.matrp/files/data"

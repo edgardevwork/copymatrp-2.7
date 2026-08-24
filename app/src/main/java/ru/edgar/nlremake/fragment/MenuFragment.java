@@ -2,7 +2,6 @@ package ru.edgar.nlremake.fragment;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,18 +16,16 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.nvidia.devtech.NvEventQueueActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
-import ru.edgar.nlremake.model.News;
-import ru.edgar.nlremake.network.Lists;
+import ru.edgar.nlremake.model.Stories;
+import ru.edgar.nlremake.network.ConfigLinks;
 import ru.edgar.space.InterfacesManager;
 import ru.edgar.space.SAMP;
 
@@ -40,13 +37,14 @@ public class MenuFragment {
     private FrameLayout nick_name_layout, news, btn_vk, btn_telegram, btn_settings;
     private FrameLayout btn_support, btn_balance, btn_donate, frame_server, btn_play;
     private LinearLayout btn_shop, gift_window;
+    private TextView news_date, news_date_two;
     private ImageView news_image, news_image_two;
     private boolean isFirstImageVisible = true;
     private int currentStoryIndex = 0;
 
     private Runnable carouselStoryRunnable;
 
-    private ArrayList<News> storiesList;
+    private ArrayList<Stories> storiesList;
 
     public MenuFragment(NvEventQueueActivity nvEventQueueActivity, int guiId) {
         this.nvEventQueueActivity = nvEventQueueActivity;
@@ -65,8 +63,10 @@ public class MenuFragment {
         layoutParams.width = -1;
         layoutParams.height = -1;
 
-        storiesList = Lists.slist;
+        storiesList = ConfigLinks.storyList;
 
+        news_date = viewGroup.findViewById(R.id.news_date);
+        news_date_two = viewGroup.findViewById(R.id.news_date_two);
         news_image = viewGroup.findViewById(R.id.news_image);
         news_image_two = viewGroup.findViewById(R.id.news_image_two);
 
@@ -95,30 +95,42 @@ public class MenuFragment {
                     } else
                         bars[i].setAlpha(0.5f);
                 }
-                String[] tesr = new String[]{"https://edgecdn.matrp.ru/matrp_mobile/images/tgpic.webp", "https://sun9-49.vkuserphoto.ru/s/v1/ig2/G71VCeaMT3sfjL8gfdwfEF0wyj65S2MCJXBFcCTPrWf8dtR25AgtNZokywZtDcsvYY-idOdJYNuw1Plt80cect9l.jpg?quality=95&as=32x14,48x22,72x32,108x49,160x72,240x108,360x162,480x216,540x243,640x288,720x324,1080x486,1280x576,1440x648,2400x1080&from=bu&cs=2400x0", "https://sun9-52.vkuserphoto.ru/s/v1/ig2/yvccRwYvATEm--pddNEOCm-pE0Wav8rUx5rtMCGC8y2bNSxJxXFL-X8DlOaDFKo3tQWXtf3NHrceS1dwPLuoP7wQ.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&cs=1920x0"};
+
+                final TextView visibleTargetText = isFirstImageVisible ? news_date_two : news_date;
+                final TextView invisibleTargetText = isFirstImageVisible ? news_date : news_date_two;
 
                 final ImageView visibleTarget = isFirstImageVisible ? news_image_two : news_image;
                 final ImageView invisibleTarget = isFirstImageVisible ? news_image : news_image_two;
 
+                invisibleTargetText.animate()
+                        .alpha(0.0f)
+                        .setDuration(300L)
+                        .start();
+
                 invisibleTarget.animate()
                         .alpha(0.0f)
-                        .setDuration(300)
+                        .setDuration(300L)
+                        .start();
+
+                visibleTargetText.setText(storiesList.get(currentStoryIndex).getMiniDate());
+                visibleTargetText.animate()
+                        .alpha(1.0f)
+                        .setDuration(300L)
                         .start();
 
                 Glide.with(visibleTarget.getContext())
-                        .load(/*storiesList.get(currentStoryIndex).getImageUrl()*/tesr[currentStoryIndex])
-                        .listener(new com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable>() {
+                        .load(storiesList.get(currentStoryIndex).getImageUrl())
+                        .listener(new RequestListener<Drawable>() {
                             @Override
-                            public boolean onLoadFailed(@Nullable com.bumptech.glide.load.engine.GlideException e, Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target, boolean isFirstResource) {
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                 return false;
                             }
 
                             @Override
-                            public boolean onResourceReady(android.graphics.drawable.Drawable resource, Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
-
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                 visibleTarget.animate()
                                         .alpha(1.0f)
-                                        .setDuration(300)
+                                        .setDuration(300L)
                                         .start();
 
                                 isFirstImageVisible = !isFirstImageVisible;
@@ -127,7 +139,7 @@ public class MenuFragment {
                         })
                         .into(visibleTarget);
 
-                handler.postDelayed(this, 5000);
+                handler.postDelayed(this, 5000L);
             }
         };
 

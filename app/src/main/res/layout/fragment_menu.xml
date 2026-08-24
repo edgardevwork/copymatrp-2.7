@@ -277,17 +277,37 @@
                 android:textColor="#ffffff"
                 android:textSize="@dimen/_9sdp" />
 
-            <TextView
-                android:id="@+id/news_title_data"
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:letterSpacing="0.02"
-                android:layout_marginLeft="@dimen/_4sdp"
-                android:layout_marginTop="@dimen/_1sdp"
-                android:fontFamily="@font/geologica_medium"
-                android:text="30-го июля"
-                android:textColor="#80FFFFFF"
-                android:textSize="@dimen/_7sdp" />
+                android:layout_gravity="bottom">
+
+                <TextView
+                    android:id="@+id/news_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.02"
+                    android:layout_marginLeft="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:fontFamily="@font/geologica_medium"
+                    android:text="30-го июля"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="@dimen/_7sdp" />
+
+                <TextView
+                    android:id="@+id/news_date_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.02"
+                    android:layout_marginLeft="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:fontFamily="@font/geologica_medium"
+                    android:text="30-го июля"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="@dimen/_7sdp" />
+
+            </FrameLayout>
+
 
         </LinearLayout>
 

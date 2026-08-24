@@ -26,7 +26,7 @@ public class Archive {
     @Expose
     private List<ArchivePath> paths;
 
-    // copy matrp by EDGAR DEVELOPER / by EDGAR 3.0 https://github.com/edgar-code
+    // copy matrp by EDGAR DEVELOPER / by EDGAR 3.0 https://github.com/edgardevwork
     // Загрузка by EDGAR 3.0
 
     public Archive(String type, String zip_path, long size, String urls, List<ArchivePath> paths) {

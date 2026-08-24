@@ -13,8 +13,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -73,7 +71,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -88,12 +85,12 @@ import ru.edgar.nlremake.model.Archive;
 import ru.edgar.nlremake.model.ArchivePath;
 import ru.edgar.nlremake.model.Deleted;
 import ru.edgar.nlremake.model.Main;
-import ru.edgar.nlremake.model.News;
 import ru.edgar.nlremake.model.Servers;
+import ru.edgar.nlremake.model.Stories;
 import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.nlremake.other.Helper;
 import ru.edgar.nlremake.network.Interface;
-import ru.edgar.nlremake.network.Lists;
+import ru.edgar.nlremake.network.ConfigLinks;
 import ru.edgar.nlremake.other.Utils;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
@@ -152,21 +149,7 @@ public class MainScreenActivity  extends AppCompatActivity {
         noty = new Noty();
         loadingFragment = new LoadingFragment();
 
-
-        // 3. Запускаем тяжелую проверку асинхронно
-        checkAuthInBackground(new AuthCallback() {
-            @Override
-            public void onResult(boolean isAuthenticated) {
-                // Этот блок выполнится ПОЗЖЕ, когда данные загрузятся
-                // Мы снова находимся в главном потоке, поэтому можем показывать диалоги
-
-                /*if (!isAuthenticated) {*/
-                    dialogManager.showAuthDialog(true); //Проверенно
-                /*} else {
-                    onRequestPermissions();
-                }*/
-            }
-        });
+        loadSettings();
     }
 
     public static MainScreenActivity getInstance() {
@@ -179,25 +162,6 @@ public class MainScreenActivity  extends AppCompatActivity {
 
     public Noty getNoty() {
         return noty;
-    }
-
-    private void checkAuthInBackground(final AuthCallback callback) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            boolean result = false;
-
-            try {
-                Thread.sleep(1500);
-                result = loadAuthStatusFromSecureStorage();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-
-            // Возвращаемся в главный поток, чтобы вызвать колбэк
-            boolean finalResult = result;
-            new Handler(Looper.getMainLooper()).post(() -> {
-                callback.onResult(finalResult);
-            });
-        });
     }
 
     interface AuthCallback {
@@ -318,7 +282,7 @@ public class MainScreenActivity  extends AppCompatActivity {
         if (!permissionsToRequest.isEmpty()) {
             requestPermissions(permissionsToRequest.toArray(new String[0]), 1);
         } else {
-            loadSettings();
+            checkGameCache();
         }
     }
     @Override
@@ -337,7 +301,7 @@ public class MainScreenActivity  extends AppCompatActivity {
 
             if (perfect) {
                 // Все разрешения получены
-                loadSettings();
+                checkGameCache();
             } else {
                 // Какое-то разрешение не получено
                 Toast.makeText(this, "Нужны все разрешения для работы приложения", Toast.LENGTH_SHORT).show();
@@ -401,7 +365,12 @@ public class MainScreenActivity  extends AppCompatActivity {
     }
 
     public void loadSettings() { /// Главная логика подгрузки
-        if(!netIsAvailable()) {
+        /*
+        * Загрузка всех api
+        * Загрузка регистрации, если пользователь не авторизован.
+        * Скачивание кеша
+        * */
+        if(!netIsAvailable()) { // Проверка интернета!
             dialogManager.showDialog("Чтобы продолжить\nподключитесь к интернету!", "Подключиться к интернету и продолжить играть", "Подключиться", null, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -460,7 +429,7 @@ public class MainScreenActivity  extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Boolean> task) {
                 if (task.isSuccessful()) {
-                    apiLink = mFirebaseRemoteConfig.getString("apiSecretS");
+                    apiLink = mFirebaseRemoteConfig.getString("apiNL");
                 } else {
                     Log.e("Google FireBase", "SLIHILAC HOPA");
                     Exception e = task.getException(); // Получаем исключение
@@ -503,14 +472,14 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                 }
                                             }, null);
                                         }
-                                        //testApi = response.body().getTestApi();
+                                        ConfigLinks.testApi = response.body().getIsTest();
                                     }
-                                    Lists.archives.clear();
-                                    Lists.archives.addAll(response.body().getArchives());
-                                    Lists.deleted.clear();
-                                    Lists.deleted.addAll(response.body().getDeleted());
+                                    ConfigLinks.archives.clear();
+                                    ConfigLinks.archives.addAll(response.body().getArchives());
+                                    ConfigLinks.deleted.clear();
+                                    ConfigLinks.deleted.addAll(response.body().getDeleted());
 
-                                    Lists.launcher_dan = new String[]{response.body().getLauncherUrl(), response.body().getLauncherPath(), response.body().getLauncherName()};
+                                    ConfigLinks.launcher_dan = new String[]{response.body().getLauncherUrl(), response.body().getLauncherPath(), response.body().getLauncherName()};
 
                                     sInterface.getMain(response.body().getApi()).enqueue(new Callback<Main>() {
                                         @Override
@@ -518,26 +487,24 @@ public class MainScreenActivity  extends AppCompatActivity {
 
                                             String storiesLink = response.body().getStories();
 
-                                            Lists.createCharacterUrl = response.body().getCreateCharacter();
-
-                                            Lists.verifyAuthUrl = response.body().getVerifyAuth();
-
-                                            Lists.accountDetailsUrl = response.body().getAccountDetails();
-
-                                            Lists.isAccUrl = response.body().getIsAcc();
-
-                                            Lists.skinsCDNUrl = response.body().getSkinsCDN();
+                                            ConfigLinks.verifyAuthUrl = response.body().getVerifyAuth();
+                                            ConfigLinks.resetPassword = response.body().getResetPassword();
+                                            ConfigLinks.characterUrl = response.body().getCharacter();
+                                            ConfigLinks.accountDetailsUrl = response.body().getAccountDetails();
+                                            ConfigLinks.isAccUrl = response.body().getIsAcc();
+                                            ConfigLinks.skinsCDNUrl = response.body().getSkinsCDN();
+                                            ConfigLinks.deleteAcc = response.body().getDeleteAcc();
 
                                             sInterface.getServers(response.body().getServers()).enqueue(new Callback<List<Servers>>() {
                                                 @Override
                                                 public void onResponse(Call<List<Servers>> call, Response<List<Servers>> response) {
 
-                                                    List<Servers> servers = response.body();
+                                                    List<Servers> servers = response.body(); // Скорее всего на переделку
                                                     for (Servers server : servers) {
-                                                        Lists.slist.add(new Servers(server.getName(), server.getColor(), server.getStatus(), server.getRecommend(), server.getNewStatus(), server.getEdgarHost(), server.getEdgarPort(), server.getId()));
+                                                        ConfigLinks.serverList.add(new Servers(server.getName(), server.getColor(), server.getStatus(), server.getRecommend(), server.getNewStatus(), server.getEdgarHost(), server.getEdgarPort(), server.getId()));
                                                     }
 
-                                                    ArrayList<Servers> serversItem = Lists.slist;
+                                                    ArrayList<Servers> serversItem = ConfigLinks.serverList;
                                                     ArrayList<Servers> serversrec = new ArrayList<>();
                                                     ArrayList<Servers> serversnew = new ArrayList<>();
                                                     ArrayList<Servers> serversbce = new ArrayList<>();
@@ -603,131 +570,34 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                     }
                                                     serverss.addAll(serversbce);
                                                     //Log.e("edgar", "serversItem.3 > " + serverss.size());
-                                                    Lists.slist = serverss;
+                                                    ConfigLinks.serverList = serverss;
 
-                                                    sInterface.getStories(storiesLink).enqueue(new Callback<List<News>>() {
+                                                    sInterface.getStories(storiesLink).enqueue(new Callback<List<Stories>>() {
                                                         @Override
-                                                        public void onResponse(Call<List<News>> call, Response<List<News>> response) {
+                                                        public void onResponse(Call<List<Stories>> call, Response<List<Stories>> response) {
 
-                                                            Servers item = (Servers) Lists.slist.get(0);
+                                                            Servers item = (Servers) ConfigLinks.serverList.get(0);
 
-                                                            EdgarConectV2.host = item.getEdgarHost();
+                                                            EdgarConectV2.host = item.getEdgarHost();// Разоброаться с конекутом!
                                                             EdgarConectV2.port = item.getEdgarPort();
 
-                                                            List<News> news = response.body();
+                                                            List<Stories> Stories = response.body();
 
-                                                            for (News storie : news) {
-                                                                Lists.nlist.add(new News(storie.getImageUrl(), storie.getTitle(), storie.getTitleBig(), storie.getUrl(), storie.getImageFullUrl()));
+                                                            for (Stories story : Stories) {
+                                                                ConfigLinks.storyList.add(new Stories(story.getImageUrl(), story.getMiniDate()));
                                                             }
 
-
-
-                                                            List<Archive> archiveList = Lists.archives;
-                                                            List<Deleted> deletedList = Lists.deleted;
-
-                                                            List<String> path = new ArrayList<>();
-                                                            List<String> unZip = new ArrayList<>();
-                                                            List<String> toUnZip = new ArrayList<>();
-                                                            List<String> url = new ArrayList<>();
-                                                            long si = 0;
-
-                                                            for (int i = 0; deletedList.size() > i; i++) {
-                                                                Deleted deleted = deletedList.get(i);
-                                                                File f = new File(deleted.getPath());
-                                                                if (f.exists()) {
-                                                                    if (f.isDirectory()) {
-                                                                        deleteDirectory(f);
-                                                                    } else if (f.isFile()) {
-                                                                        f.delete();
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            for (int i = 0; archiveList.size() > i; i++) {
-                                                                Archive archive = archiveList.get(i);
-                                                                long size = 0;
-                                                                for (int i1 = 0; archive.getPaths().size() > i1; i1++) {
-                                                                    ArchivePath archivePaths = archive.getPaths().get(i1);
-                                                                    size = size + getFileOrDirectorySize(archivePaths.getPath());
-                                                                    System.out.println(size);
-                                                                }
-                                                                System.out.println(size + " вес локал");
-                                                                if (archive.getSize() == size) {
-                                                                    System.out.println(archive.getSize() + " == " + size);
-                                                                    System.out.println("Все ровно");
-                                                                } else {
-                                                                    for (int i1 = 0; archive.getPaths().size() > i1; i1++) {
-                                                                        ArchivePath archivePaths = archive.getPaths().get(i1);
-                                                                        path.add(archivePaths.getPath());
-                                                                    }
-                                                                    toUnZip.add(archive.getZip_path());
-                                                                    unZip.add(archive.getType());
-                                                                    url.add(archive.getUrls());
-                                                                    si = si + archive.getSize();
-                                                                    System.out.println(si);
-                                                                }
-                                                            }
-                                                            FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).child("nick").addValueEventListener(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                    Log.e("edgar", "pon" + snapshot.getValue(String.class));
-                                                                    if (snapshot.getValue(String.class) == null) {
-                                                                        HashMap<String, String> serversInfo = new HashMap<>();
-                                                                        serversInfo.put("nick", "ERYHB_hjdcb");
-                                                                        FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).setValue(serversInfo);
-                                                                    } else {
-                                                                        nickName = snapshot.getValue(String.class);
-
-                                                                    }
-                                                                }
-
-                                                                @Override
-                                                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                                                }
-                                                            });
-
-                                                            clearModelCache();
-                                                            if (!url.isEmpty()) {
-                                                                long finalSi = si;
-                                                                dialogManager.showDialog("Доступно обновление!", "Размер обновления " + Utils.bytesIntoHumanReadable(si) + ".\nХочешь скачать его сейчас?", "Да", "Нет", new View.OnClickListener() {
-                                                                    @Override
-                                                                    public void onClick(View v) {
-                                                                        dialogManager.hideDialog();
-                                                                        startDownload(url, path, unZip, toUnZip);
-                                                                    }
-                                                                }, new View.OnClickListener() {
-                                                                    @Override
-                                                                    public void onClick(View v) {
-                                                                        dialogManager.hideDialog();
-                                                                        dialogManager.showDialog("Предупреждение", "Чтобы продолжить игру, загрузи, пожалуйста,\ndополнительные файлы: они содержат музыку, уровни,\ngрафику и прочий важный контент.\nНеобходимо скачать: " + Utils.bytesIntoHumanReadable(finalSi) + "\nЕсли выберешь «Позже», приложение закроется, и ты\nсможешь скачивать все необходимое в любое удобное\nвремя.\nБлагодарим за понимание!", "Скачать", "Позже", new View.OnClickListener() {
-                                                                            @Override
-                                                                            public void onClick(View v) {
-                                                                                dialogManager.hideDialog();
-                                                                                startDownload(url, path, unZip, toUnZip);
-                                                                            }
-                                                                        }, new View.OnClickListener() {
-                                                                            @Override
-                                                                            public void onClick(View v) {
-                                                                                finish();
-                                                                                onDestroy();
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                });
+                                                            if(isAuth) {
+                                                                onRequestPermissions(); // Загрузка игры!
                                                             } else {
-                                                                loading.setVisibility(View.VISIBLE);
-                                                                downloadBar.setVisibility(View.GONE);
-                                                                progress_text.setVisibility(View.VISIBLE);
-                                                                Intent intent = new Intent(MainScreenActivity.getInstance(), SAMP.class);
-                                                                startActivity(intent);
-                                                                overridePendingTransition(0, 0);// Установка анимации перехода в 0*
+                                                                dialogManager.showAuthDialog(true); //Проверенно
                                                             }
+
                                                         }
 
                                                         @Override
-                                                        public void onFailure(Call<List<News>> call, Throwable t) {
-                                                            //Toast.makeText(getApplicationContext(), "Ошибка News List", Toast.LENGTH_SHORT).show();
+                                                        public void onFailure(Call<List<Stories>> call, Throwable t) {
+                                                            //Toast.makeText(getApplicationContext(), "Ошибка Stories List", Toast.LENGTH_SHORT).show();
                                                             dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(View v) {
@@ -821,6 +691,110 @@ public class MainScreenActivity  extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    public void checkGameCache() {
+        List<Archive> archiveList = ConfigLinks.archives;
+        List<Deleted> deletedList = ConfigLinks.deleted;
+
+        List<String> path = new ArrayList<>();
+        List<String> unZip = new ArrayList<>();
+        List<String> toUnZip = new ArrayList<>();
+        List<String> url = new ArrayList<>();
+        long si = 0;
+
+        for (int i = 0; deletedList.size() > i; i++) {
+            Deleted deleted = deletedList.get(i);
+            File f = new File(deleted.getPath());
+            if (f.exists()) {
+                if (f.isDirectory()) {
+                    deleteDirectory(f);
+                } else if (f.isFile()) {
+                    f.delete();
+                }
+            }
+        }
+
+        for (int i = 0; archiveList.size() > i; i++) {
+            Archive archive = archiveList.get(i);
+            long size = 0;
+            for (int i1 = 0; archive.getPaths().size() > i1; i1++) {
+                ArchivePath archivePaths = archive.getPaths().get(i1);
+                size = size + getFileOrDirectorySize(archivePaths.getPath());
+                System.out.println(size);
+            }
+            System.out.println(size + " вес локал");
+            if (archive.getSize() == size) {
+                System.out.println(archive.getSize() + " == " + size);
+                System.out.println("Все ровно");
+            } else {
+                for (int i1 = 0; archive.getPaths().size() > i1; i1++) {
+                    ArchivePath archivePaths = archive.getPaths().get(i1);
+                    path.add(archivePaths.getPath());
+                }
+                toUnZip.add(archive.getZip_path());
+                unZip.add(archive.getType());
+                url.add(archive.getUrls());
+                si = si + archive.getSize();
+                System.out.println(si);
+            }
+        }
+        FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).child("nick").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.e("edgar", "pon" + snapshot.getValue(String.class));
+                if (snapshot.getValue(String.class) == null) {
+                    HashMap<String, String> serversInfo = new HashMap<>();
+                    serversInfo.put("nick", "ERYHB_hjdcb");
+                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).setValue(serversInfo);
+                } else {
+                    nickName = snapshot.getValue(String.class);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        clearModelCache();
+        if (!url.isEmpty()) {
+            long finalSi = si;
+            dialogManager.showDialog("Доступно обновление!", "Размер обновления " + Utils.bytesIntoHumanReadable(si) + ".\nХочешь скачать его сейчас?", "Да", "Нет", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogManager.hideDialog();
+                    startDownload(url, path, unZip, toUnZip);
+                }
+            }, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogManager.hideDialog();
+                    dialogManager.showDialog("Предупреждение", "Чтобы продолжить игру, загрузи, пожалуйста,\ndополнительные файлы: они содержат музыку, уровни,\ngрафику и прочий важный контент.\nНеобходимо скачать: " + Utils.bytesIntoHumanReadable(finalSi) + "\nЕсли выберешь «Позже», приложение закроется, и ты\nсможешь скачивать все необходимое в любое удобное\nвремя.\nБлагодарим за понимание!", "Скачать", "Позже", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialogManager.hideDialog();
+                            startDownload(url, path, unZip, toUnZip);
+                        }
+                    }, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            finish();
+                            onDestroy();
+                        }
+                    });
+                }
+            });
+        } else {
+            loading.setVisibility(View.VISIBLE);
+            downloadBar.setVisibility(View.GONE);
+            progress_text.setVisibility(View.VISIBLE);
+            Intent intent = new Intent(MainScreenActivity.getInstance(), SAMP.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);// Установка анимации перехода в 0*
+        }
     }
 
     public List<String> urlsst;
@@ -1084,11 +1058,10 @@ public class MainScreenActivity  extends AppCompatActivity {
                         super.completed(task);
                         if (!isApk) {
                             progressSizeFiles += task.getTotalBytes();
-                            System.out.println(urlsst.size() + " = " + i);
+                            System.out.println(urlsst.size() + " = " + i); // од вопросом
                             if (urlsst.size() > i) {
                                 String pathh = unnZip.get(i);
                                 String urlss = urlsst.get(i);
-                                System.out.println(urlss);
                                 createDownloadTask(urlss, pathh, false).start();
                                 i++;
                             } else {

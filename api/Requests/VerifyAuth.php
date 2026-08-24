@@ -1,38 +1,37 @@
 <?php 
-
-$randomCode = mt_rand(10000, 99999);
-//echo $randomCode;
-
-require_once('auth/phpmailer/PHPMailerAutoload.php');
-$mail = new PHPMailer;
-$mail->CharSet = 'utf-8';
-
+if (!isset($_POST['user_email']) || empty($_POST['user_email'])) {
+    exit;
+}
 $uemail = $_POST['user_email'];
-//echo $uemail;
 
-//$mail->SMTPDebug = 3;                               // Enable verbose debug output
+$randomCode = mt_rand(100000, 999999);
+
+require_once __DIR__ . '/vendor/phpmailer/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+$mail = new PHPMailer(true);
+$mail->CharSet = 'utf-8';
+$mail->SMTPDebug = 0; 
+
 try {
-$mail->isSMTP();                                      // Set mailer to use SMTP
-$mail->Host = 'mail.edgars.site';  																							// Specify main and backup SMTP servers
-$mail->SMTPAuth = true;                               // Enable SMTP authentication
-$mail->Username = 'edgar@edgars.site'; // Ваш логин от почты с которой будут отправляться письма
-$mail->Password = 'edgarsedgars228'; // Ваш пароль от почты с которой будут отправляться письма
-$mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
-$mail->Port = 465; // TCP port to connect to / этот порт может отличаться у других провайдеров
+    $mail->isSMTP();                                      
+    $mail->Host = 'mail.crmp.pro';  																							
+    $mail->SMTPAuth = true;                               
+    $mail->Username = 'auth@crmp.pro'; 
+    $mail->Password = 'iH1wK1uO4d'; 
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+    $mail->Port = 465; 
 
-$mail->setFrom('edgar@edgars.site'); // от кого будет уходить письмо?
-$mail->addAddress($uemail);     // Кому будет уходить письмо 
-//$mail->addAddress('ellen@example.com');               // Name is optional
-//$mail->addReplyTo('info@example.com', 'Information');
-//$mail->addCC('cc@example.com');
-//$mail->addBCC('bcc@example.com');
-//$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-//$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
-$mail->isHTML(true);                                  // Set email format to HTML
+    $mail->setFrom('auth@crmp.pro', 'МАТРЕШКА РП');
+    $mail->addAddress($uemail);     
 
-$mail->Subject = 'Заявка с тестового сайта, ваш код '.$randomCode.'';
-$mail->Body    = '<html lang="en">
-<head>
+    $mail->isHTML(true);                                  
+    $mail->Subject = $randomCode.' - код подтверждения';
+    
+    $mail->Body    = '<html lang="ru">
+    <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
@@ -113,7 +112,7 @@ $mail->Body    = '<html lang="en">
                             <td valign="top" align="center" style="padding: 0; Margin: 0; width: 560px"> 
                             <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border-spacing: 0px"> 
                               <tbody><tr> 
-                                <td align="center" style="padding: 0; Margin: 0"><p style="Margin: 0; font-family: lucida sans unicode,lucida grande,sans-serif; line-height: 24px; color: #1d1620; font-size: 16px"><strong>ВАШ КОД РЕГИСТРАЦИИ</strong></p></td> 
+                                <td align="center" style="padding: 0; Margin: 0"><p style="Margin: 0; font-family: lucida sans unicode,lucida grande,sans-serif; line-height: 24px; color: #1d1620; font-size: 16px"><strong>ВАШ КОД</strong></p></td> 
                               </tr> 
                             </tbody></table></td> 
                           </tr> 
@@ -171,12 +170,12 @@ $mail->Body    = '<html lang="en">
           </div>
 </body>
 </html>';
-//$mail->AltBody = 'g';
 
 $mail->send();
-//echo 'Письмо успешно отправлено';
 echo $randomCode;
 } catch (Exception $e) {
+    // В случае критического сбоя SMTP выполнение тихо прекращается
     //echo "Err";
+    exit;
 }
 ?>

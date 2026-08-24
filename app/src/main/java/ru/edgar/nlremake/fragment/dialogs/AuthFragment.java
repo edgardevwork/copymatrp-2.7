@@ -196,7 +196,7 @@ public class AuthFragment {
                                                         Info.put("way", 3);
                                                         FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
                                                         DialogManager.getDialogManager().hideAuthDialog();
-                                                        MainScreenActivity.getInstance().loadSettings();/// загрузка игры после входа
+                                                        MainScreenActivity.getInstance().onRequestPermissions();/// загрузка игры после входа
                                                     } else {
                                                         //ошибка
                                                         DialogManager.getDialogManager().hideAuthDialog();
@@ -236,7 +236,7 @@ public class AuthFragment {
                                                 FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
                                                 // EDGAR 3.0 NLRemake version от 31.07.2026
                                                 DialogManager.getDialogManager().hideAuthDialog();
-                                                MainScreenActivity.getInstance().loadSettings();
+                                                MainScreenActivity.getInstance().onRequestPermissions();
                                             } else {
                                                 DialogManager.getDialogManager().hideAuthDialog();
                                                 DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {

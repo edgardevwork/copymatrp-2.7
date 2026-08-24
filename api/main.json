@@ -1,12 +1,11 @@
 {
-	"servers": "https://crmp.pro/files/matrp/old/Requests/Servers.php",
-	"stories": "https://crmp.pro/files/matrp/new/Requests/Stories.php",
-	"faq": "https://crmp.pro/files/matrp/new/Requests/Faq.php",
-	"createCharacter": "https://crmp.pro/files/matrp/new/Requests/CreateCharacter.php",
-    "verifyAuth": "https://crmp.pro/files/matrp/new/Requests/VerifyAuth.php",
-    "accountDetails": "https://crmp.pro/files/matrp/new/Requests/AccountDetails.php",
-    "isAcc": "https://crmp.pro/files/matrp/new/Requests/IsAcc.php",
-    "dannyUser": "https://crmp.pro/files/matrp/new/Requests/DannyUser.php",
-    "deleteAcc": "https://crmp.pro/files/matrp/new/Requests/DeleteAcc.php",
-    "skinsCDN": "https://crmp.pro/files/matrp/new/images/skin_"
+    "servers": "https://crmp.pro/files/matrp/2-7nlremake/Requests/Servers.php",
+    "stories": "https://crmp.pro/files/matrp/2-7nlremake/Requests/Stories.php",
+    "verifyAuth": "https://crmp.pro/files/matrp/2-7nlremake/Requests/VerifyAuth.php",
+    "resetPassword": "https://crmp.pro/files/matrp/2-7nlremake/Requests/ResetPassword.php",
+    "character": "https://crmp.pro/files/matrp/2-7nlremake/Requests/Character.php",
+    "accountDetails": "https://crmp.pro/files/matrp/2-7nlremake/Requests/AccountDetails.php",
+    "isAcc": "https://crmp.pro/files/matrp/2-7nlremake/Requests/IsAcc.php",
+    "skinsCDN": "https://crmp.pro/files/matrp/2-7nlremake/images/skin_",
+    "deleteAcc": "https://crmp.pro/files/matrp/2-7nlremake/Requests/DeleteAcc.php"
 }

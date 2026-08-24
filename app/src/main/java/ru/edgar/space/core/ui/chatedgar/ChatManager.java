@@ -19,7 +19,7 @@ import com.nvidia.devtech.NvEventQueueActivity;
 
 import java.util.ArrayList;
 
-import ru.edgar.nlremake.network.Lists;
+import ru.edgar.nlremake.network.ConfigLinks;
 import ru.edgar.space.InterfacesManager;
 import ru.edgar.matrp.R;
 import ru.edgar.space.SAMP;
@@ -74,7 +74,7 @@ public class ChatManager {
         LinearLayoutManager layoutManager = new LinearLayoutManager(nvEventQueueActivity, LinearLayoutManager.VERTICAL, false);
         msg_messages.setLayoutManager(layoutManager);
 
-        msglist = Lists.msglist;
+        msglist = ConfigLinks.msglist;
         chatAdapter = new ChatAdapter(nvEventQueueActivity, msglist);
         msg_messages.setAdapter(chatAdapter);
         msg_messages.setVerticalScrollBarEnabled(false);
