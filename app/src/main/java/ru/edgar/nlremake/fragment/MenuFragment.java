@@ -34,12 +34,12 @@ import ru.edgar.space.SAMP;
 
 public class MenuFragment {
 
-    public NvEventQueueActivity nvEventQueueActivity = null;
-    public final Handler handler = new Handler();
-    public ViewGroup viewGroup = null;
-    public FrameLayout nick_name_layout, news, btn_vk, btn_telegram, btn_settings;
-    public FrameLayout btn_support, btn_balance, btn_donate, frame_server, btn_play;
-    public LinearLayout btn_shop, gift_window;
+    private NvEventQueueActivity nvEventQueueActivity = null;
+    private final Handler handler = new Handler();
+    private ViewGroup viewGroup = null;
+    private FrameLayout nick_name_layout, news, btn_vk, btn_telegram, btn_settings;
+    private FrameLayout btn_support, btn_balance, btn_donate, frame_server, btn_play;
+    private LinearLayout btn_shop, gift_window;
     private ImageView news_image, news_image_two;
     private boolean isFirstImageVisible = true;
     private int currentStoryIndex = 0;
@@ -54,7 +54,7 @@ public class MenuFragment {
         init();
     }
 
-    public void init() {
+    private void init() {
         if (viewGroup != null) {
             //Log.e("edgar", "view" + viewGroup.toString());
             return;

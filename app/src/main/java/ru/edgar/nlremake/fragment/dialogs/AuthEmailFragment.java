@@ -48,16 +48,16 @@ import ru.edgar.space.InterfacesManager;
 
 public class AuthEmailFragment {
 
-    public int secs = 60;
+    private int secs = 60;
     private String codeMail;
     private ViewGroup viewGroup;
 
-    public boolean isSendCode = false;
+    private boolean isSendCode = false;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private static final String PASSWORD_REGEX = "^[a-zA-Z0-9]{6,30}$";
     private AuthStatus status_auth = AuthStatus.EMAIL_CHECK; // 0 - email, 1 - login, 2 - pases, 3 - code, 4 - recover email, 5 - recover code, 6 - recover creste pass;
 
-    public enum AuthStatus {
+    private enum AuthStatus {
         EMAIL_CHECK,
         EMAIL_LOGIN,
         EMAIL_CREATE_PASS,
@@ -67,7 +67,7 @@ public class AuthEmailFragment {
         EMAIL_RECOVER_CREATE_PASS;
     }
 
-    public boolean isFreeEmail = true;
+    private boolean isFreeEmail = true;
     private TextView bigText, littleText, email_error_text, email_pass_error_text;
     private FrameLayout btn_back, main_btn_yes, main_btn_no;
     private LinearLayout email_layout_email, email_layout_pass, email_layout_pass2, email_layout_code;
@@ -671,7 +671,7 @@ public class AuthEmailFragment {
         viewGroup.setVisibility(View.GONE);
     }
 
-    public class Secynds implements Runnable {
+    private class Secynds implements Runnable {
         public Secynds() {
         }
 
@@ -825,7 +825,7 @@ public class AuthEmailFragment {
         view.startAnimation(animation);
     }
 
-    void showAuthEmailDialog() {
+    public void showAuthEmailDialog() {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
         email_layout_email.setVisibility(View.VISIBLE);
         email_layout_pass.setVisibility(View.GONE);
@@ -892,7 +892,7 @@ public class AuthEmailFragment {
         email_layout_code.setAlpha(1.0f);
     }
 
-    void hideAuthEmailDialog() {
+    public void hideAuthEmailDialog() {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.GONE);
     }
 }

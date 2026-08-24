@@ -46,7 +46,7 @@ import ru.edgar.space.InterfacesManager;
 
 public class AuthFragment {
 
-    public ViewGroup viewGroup;
+    private ViewGroup viewGroup;
     private FrameLayout main_btn_google;
     private OneTap vk_onetap;
     private CheckBox checkBox, checkBox1;
@@ -367,7 +367,7 @@ public class AuthFragment {
         return p_Text;
     }
 
-    void showAuthDialog(boolean isOnce) {
+    public void showAuthDialog(boolean isOnce) {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
         resetVkButtonState();
         if(isOnce) {
@@ -376,11 +376,11 @@ public class AuthFragment {
         }
     }
 
-    void hideAuthDialog() {
+    public void hideAuthDialog() {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.GONE);
     }
 
-    public void onClickAuthGoogle() {
+    private void onClickAuthGoogle() {
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(MainScreenActivity.getInstance().getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -394,7 +394,7 @@ public class AuthFragment {
         MainScreenActivity.getInstance().startActivityForResult(i, 1234);
     }
 
-    public class Auth implements OnCompleteListener<Void> {
+    private class Auth implements OnCompleteListener<Void> {
         GoogleSignInClient googleSignInClient1;
 
         public Auth(GoogleSignInClient googleSignInClient) {

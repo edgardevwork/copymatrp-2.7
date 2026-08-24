@@ -15,9 +15,7 @@ import ru.edgar.nlremake.activity.MainScreenActivity;
 public class LoadingFragment {
 
     private ViewGroup viewGroup;
-
     private static LoadingFragment instance;
-
     private ImageView progress_loading;
 
     public LoadingFragment() {

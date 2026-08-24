@@ -61,7 +61,7 @@ public class DialogFragment extends AppCompatActivity {
         viewGroup.setVisibility(View.GONE);
     }
 
-    void showDialog(String name, String dname, String b1, String b2, View.OnClickListener click1, View.OnClickListener click2) {
+    public void showDialog(String name, String dname, String b1, String b2, View.OnClickListener click1, View.OnClickListener click2) {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
 
         checkBox.setVisibility(View.GONE);
@@ -118,7 +118,7 @@ public class DialogFragment extends AppCompatActivity {
         }
     }
 
-    void showErrorDialog(String name, String dname, String b1, View.OnClickListener click1, boolean isCheckBox, String dCheckBox) {
+    public void showErrorDialog(String name, String dname, String b1, View.OnClickListener click1, boolean isCheckBox, String dCheckBox) {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
 
         checkBox.setChecked(false);
@@ -170,7 +170,7 @@ public class DialogFragment extends AppCompatActivity {
         main_btn_no.setVisibility(View.GONE);
     }
 
-    void showDialogCheckBoxes(String name, String dname, String b1, View.OnClickListener click1, CheckBox[] checkBoxes) {
+    public void showDialogCheckBoxes(String name, String dname, String b1, View.OnClickListener click1, CheckBox[] checkBoxes) {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
 
         checkBox.setChecked(checkBoxes[0].isChecked());
@@ -275,26 +275,7 @@ public class DialogFragment extends AppCompatActivity {
         return p_Text;
     }
 
-    void hideDialog() {
+    public void hideDialog() {
         MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.GONE);
     }
-
-    /*public void show() {
-        Point point = new Point();
-        MainScreenActivity.getInstance().getWindowManager().getDefaultDisplay().getSize(point);
-        viewGroup.clearAnimation();
-        viewGroup.setAlpha(0.0f);
-        viewGroup.setVisibility(View.VISIBLE);
-        viewGroup.animate().alpha(1.0f).setDuration(300L).start();
-    }
-
-    public void hide() {
-        Point point = new Point();
-        MainScreenActivity.getInstance().getWindowManager().getDefaultDisplay().getSize(point);
-        viewGroup.clearAnimation();
-        viewGroup.setAlpha(1.0f);
-        viewGroup.setVisibility(View.VISIBLE);
-        viewGroup.animate().alpha(0.0f).setDuration(300L).start();
-
-    }*/
 }
