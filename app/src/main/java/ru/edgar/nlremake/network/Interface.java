@@ -10,7 +10,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Url;
 import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Details;
-import ru.edgar.nlremake.model.FaqList;
 import ru.edgar.nlremake.model.Main;
 import ru.edgar.nlremake.model.News;
 import ru.edgar.nlremake.model.Servers;
@@ -32,9 +31,6 @@ public interface Interface {
 
     @GET
     Call<List<News>> getStories(@Url String url);
-
-    @GET
-    Call<FaqList> getFaqList(@Url String url);
 
     @POST
     @FormUrlEncoded

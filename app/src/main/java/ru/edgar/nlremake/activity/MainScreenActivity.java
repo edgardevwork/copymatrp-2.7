@@ -34,7 +34,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
@@ -60,9 +59,6 @@ import com.vk.id.VKID;
 
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +87,6 @@ import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Archive;
 import ru.edgar.nlremake.model.ArchivePath;
 import ru.edgar.nlremake.model.Deleted;
-import ru.edgar.nlremake.model.FaqList;
 import ru.edgar.nlremake.model.Main;
 import ru.edgar.nlremake.model.News;
 import ru.edgar.nlremake.model.Servers;
@@ -523,8 +518,6 @@ public class MainScreenActivity  extends AppCompatActivity {
 
                                             String storiesLink = response.body().getStories();
 
-                                            String faqLink = response.body().getFaq();
-
                                             Lists.createCharacterUrl = response.body().getCreateCharacter();
 
                                             Lists.verifyAuthUrl = response.body().getVerifyAuth();
@@ -627,86 +620,87 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                                 Lists.nlist.add(new News(storie.getImageUrl(), storie.getTitle(), storie.getTitleBig(), storie.getUrl(), storie.getImageFullUrl()));
                                                             }
 
-                                                            sInterface.getFaqList(faqLink).enqueue(new Callback<FaqList>() {
-                                                                public void onFailure(Call<FaqList> call, Throwable th) {
-                                                                    Toast.makeText(getApplicationContext(), "Ошибка FAQ List", Toast.LENGTH_SHORT).show();
+
+
+                                                            List<Archive> archiveList = Lists.archives;
+                                                            List<Deleted> deletedList = Lists.deleted;
+
+                                                            List<String> path = new ArrayList<>();
+                                                            List<String> unZip = new ArrayList<>();
+                                                            List<String> toUnZip = new ArrayList<>();
+                                                            List<String> url = new ArrayList<>();
+                                                            long si = 0;
+
+                                                            for (int i = 0; deletedList.size() > i; i++) {
+                                                                Deleted deleted = deletedList.get(i);
+                                                                File f = new File(deleted.getPath());
+                                                                if (f.exists()) {
+                                                                    if (f.isDirectory()) {
+                                                                        deleteDirectory(f);
+                                                                    } else if (f.isFile()) {
+                                                                        f.delete();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            for (int i = 0; archiveList.size() > i; i++) {
+                                                                Archive archive = archiveList.get(i);
+                                                                long size = 0;
+                                                                for (int i1 = 0; archive.getPaths().size() > i1; i1++) {
+                                                                    ArchivePath archivePaths = archive.getPaths().get(i1);
+                                                                    size = size + getFileOrDirectorySize(archivePaths.getPath());
+                                                                    System.out.println(size);
+                                                                }
+                                                                System.out.println(size + " вес локал");
+                                                                if (archive.getSize() == size) {
+                                                                    System.out.println(archive.getSize() + " == " + size);
+                                                                    System.out.println("Все ровно");
+                                                                } else {
+                                                                    for (int i1 = 0; archive.getPaths().size() > i1; i1++) {
+                                                                        ArchivePath archivePaths = archive.getPaths().get(i1);
+                                                                        path.add(archivePaths.getPath());
+                                                                    }
+                                                                    toUnZip.add(archive.getZip_path());
+                                                                    unZip.add(archive.getType());
+                                                                    url.add(archive.getUrls());
+                                                                    si = si + archive.getSize();
+                                                                    System.out.println(si);
+                                                                }
+                                                            }
+                                                            FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).child("nick").addValueEventListener(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                    Log.e("edgar", "pon" + snapshot.getValue(String.class));
+                                                                    if (snapshot.getValue(String.class) == null) {
+                                                                        HashMap<String, String> serversInfo = new HashMap<>();
+                                                                        serversInfo.put("nick", "ERYHB_hjdcb");
+                                                                        FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).setValue(serversInfo);
+                                                                    } else {
+                                                                        nickName = snapshot.getValue(String.class);
+
+                                                                    }
                                                                 }
 
-                                                                public void onResponse(Call<FaqList> call, Response<FaqList> response) {
-                                                                    if (response.body() != null) {
-                                                                        Lists.faqlist.clear();
-                                                                        Lists.faqlist.addAll(response.body().getArray());
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                }
+                                                            });
+
+                                                            clearModelCache();
+                                                            if (!url.isEmpty()) {
+                                                                long finalSi = si;
+                                                                dialogManager.showDialog("Доступно обновление!", "Размер обновления " + Utils.bytesIntoHumanReadable(si) + ".\nХочешь скачать его сейчас?", "Да", "Нет", new View.OnClickListener() {
+                                                                    @Override
+                                                                    public void onClick(View v) {
+                                                                        dialogManager.hideDialog();
+                                                                        startDownload(url, path, unZip, toUnZip);
                                                                     }
-
-                                                                    List<Archive> archiveList = Lists.archives;
-                                                                    List<Deleted> deletedList = Lists.deleted;
-
-                                                                    List<String> path = new ArrayList<>();
-                                                                    List<String> unZip = new ArrayList<>();
-                                                                    List<String> toUnZip = new ArrayList<>();
-                                                                    List<String> url = new ArrayList<>();
-                                                                    long si = 0;
-
-                                                                    for (int i = 0; deletedList.size() > i; i++) {
-                                                                        Deleted deleted = deletedList.get(i);
-                                                                        File f = new File(deleted.getPath());
-                                                                        if (f.exists()) {
-                                                                            if (f.isDirectory()) {
-                                                                                deleteDirectory(f);
-                                                                            } else if (f.isFile()) {
-                                                                                f.delete();
-                                                                            }
-                                                                        }
-                                                                    }
-
-                                                                    for (int i = 0; archiveList.size() > i; i++) {
-                                                                        Archive archive = archiveList.get(i);
-                                                                        long size = 0;
-                                                                        for (int i1 = 0; archive.getPaths().size() > i1; i1++) {
-                                                                            ArchivePath archivePaths = archive.getPaths().get(i1);
-                                                                            size = size + getFileOrDirectorySize(archivePaths.getPath());
-                                                                            System.out.println(size);
-                                                                        }
-                                                                        System.out.println(size + " вес локал");
-                                                                        if (archive.getSize() == size) {
-                                                                            System.out.println(archive.getSize() + " == " + size);
-                                                                            System.out.println("Все ровно");
-                                                                        } else {
-                                                                            for (int i1 = 0; archive.getPaths().size() > i1; i1++) {
-                                                                                ArchivePath archivePaths = archive.getPaths().get(i1);
-                                                                                path.add(archivePaths.getPath());
-                                                                            }
-                                                                            toUnZip.add(archive.getZip_path());
-                                                                            unZip.add(archive.getType());
-                                                                            url.add(archive.getUrls());
-                                                                            si = si + archive.getSize();
-                                                                            System.out.println(si);
-                                                                        }
-                                                                    }
-                                                                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).child("nick").addValueEventListener(new ValueEventListener() {
-                                                                        @Override
-                                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                            Log.e("edgar", "pon" + snapshot.getValue(String.class));
-                                                                            if (snapshot.getValue(String.class) == null) {
-                                                                                HashMap<String, String> serversInfo = new HashMap<>();
-                                                                                serversInfo.put("nick", "ERYHB_hjdcb");
-                                                                                FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).setValue(serversInfo);
-                                                                            } else {
-                                                                                nickName = snapshot.getValue(String.class);
-
-                                                                            }
-                                                                        }
-
-                                                                        @Override
-                                                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                                                        }
-                                                                    });
-
-                                                                    clearModelCache();
-                                                                    if (!url.isEmpty()) {
-                                                                        long finalSi = si;
-                                                                        dialogManager.showDialog("Доступно обновление!", "Размер обновления " + Utils.bytesIntoHumanReadable(si) + ".\nХочешь скачать его сейчас?", "Да", "Нет", new View.OnClickListener() {
+                                                                }, new View.OnClickListener() {
+                                                                    @Override
+                                                                    public void onClick(View v) {
+                                                                        dialogManager.hideDialog();
+                                                                        dialogManager.showDialog("Предупреждение", "Чтобы продолжить игру, загрузи, пожалуйста,\ndополнительные файлы: они содержат музыку, уровни,\ngрафику и прочий важный контент.\nНеобходимо скачать: " + Utils.bytesIntoHumanReadable(finalSi) + "\nЕсли выберешь «Позже», приложение закроется, и ты\nсможешь скачивать все необходимое в любое удобное\nвремя.\nБлагодарим за понимание!", "Скачать", "Позже", new View.OnClickListener() {
                                                                             @Override
                                                                             public void onClick(View v) {
                                                                                 dialogManager.hideDialog();
@@ -715,32 +709,20 @@ public class MainScreenActivity  extends AppCompatActivity {
                                                                         }, new View.OnClickListener() {
                                                                             @Override
                                                                             public void onClick(View v) {
-                                                                                dialogManager.hideDialog();
-                                                                                dialogManager.showDialog("Предупреждение", "Чтобы продолжить игру, загрузи, пожалуйста,\ndополнительные файлы: они содержат музыку, уровни,\ngрафику и прочий важный контент.\nНеобходимо скачать: " + Utils.bytesIntoHumanReadable(finalSi) + "\nЕсли выберешь «Позже», приложение закроется, и ты\nсможешь скачивать все необходимое в любое удобное\nвремя.\nБлагодарим за понимание!", "Скачать", "Позже", new View.OnClickListener() {
-                                                                                    @Override
-                                                                                    public void onClick(View v) {
-                                                                                        dialogManager.hideDialog();
-                                                                                        startDownload(url, path, unZip, toUnZip);
-                                                                                    }
-                                                                                }, new View.OnClickListener() {
-                                                                                    @Override
-                                                                                    public void onClick(View v) {
-                                                                                        finish();
-                                                                                        onDestroy();
-                                                                                    }
-                                                                                });
+                                                                                finish();
+                                                                                onDestroy();
                                                                             }
                                                                         });
-                                                                    } else {
-                                                                        loading.setVisibility(View.VISIBLE);
-                                                                        downloadBar.setVisibility(View.GONE);
-                                                                        progress_text.setVisibility(View.VISIBLE);
-                                                                        Intent intent = new Intent(MainScreenActivity.getInstance(), SAMP.class);
-                                                                        startActivity(intent);
-                                                                        overridePendingTransition(0, 0);// Установка анимации перехода в 0*
                                                                     }
-                                                                }
-                                                            });
+                                                                });
+                                                            } else {
+                                                                loading.setVisibility(View.VISIBLE);
+                                                                downloadBar.setVisibility(View.GONE);
+                                                                progress_text.setVisibility(View.VISIBLE);
+                                                                Intent intent = new Intent(MainScreenActivity.getInstance(), SAMP.class);
+                                                                startActivity(intent);
+                                                                overridePendingTransition(0, 0);// Установка анимации перехода в 0*
+                                                            }
                                                         }
 
                                                         @Override

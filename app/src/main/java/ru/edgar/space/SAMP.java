@@ -32,7 +32,6 @@ import kotlin.jvm.internal.Intrinsics;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
-import ru.edgar.space.core.ui.noty.Notification;
 
 @Obfuscate
 public class SAMP extends GTASA implements HeightProvider.HeightListener {
@@ -59,7 +58,6 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
     private InputManager mInputManager = null;
     private HeightProvider mHeightProvider = null;
-    private Notification mNotification = null;
     private GameRender mGameRender = null;
     public SoundPool soundPool;
     private InterfacesManager mInterfacesManager = null;
@@ -285,7 +283,6 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
         mInputManager = new InputManager(this);
         mHeightProvider = new HeightProvider(this).init(mRootFrame).setHeightListener(this);
-        mNotification = new Notification(this);
         mGameRender = new GameRender(this);
         mInterfacesManager = new InterfacesManager(this);
         //mInterfacesManager = new ru.edgar.space.core.ui.keyboard.j5.a(this);
@@ -473,7 +470,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
     //public void RadarBR() { runOnUiThread(() -> { setNativeHudElementPosition(6, 5, 5); }); }
 
-    public void showNotification(int type, String text, int duration, String actionforBtn, String textBtn) { runOnUiThread(() -> mNotification.ShowNotification(type, text, duration, actionforBtn, textBtn)); }
+    public void showNotification(int type, String text, int duration, String actionforBtn, String textBtn) {  }
 
     public void showradar() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().ShowRadar(); }); }
 
