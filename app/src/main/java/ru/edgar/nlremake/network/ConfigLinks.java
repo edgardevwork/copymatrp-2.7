@@ -18,6 +18,7 @@ public class ConfigLinks {
 	public static String accountDetailsUrl;
 	public static String isAccUrl;
 	public static String skinsCDNUrl;
+	public static String crashReportUrl;
 	public static String deleteAcc;
 	public static String[] launcher_dan = new String[5];
 

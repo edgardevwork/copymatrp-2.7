@@ -14,11 +14,12 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class CrashReporter {
 
-    private static final String SERVER_URL = "https://crmp.pro/test/api/ReportBag.php"; // Замените на URL вашего сервера
+    private static final String SERVER_URL = ConfigLinks.crashReportUrl; // Замените на URL вашего сервера
 
     /**
      * Главный публичный метод отправки репорта об ошибке.

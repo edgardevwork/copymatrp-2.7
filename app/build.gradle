@@ -174,4 +174,8 @@ dependencies {
 
     implementation "com.joom.paranoid:paranoid-gradle-plugin:0.3.14"
     implementation 'com.bytedance.android:shadowhook:2.0.0'
+
+    // Иконки в данных профиля
+
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 }

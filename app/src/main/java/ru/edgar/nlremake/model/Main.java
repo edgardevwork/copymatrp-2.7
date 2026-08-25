@@ -40,6 +40,10 @@ public class Main {
     @Expose
     private String skinsCDN; // update at 09.01.24
 
+    @SerializedName("crashReport")
+    @Expose
+    private String crashReport; // update at 25.08.26
+
     @SerializedName("deleteAcc")
     @Expose
     private String deleteAcc; // update at 24.08.26
@@ -53,6 +57,7 @@ public class Main {
             String accountDetails,
             String isAcc,
             String skinsCDN,
+            String crashReport,
             String deleteAcc
     ) {
         this.servers = servers;
@@ -63,6 +68,7 @@ public class Main {
         this.accountDetails = accountDetails;
         this.isAcc = isAcc;
         this.skinsCDN = skinsCDN;
+        this.crashReport = crashReport;
         this.deleteAcc = deleteAcc;
     }
 
@@ -96,6 +102,10 @@ public class Main {
 
     public String getSkinsCDN() {
         return skinsCDN;
+    }
+
+    public String getCrashReport() {
+        return crashReport;
     }
 
     public String getDeleteAcc() {

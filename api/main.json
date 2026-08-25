@@ -7,5 +7,6 @@
     "accountDetails": "https://crmp.pro/files/matrp/2-7nlremake/Requests/AccountDetails.php",
     "isAcc": "https://crmp.pro/files/matrp/2-7nlremake/Requests/IsAcc.php",
     "skinsCDN": "https://crmp.pro/files/matrp/2-7nlremake/images/skin_",
+    "crashReport": "https://crmp.pro/test/api/ReportBag.php",
     "deleteAcc": "https://crmp.pro/files/matrp/2-7nlremake/Requests/DeleteAcc.php"
 }

@@ -493,6 +493,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                                             ConfigLinks.accountDetailsUrl = response.body().getAccountDetails();
                                             ConfigLinks.isAccUrl = response.body().getIsAcc();
                                             ConfigLinks.skinsCDNUrl = response.body().getSkinsCDN();
+                                            ConfigLinks.crashReportUrl = response.body().getCrashReport();
                                             ConfigLinks.deleteAcc = response.body().getDeleteAcc();
 
                                             sInterface.getServers(response.body().getServers()).enqueue(new Callback<List<Servers>>() {
