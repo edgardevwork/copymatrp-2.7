@@ -479,6 +479,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     public void updateSplash(int percent, int pon) { runOnUiThread(() -> { /*InterfacesManager.getInterfacesManager().getChooseServerManager().Update(percent, pon); */} ); }
 
     public void hideSplash() { runOnUiThread(() -> {
+        handler.post(InterfacesManager.getInterfacesManager().menuFragment.carouselStoryRunnable);
         mVideoView.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
             @Override
             public void run() {

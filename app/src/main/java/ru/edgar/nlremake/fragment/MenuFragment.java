@@ -42,7 +42,7 @@ public class MenuFragment {
     private boolean isFirstImageVisible = true;
     private int currentStoryIndex = 0;
 
-    private Runnable carouselStoryRunnable;
+    public Runnable carouselStoryRunnable;
 
     private ArrayList<Stories> storiesList;
 
@@ -143,13 +143,15 @@ public class MenuFragment {
             }
         };
 
-        handler.post(carouselStoryRunnable);
+        //handler.post(carouselStoryRunnable);
 
         nick_name_layout = viewGroup.findViewById(R.id.nick_name_layout);
         nick_name_layout.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, nick_name_layout));
         nick_name_layout.setOnClickListener(v -> {
             // Переход на персонажа
-            SAMP.getInstance().mAuth.signOut();
+            //SAMP.getInstance().mAuth.signOut();
+            hide();
+            new ProfileFragment();
         });
 
         news = viewGroup.findViewById(R.id.news);
@@ -227,6 +229,6 @@ public class MenuFragment {
     }
 
     public void hide() {
-        viewGroup.setVisibility(View.GONE);
+        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
     }
 }

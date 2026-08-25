@@ -292,7 +292,7 @@ void DoInitStuff()
 		/*TheCamera.m_aCams[0].FOV = 40.0f;
 		*(float *)(g_libGTASA + (VER_x32 ? 0x006B1CB8 : 0x88E6BC)) = 40.0f;*/
 		pGame->SetWorldWeather(0);
-		pGame->SetWorldTime(5,0);
+		pGame->SetWorldTime(12,0);
 		pGame->DisplayHUD(false);
 		pPlayerPed->TogglePlayerControllable(false);
 		fufy = new CPlayerPed(34, 98, 1725.1f, -2352.7f, 11.00f, 7.0f);

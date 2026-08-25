@@ -47,7 +47,7 @@ public class InterfacesManager {
     private Dialog mDialog = null;
     private KeyBoard mKeyBoard = null;
     private SpawnMenu mSpawnMenu = null;
-    private MenuFragment menuFragment = null;
+    public MenuFragment menuFragment = null;
 
     public InterfacesManager(NvEventQueueActivity nvEventQueueActivity) {
         this.nvEventQueueActivity = nvEventQueueActivity;
@@ -78,26 +78,32 @@ public class InterfacesManager {
             getHudManager().hud_map_bg.setVisibility(View.INVISIBLE);
         });
     }
-    
-    public void AnimVisibale(ViewGroup viewGroup, int view) {
+
+    public void AnimVisibale(ViewGroup viewGroup, int targetState) {
         if (viewGroup != null) {
-            if (view == View.VISIBLE) {
-                viewGroup.animate().setDuration(150).setListener(new AnimatorListenerAdapter() {
-                    public void onAnimationEnd(Animator animation) {
-                        viewGroup.setVisibility(View.VISIBLE);
-                        super.onAnimationEnd(animation);
-                    }
-                }).alpha(1.0f);
-            }else {
-                viewGroup.animate().setDuration(150).setListener(new AnimatorListenerAdapter() {
-                    public void onAnimationEnd(Animator animation) {
-                        viewGroup.setVisibility(View.GONE);
-                        super.onAnimationEnd(animation);
-                    }
-                }).alpha(0.0f);
+            if (targetState == View.VISIBLE) {
+                // Сначала делаем видимым, потом анимируем
+                viewGroup.setVisibility(View.VISIBLE);
+                viewGroup.setAlpha(0.0f); // Начинаем с полной прозрачности
+
+                viewGroup.animate()
+                        .alpha(1.0f)
+                        .setDuration(300)
+                        .setListener(null); // Слушатель здесь больше не нужен для установки видимости
+            } else {
+                viewGroup.animate()
+                        .alpha(0.0f)
+                        .setDuration(300)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                viewGroup.setVisibility(View.GONE);
+                                super.onAnimationEnd(animation);
+                            }
+                        });
             }
         }
-    }
+    }// Было 150
 
     public final static class animClickBtn implements View.OnTouchListener {
 

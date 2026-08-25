@@ -97,7 +97,7 @@ import ru.edgar.nlremake.ui.FullHeightVideoView;
 import ru.edgar.space.EdgarConectV2;
 import ru.edgar.space.SAMP;
 
-public class MainScreenActivity  extends AppCompatActivity {
+public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптимизация сборщик мусора
 
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private NotificationManager notifManager = null;
