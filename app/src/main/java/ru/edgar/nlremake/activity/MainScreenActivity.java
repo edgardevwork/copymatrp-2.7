@@ -433,7 +433,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                         if(response.isSuccessful())
                         {
                             if(response.body() != null) {
-                                if(response.body().getLauncherVersion() != 73) {
+                                if(response.body().getLauncherVersion() != 74) {
                                     dialogManager.showDialog("Доступна новая\nверсия клиента!", "Скачать обновление и продолжить играть", "Скачать обновление", "Отмена", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {

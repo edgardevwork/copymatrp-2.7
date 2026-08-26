@@ -1,6 +1,6 @@
 {
-	"launcher_version": 73,
-	"launcher_url": "https://crmp.pro/files/matrp/space/launcher_space.apk",
+	"launcher_version": 74,
+	"launcher_url": "https://crmp.pro/files/matrp/NN/launcher_space.apk",
 	"launcher_path": "/storage/emulated/0/Android/data/ru.edgar.matrp/files/launcher_space.apk",
 	"launcher_name": "/launcher_space.apk",
 	"isTest": true,
