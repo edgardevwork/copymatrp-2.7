@@ -50,7 +50,7 @@ android {
         minSdk 26
         targetSdk 36
         versionCode 15
-        versionName "copymatrp-2.7.0.1.6"
+        versionName "copymatrp-2.7.0.1.7"
 
         multiDexEnabled true
         /*externalNativeBuild {
@@ -96,9 +96,9 @@ android {
 
     buildTypes {
         debug {
-            shrinkResources false
-            minifyEnabled false
-            debuggable true
+            shrinkResources true
+            minifyEnabled true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -134,6 +134,24 @@ android {
         abortOnError false
         checkReleaseBuilds false
     }
+}
+
+//compileLibs.finalizedBy(copyLibrary)
+//${variant.name}-
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        outputFileName = "launcher-${versionName}.apk"
+    }
+    /*variant.assembleProvider.configure { assemble ->
+        assemble.doLast {
+            delete "$projectDir\\apk\\"
+
+            copy {
+                from variant.outputs*.outputFile
+                into "$projectDir\\..\\apk\\"
+            }
+        }
+    }*/
 }
 
 dependencies {

@@ -141,7 +141,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
         loading.setVisibility(View.VISIBLE);
         downloadBar.setVisibility(View.GONE);
 
-        //setupVideoPlayer();
+        setupVideoPlayer();
 
         dialogManager = new DialogManager();
         noty = new Noty();
