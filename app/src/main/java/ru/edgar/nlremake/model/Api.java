@@ -35,6 +35,10 @@ public class Api {
     @Expose
     private String api;
 
+    @SerializedName("api_link")
+    @Expose
+    private String apiLink;
+
     @SerializedName("archives") // update at 19.03.24
     private List<Archive> archives;
 
@@ -44,7 +48,7 @@ public class Api {
     // copy matrp by EDGAR DEVELOPER / by EDGAR 3.0 https://github.com/edgardevwork
     // created at 04.01.2024
 
-    public Api(Integer launcher_version, String launcher_url, String launcher_path, String launcher_name, boolean isTest, boolean test_api, String api, List<Archive> archives, List<Deleted> deleted) {
+    public Api(Integer launcher_version, String launcher_url, String launcher_path, String launcher_name, boolean isTest, boolean test_api, String api, String apiLink, List<Archive> archives, List<Deleted> deleted) {
         this.launcher_version = launcher_version;
         this.launcher_url = launcher_url;
         this.launcher_path = launcher_path;
@@ -52,9 +56,9 @@ public class Api {
         this.isTest = isTest;
         this.test_api = test_api;
         this.api = api;
+        this.apiLink = apiLink;
         this.archives = archives;
         this.deleted = deleted;
-
     }
 
     public Integer getLauncherVersion() {
@@ -83,6 +87,10 @@ public class Api {
 
     public String getApi() {
         return api;
+    }
+
+    public String getApiLink() {
+        return apiLink;
     }
 
     public List<Archive> getArchives() {

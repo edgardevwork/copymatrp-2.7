@@ -6,6 +6,7 @@
 	"isTest": true,
 	"test_api": true,
     "api": "https://crmp.pro/files/matrp/2-7nlremake/main.json",
+    "api_link": "https://crmp.pro/",
 	"archives": [
         {
             "type": "/storage/emulated/0/Android/data/ru.edgar.matrp/files/texdb",

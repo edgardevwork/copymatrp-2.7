@@ -2,13 +2,14 @@ package ru.edgar.nlremake.network;
 
 import java.util.ArrayList;
 
-public class ConfigLinks {
+public class AppConfig {
+	public static String nickName = "";
+	public static boolean isAuth = false;
+
 	public static ArrayList archives = new ArrayList<>();
 	public static ArrayList deleted = new ArrayList<>();
 
 	public static ArrayList msglist = new ArrayList<>();
-	public static ArrayList faqlist = new ArrayList<>();
-	public static ArrayList detailslist = new ArrayList<>();
 	public static ArrayList storyList = new ArrayList<>();
 	public static ArrayList serverList = new ArrayList<>();
 
@@ -22,5 +23,6 @@ public class ConfigLinks {
 	public static String deleteAcc;
 	public static String[] launcher_dan = new String[5];
 
+	public static String apiLink;
 	public static boolean testApi = false;
 }

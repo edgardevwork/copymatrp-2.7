@@ -90,14 +90,14 @@ import ru.edgar.nlremake.model.Stories;
 import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.nlremake.other.Helper;
 import ru.edgar.nlremake.network.Interface;
-import ru.edgar.nlremake.network.ConfigLinks;
+import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.other.Utils;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
 import ru.edgar.space.EdgarConectV2;
 import ru.edgar.space.SAMP;
 
-public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптимизация сборщик мусора
+public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптимизация сборщик мусора. Также разделить логику загрузки, разрешений, и логику загрузки апи.
 
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private NotificationManager notifManager = null;
@@ -105,7 +105,6 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
     private Noty noty;
     private DialogManager dialogManager;
     private LoadingFragment loadingFragment;
-    public static boolean isAuth = false;
     private ImageView lm_loadicon;
     private LinearLayout loading, downloadBar;
     private static MainScreenActivity instance;
@@ -114,7 +113,6 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
     private TextView procent, progress_text, dw_status;
 
     private ProgressBar progress;
-    public static String nickName;
     long maxSizeFiles = 0;
     int progressSizeFiles = 0;
 
@@ -162,16 +160,6 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
 
     public Noty getNoty() {
         return noty;
-    }
-
-    interface AuthCallback {
-        void onResult(boolean isAuthenticated);
-    }
-
-    // Заглушка вашей реальной функции проверки
-    private boolean loadAuthStatusFromSecureStorage() {
-        // Тут может быть вызов вашего репозитория
-        return isAuth;
     }
 
     private void setupVideoPlayer() {
@@ -245,9 +233,9 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null) {
-            isAuth = true;
+            AppConfig.isAuth = true;
         } else {
-            isAuth = false;
+            AppConfig.isAuth = false;
         }
     }
 
@@ -412,7 +400,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://crmp.pro/")
+                .baseUrl("https://google.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -472,14 +460,15 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                                                 }
                                             }, null);
                                         }
-                                        ConfigLinks.testApi = response.body().getIsTest();
+                                        AppConfig.testApi = response.body().getIsTest();
                                     }
-                                    ConfigLinks.archives.clear();
-                                    ConfigLinks.archives.addAll(response.body().getArchives());
-                                    ConfigLinks.deleted.clear();
-                                    ConfigLinks.deleted.addAll(response.body().getDeleted());
+                                    AppConfig.apiLink = response.body().getApiLink();
+                                    AppConfig.archives.clear();
+                                    AppConfig.archives.addAll(response.body().getArchives());
+                                    AppConfig.deleted.clear();
+                                    AppConfig.deleted.addAll(response.body().getDeleted());
 
-                                    ConfigLinks.launcher_dan = new String[]{response.body().getLauncherUrl(), response.body().getLauncherPath(), response.body().getLauncherName()};
+                                    AppConfig.launcher_dan = new String[]{response.body().getLauncherUrl(), response.body().getLauncherPath(), response.body().getLauncherName()};
 
                                     sInterface.getMain(response.body().getApi()).enqueue(new Callback<Main>() {
                                         @Override
@@ -487,14 +476,14 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
 
                                             String storiesLink = response.body().getStories();
 
-                                            ConfigLinks.verifyAuthUrl = response.body().getVerifyAuth();
-                                            ConfigLinks.resetPassword = response.body().getResetPassword();
-                                            ConfigLinks.characterUrl = response.body().getCharacter();
-                                            ConfigLinks.accountDetailsUrl = response.body().getAccountDetails();
-                                            ConfigLinks.isAccUrl = response.body().getIsAcc();
-                                            ConfigLinks.skinsCDNUrl = response.body().getSkinsCDN();
-                                            ConfigLinks.crashReportUrl = response.body().getCrashReport();
-                                            ConfigLinks.deleteAcc = response.body().getDeleteAcc();
+                                            AppConfig.verifyAuthUrl = response.body().getVerifyAuth();
+                                            AppConfig.resetPassword = response.body().getResetPassword();
+                                            AppConfig.characterUrl = response.body().getCharacter();
+                                            AppConfig.accountDetailsUrl = response.body().getAccountDetails();
+                                            AppConfig.isAccUrl = response.body().getIsAcc();
+                                            AppConfig.skinsCDNUrl = response.body().getSkinsCDN();
+                                            AppConfig.crashReportUrl = response.body().getCrashReport();
+                                            AppConfig.deleteAcc = response.body().getDeleteAcc();
 
                                             sInterface.getServers(response.body().getServers()).enqueue(new Callback<List<Servers>>() {
                                                 @Override
@@ -502,10 +491,10 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
 
                                                     List<Servers> servers = response.body(); // Скорее всего на переделку
                                                     for (Servers server : servers) {
-                                                        ConfigLinks.serverList.add(new Servers(server.getName(), server.getColor(), server.getStatus(), server.getRecommend(), server.getNewStatus(), server.getEdgarHost(), server.getEdgarPort(), server.getId()));
+                                                        AppConfig.serverList.add(new Servers(server.getName(), server.getColor(), server.getStatus(), server.getRecommend(), server.getNewStatus(), server.getEdgarHost(), server.getEdgarPort(), server.getId()));
                                                     }
 
-                                                    ArrayList<Servers> serversItem = ConfigLinks.serverList;
+                                                    ArrayList<Servers> serversItem = AppConfig.serverList;
                                                     ArrayList<Servers> serversrec = new ArrayList<>();
                                                     ArrayList<Servers> serversnew = new ArrayList<>();
                                                     ArrayList<Servers> serversbce = new ArrayList<>();
@@ -571,13 +560,13 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                                                     }
                                                     serverss.addAll(serversbce);
                                                     //Log.e("edgar", "serversItem.3 > " + serverss.size());
-                                                    ConfigLinks.serverList = serverss;
+                                                    AppConfig.serverList = serverss;
 
                                                     sInterface.getStories(storiesLink).enqueue(new Callback<List<Stories>>() {
                                                         @Override
                                                         public void onResponse(Call<List<Stories>> call, Response<List<Stories>> response) {
 
-                                                            Servers item = (Servers) ConfigLinks.serverList.get(0);
+                                                            Servers item = (Servers) AppConfig.serverList.get(0);
 
                                                             EdgarConectV2.host = item.getEdgarHost();// Разоброаться с конекутом!
                                                             EdgarConectV2.port = item.getEdgarPort();
@@ -585,10 +574,10 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                                                             List<Stories> Stories = response.body();
 
                                                             for (Stories story : Stories) {
-                                                                ConfigLinks.storyList.add(new Stories(story.getImageUrl(), story.getMiniDate()));
+                                                                AppConfig.storyList.add(new Stories(story.getImageUrl(), story.getMiniDate()));
                                                             }
 
-                                                            if(isAuth) {
+                                                            if(AppConfig.isAuth) {
                                                                 onRequestPermissions(); // Загрузка игры!
                                                             } else {
                                                                 dialogManager.showAuthDialog(true); //Проверенно
@@ -695,8 +684,8 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
     }
 
     public void checkGameCache() {
-        List<Archive> archiveList = ConfigLinks.archives;
-        List<Deleted> deletedList = ConfigLinks.deleted;
+        List<Archive> archiveList = AppConfig.archives;
+        List<Deleted> deletedList = AppConfig.deleted;
 
         List<String> path = new ArrayList<>();
         List<String> unZip = new ArrayList<>();
@@ -749,7 +738,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                     serversInfo.put("nick", "ERYHB_hjdcb");
                     FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).setValue(serversInfo);
                 } else {
-                    nickName = snapshot.getValue(String.class);
+                    AppConfig.nickName = snapshot.getValue(String.class);
 
                 }
             }
@@ -1248,9 +1237,9 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                                     dialogManager.hideAuthDialog();
                                     FirebaseUser currentUser = mAuth.getCurrentUser();
                                     if(currentUser != null) {
-                                        isAuth = true;
+                                        AppConfig.isAuth = true;
                                     } else {
-                                        isAuth = false;
+                                        AppConfig.isAuth = false;
                                     }
                                     HashMap<String, Object> Info = new HashMap<>();
                                     Info.put("google-email", mAuth.getCurrentUser().getEmail());
@@ -1268,11 +1257,11 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                                             dialogManager.hideDialog();
                                             FirebaseUser currentUser = mAuth.getCurrentUser();
                                             if(currentUser != null) {
-                                                isAuth = true;
+                                                AppConfig.isAuth = true;
                                             } else {
-                                                isAuth = false;
+                                                AppConfig.isAuth = false;
                                             }
-                                            if(!isAuth) {
+                                            if(!AppConfig.isAuth) {
                                                 dialogManager.hideDialog();
                                                 dialogManager.showAuthDialog(false);
                                             } else onRequestPermissions();

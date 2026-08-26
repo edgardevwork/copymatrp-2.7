@@ -182,9 +182,9 @@ public class AuthFragment {
                                                     if(task.isSuccessful()){
                                                         FirebaseUser currentUser = MainScreenActivity.getInstance().mAuth.getCurrentUser();
                                                         if(currentUser != null) {
-                                                            MainScreenActivity.isAuth = true;
+                                                            AppConfig.isAuth = true;
                                                         } else {
-                                                            MainScreenActivity.isAuth = false;
+                                                            AppConfig.isAuth = false;
                                                         }///обработчик успеха
 
                                                         HashMap<String, Object> Info = new HashMap<>();
@@ -221,9 +221,9 @@ public class AuthFragment {
                                             if(task.isSuccessful()){
                                                 FirebaseUser currentUser = MainScreenActivity.getInstance().mAuth.getCurrentUser();
                                                 if(currentUser != null) {
-                                                    MainScreenActivity.isAuth = true;
+                                                    AppConfig.isAuth = true;
                                                 } else {
-                                                    MainScreenActivity.isAuth = false;
+                                                    AppConfig.isAuth = false;
                                                 }
 
                                                 HashMap<String, Object> Info = new HashMap<>();

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.nlremake.model.Stories;
-import ru.edgar.nlremake.network.ConfigLinks;
+import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.space.InterfacesManager;
 import ru.edgar.space.SAMP;
 
@@ -63,7 +63,7 @@ public class MenuFragment {
         layoutParams.width = -1;
         layoutParams.height = -1;
 
-        storiesList = ConfigLinks.storyList;
+        storiesList = AppConfig.storyList;
 
         news_date = viewGroup.findViewById(R.id.news_date);
         news_date_two = viewGroup.findViewById(R.id.news_date_two);

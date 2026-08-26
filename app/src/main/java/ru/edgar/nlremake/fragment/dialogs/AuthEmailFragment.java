@@ -43,7 +43,7 @@ import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.nlremake.fragment.LoadingFragment;
 import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.nlremake.network.Interface;
-import ru.edgar.nlremake.network.ConfigLinks;
+import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.space.InterfacesManager;
 
 public class AuthEmailFragment {
@@ -88,7 +88,7 @@ public class AuthEmailFragment {
         littleText = viewGroup.findViewById(R.id.littleText);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://crmp.pro/")
+                .baseUrl(AppConfig.apiLink)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -321,7 +321,7 @@ public class AuthEmailFragment {
 
                     String mail = email_layout_email_input.getText().toString();
 
-                    Call<String> call = sInterface.verifyAuth(ConfigLinks.verifyAuthUrl, mail);
+                    Call<String> call = sInterface.verifyAuth(AppConfig.verifyAuthUrl, mail);
 
                     call.enqueue(new Callback<String>() {
                         @Override
@@ -383,9 +383,9 @@ public class AuthEmailFragment {
                                     if(task.isSuccessful()){
                                         FirebaseUser currentUser = MainScreenActivity.getInstance().mAuth.getCurrentUser();
                                         if(currentUser != null) {
-                                            MainScreenActivity.isAuth = true;
+                                            AppConfig.isAuth = true;
                                         } else {
-                                            MainScreenActivity.isAuth = false;
+                                            AppConfig.isAuth = false;
                                         }
 
                                         HashMap<String, Object> Info = new HashMap<>();
@@ -437,7 +437,7 @@ public class AuthEmailFragment {
                                         // Отправка кода
                                         LoadingFragment.getInstance().show();
 
-                                        Call<String> call1 = sInterface.verifyAuth(ConfigLinks.verifyAuthUrl, email);
+                                        Call<String> call1 = sInterface.verifyAuth(AppConfig.verifyAuthUrl, email);
 
                                         call1.enqueue(new Callback<String>() {
                                             @Override
@@ -568,7 +568,7 @@ public class AuthEmailFragment {
                     }
 
                     // Смена пароля
-                    Call<String> call1 = sInterface.resetPassword(ConfigLinks.resetPassword, email_layout_email_input.getText().toString().trim(), pass1);
+                    Call<String> call1 = sInterface.resetPassword(AppConfig.resetPassword, email_layout_email_input.getText().toString().trim(), pass1);
 
                     call1.enqueue(new Callback<String>() {
                         @Override
@@ -622,7 +622,7 @@ public class AuthEmailFragment {
                         LoadingFragment.getInstance().show();
                         String email = email_layout_email_input.getText().toString();
 
-                        Call<String> call = sInterface.verifyAuth(ConfigLinks.verifyAuthUrl, email);
+                        Call<String> call = sInterface.verifyAuth(AppConfig.verifyAuthUrl, email);
 
                         call.enqueue(new Callback<String>() {
                             @Override
