@@ -88,7 +88,7 @@ public class AuthEmailFragment {
         littleText = viewGroup.findViewById(R.id.littleText);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(AppConfig.apiLink)
+                .baseUrl(/*AppConfig.apiLink*/"https://google.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
