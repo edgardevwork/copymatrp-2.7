@@ -12,8 +12,8 @@
       "filters": [],
       "attributes": [],
       "versionCode": 19,
-      "versionName": "copymatrp-2.7.0.1.9-test1",
-      "outputFile": "launcher-copymatrp-2.7.0.1.9-test1.apk"
+      "versionName": "copymatrp-2.7.0.1.9-meTest",
+      "outputFile": "launcher-copymatrp-2.7.0.1.9-meTest.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/launcher-copymatrp-2.7.0.1.9-test1.dm"
+        "baselineProfiles/1/launcher-copymatrp-2.7.0.1.9-meTest.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/launcher-copymatrp-2.7.0.1.9-test1.dm"
+        "baselineProfiles/0/launcher-copymatrp-2.7.0.1.9-meTest.dm"
       ]
     }
   ],
