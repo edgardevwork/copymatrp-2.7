@@ -218,7 +218,7 @@ public class MenuFragment {
         btn_play.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, btn_play));
         btn_play.setOnClickListener(v -> {
             // Проверки
-            MainScreenActivity.nickName = "Piter_Parker";
+            AppConfig.nickName = "Piter_Parker";
             SAMP.getInstance().connectEdgar();
             hide();
         });

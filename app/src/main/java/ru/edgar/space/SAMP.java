@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import kotlin.jvm.internal.Intrinsics;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
 
 @Obfuscate
@@ -539,7 +540,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
     public void connectEdgar() {
         runOnUiThread(() -> {
-            connn(EdgarConectV2.host, EdgarConectV2.port, MainScreenActivity.nickName);
+            connn(EdgarConectV2.host, EdgarConectV2.port, AppConfig.nickName);
         });
     }
 }
