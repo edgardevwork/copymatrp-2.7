@@ -41,6 +41,7 @@ import java.util.Random;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.nlremake.fragment.Noty;
+import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.space.InterfacesManager;
 
