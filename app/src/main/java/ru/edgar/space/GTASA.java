@@ -7,7 +7,7 @@ import android.view.KeyEvent;
 
 import com.bytedance.shadowhook.ShadowHook;
 import com.joom.paranoid.Obfuscate;
-import com.wardrumstudios.utils.WarMedia;
+import com.eeedgarstudios.utils.WarMedia;
 
 import ru.edgar.nlremake.other.SharedPreferenceCore;
 
