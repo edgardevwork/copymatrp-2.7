@@ -1146,15 +1146,16 @@ void CPlayerPed::ClumpUpdateAnimations(float step, int flag)
 		}
 	}
 }
-bool g_customFire = false;
-extern uint32_t (*CWeapon__FireInstantHit)(CWeapon* thiz, CPedGTA* pFiringEntity, CVector* vecOrigin, CVector* muzzlePosn, CEntityGTA* targetEntity, CVector *target, CVector* originForDriveBy, int arg6, int muzzle);
-extern uint32_t (*CWeapon__FireSniper)(CWeapon *pWeaponSlot, CPedGTA *pFiringEntity, CEntityGTA *a3, CVector *vecOrigin);
+//bool g_customFire = false; // TODO: Удалить лишний код!
+//extern uint32_t (*CWeapon__FireInstantHit)(CWeapon* thiz, CPedGTA* pFiringEntity, CVector* vecOrigin, CVector* muzzlePosn, CEntityGTA* targetEntity, CVector *target, CVector* originForDriveBy, int arg6, int muzzle);
+//extern uint32_t (*CWeapon__FireSniper)(CWeapon *pWeaponSlot, CPedGTA *pFiringEntity, CEntityGTA *a3, CVector *vecOrigin);
 
 CPlayerPed* g_pCurrentFiredPed = nullptr;
 BULLET_DATA* g_pCurrentBulletData = nullptr;
 void CPlayerPed::FireInstant()
 {
-    if(!m_pPed || !GamePool_Ped_GetAt(m_dwGTAId)) {
+    return; // Fix Краша Оружия By EDGAR 3.0
+    /*if(!m_pPed || !GamePool_Ped_GetAt(m_dwGTAId)) {
         return;
     }
 
@@ -1219,7 +1220,7 @@ void CPlayerPed::FireInstant()
         GameSetLocalPlayerAim();
     }
 
-	LOGI("CPlayerPed::FireInstant3");
+	LOGI("CPlayerPed::FireInstant3");*/
 }
 // 0.3.7
 void CPlayerPed::GetWeaponInfoForFire(bool bLeftWrist, CVector* vecBonePos, CVector* vecOut)

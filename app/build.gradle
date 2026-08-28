@@ -49,8 +49,8 @@ android {
         applicationId 'ru.edgar.matrp'
         minSdk 26
         targetSdk 36
-        versionCode 19
-        versionName "copymatrp-2.7.0.1.9-meTest"
+        versionCode 20
+        versionName "copymatrp-2.7.0.2.0"
 
         multiDexEnabled true
         /*externalNativeBuild {
@@ -96,9 +96,9 @@ android {
 
     buildTypes {
         debug {
-            shrinkResources true
-            minifyEnabled true
-            debuggable false
+            shrinkResources false
+            minifyEnabled false
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }

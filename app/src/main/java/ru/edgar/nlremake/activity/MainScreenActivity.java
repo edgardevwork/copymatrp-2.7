@@ -58,6 +58,7 @@ import com.vk.id.VKID;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -148,6 +149,50 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
         loadingFragment = new LoadingFragment();
 
         loadSettings();
+    }
+
+    public static boolean isDeviceRooted() {
+        return checkRootFiles() || checkSuBinary();
+    }
+
+    // Шаг 1: Проверяем стандартные папки на наличие исполняемого файла su
+    private static boolean checkRootFiles() {
+        String[] paths = {
+                "/system/app/Superuser.apk",
+                "/sbin/su",
+                "/system/bin/su",
+                "/system/xbin/su",
+                "/data/local/xbin/su",
+                "/data/local/bin/su",
+                "/system/sd/xbin/su",
+                "/system/bin/failsafe/su",
+                "/data/local/su"
+        };
+        for (String path : paths) {
+            if (new File(path).exists()) return true;
+        }
+        return false;
+    }
+
+    // Шаг 2: Пробуем запустить команду через su (самый точный способ)
+    private static boolean checkSuBinary() {
+        Process process = null;
+        try {
+            // Пробуем открыть поток суперпользователя
+            process = Runtime.getRuntime().exec("su");
+            DataOutputStream os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes("exit\n");
+            os.flush();
+            process.waitFor();
+            // Если процесс завершился успешно (код 0), рут доступ есть
+            return process.exitValue() == 0;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (process != null) {
+                process.destroy();
+            }
+        }
     }
 
     public static MainScreenActivity getInstance() {
@@ -399,6 +444,17 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
             return;
         }
 
+        /*if(isDeviceRooted()) { // Благодарю Глебу!
+            dialogManager.showDialog("Упс! Мы нашли на вашем\nустройстве root права!", "К сожелению наша игра не сможет работать\nна устроствах где включен супер пользователь!\nНо вы всегда можете зайти с другого устройства\nили выключить рут права в настроках.", "Зайти с другого устройства", null, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // СЛишком жоско / new File(Helper.androidPath).delete(); // Удаление директории /files
+                    finish();
+                    onDestroy();
+                }
+            }, null);
+        }*/
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://google.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -417,7 +473,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
             @Override
             public void onComplete(@NonNull Task<Boolean> task) {
                 if (task.isSuccessful()) {
-                    apiLink = mFirebaseRemoteConfig.getString("apiNL");
+                    apiLink = mFirebaseRemoteConfig.getString("apiNL1");
                 } else {
                     Log.e("Google FireBase", "SLIHILAC HOPA");
                     Exception e = task.getException(); // Получаем исключение
@@ -433,7 +489,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                         if(response.isSuccessful())
                         {
                             if(response.body() != null) {
-                                if(response.body().getLauncherVersion() != 74) {
+                                if(response.body().getLauncherVersion() != 75) {
                                     dialogManager.showDialog("Доступна новая\nверсия клиента!", "Скачать обновление и продолжить играть", "Скачать обновление", "Отмена", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -459,6 +515,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                                                     onDestroy();
                                                 }
                                             }, null);
+                                            return;
                                         }
                                         AppConfig.testApi = response.body().getIsTest();
                                     }
@@ -684,6 +741,8 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
     }
 
     public void checkGameCache() {
+        downloadBar.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
         List<Archive> archiveList = AppConfig.archives;
         List<Deleted> deletedList = AppConfig.deleted;
 
@@ -1046,6 +1105,18 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                     @Override
                     protected void completed(BaseDownloadTask task) {
                         super.completed(task);
+                        int idF = i - 1;
+                        String basePath = unnZip.get(idF);
+
+                        // Создаем набор разрешений для файлов (rw)
+                        Set<PosixFilePermission> filePermissions = new HashSet<>();
+                        filePermissions.add(PosixFilePermission.OWNER_READ);
+                        filePermissions.add(PosixFilePermission.OWNER_WRITE);
+                        try {
+                            setPermissions(basePath, filePermissions, false);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         if (!isApk) {
                             progressSizeFiles += task.getTotalBytes();
                             System.out.println(urlsst.size() + " = " + i); // од вопросом
@@ -1070,6 +1141,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                                 }
                             }
                         } else {
+                            i = 0;
                             builder.setContentText("Завершено!")
                                     .setOngoing(false); // Теперь можно смахнуть
 
@@ -1109,7 +1181,31 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
             public void run() {
                 //int i11 = P7ZipApi.executeCommand(String.format("7z x '%s' '-o%s' -aoa", mInputFilePath, mOutputPath));
                 //System.out.println(i11);//1
+                int idF = i - 1;
+                String basePath = unnZip.get(idF).toString();
                 try {
+                    // Создаем набор разрешений для папок (drwx)
+                    Set<PosixFilePermission> folderPermissions = new HashSet<>();
+                    folderPermissions.add(PosixFilePermission.OWNER_READ);
+                    folderPermissions.add(PosixFilePermission.OWNER_WRITE);
+                    folderPermissions.add(PosixFilePermission.OWNER_EXECUTE);
+
+                    // Создаем набор разрешений для файлов (rw)
+                    Set<PosixFilePermission> filePermissions = new HashSet<>();
+                    filePermissions.add(PosixFilePermission.OWNER_READ);
+                    filePermissions.add(PosixFilePermission.OWNER_WRITE);
+
+                    try {
+                        // Устанавливаем разрешения для папок
+                        setPermissions(basePath, folderPermissions, true);
+
+                        // Устанавливаем разрешения для файлов
+                        setPermissions(basePath, filePermissions, false);
+
+                        //System.out.println("Разрешения установлены успешно.");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     new ZipFile(new File(mInputFilePath)).extractAll(mOutputPath);
                     Utils.delete(new File(path));
                     Utils.delete(new File(path + ".temp"));
@@ -1125,7 +1221,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                     } else {
                         dw_status.setText(getResources().getString(R.string.launcher_donwload_info_5));
 
-                        String basePath = Helper.androidPath;
+                        //String basePath = Helper.androidPath;
 
                         // Создаем набор разрешений для папок (drwx)
                         Set<PosixFilePermission> folderPermissions = new HashSet<>();
@@ -1141,7 +1237,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                         try {
                             // Устанавливаем разрешения для папок
                             setPermissions(basePath, folderPermissions, true);
-                            /*setPermissions(basePath + "/texdb", folderPermissions, true);
+                            setPermissions(basePath + "/texdb", folderPermissions, true);
                             setPermissions(basePath + "/anim", folderPermissions, true);
                             setPermissions(basePath + "/SPACE", folderPermissions, true);
                             setPermissions(basePath + "/data", folderPermissions, true);
@@ -1149,11 +1245,11 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                             setPermissions(basePath + "/fonts", folderPermissions, true);
                             setPermissions(basePath + "/Text", folderPermissions, true);
                             setPermissions(basePath + "/Textures", folderPermissions, true);
-                            setPermissions(basePath + "/images", folderPermissions, true);*/
+                            setPermissions(basePath + "/images", folderPermissions, true);
 
                             // Устанавливаем разрешения для файлов
                             setPermissions(basePath, filePermissions, false);
-                            /*setPermissions(basePath + "/texdb", filePermissions, false);
+                            setPermissions(basePath + "/texdb", filePermissions, false);
                             setPermissions(basePath + "/SPACE", filePermissions, false);
                             setPermissions(basePath + "/images", filePermissions, false);
                             setPermissions(basePath + "/data", filePermissions, false);
@@ -1161,16 +1257,19 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                             setPermissions(basePath + "/Textures", filePermissions, false);
                             setPermissions(basePath + "/audio", filePermissions, false);
                             setPermissions(basePath + "/fonts", filePermissions, false);
-                            setPermissions(basePath + "/Text", filePermissions, false);*/
+                            setPermissions(basePath + "/Text", filePermissions, false);
 
-                            System.out.println("Разрешения установлены успешно.");
+                            //System.out.println("Разрешения установлены успешно.");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        clearModelCache();
+                        i = 0;
+                        /*clearModelCache();
                         Intent intent = new Intent(MainScreenActivity.getInstance(), SAMP.class);
                         startActivity(intent);
-                        overridePendingTransition(0, 0); // Установка анимации перехода в 0*
+                        overridePendingTransition(0, 0);*/
+                        checkGameCache();
+                        // Установка анимации перехода в 0*
                         //checkGameFile(path, 0);
                     }
                 });

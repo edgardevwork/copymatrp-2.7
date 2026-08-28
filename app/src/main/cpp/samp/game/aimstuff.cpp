@@ -114,6 +114,7 @@ CAMERA_AIM* GameGetRemotePlayerAim(uint8_t bytePlayerNumber)
 // 0.3.7
 void GameSetRemotePlayerAim(uint8_t bytePlayerNumber)
 {
+	if(!pcaInternalAim) return;
 	memcpy(pcaInternalAim, &caRemotePlayerAim[bytePlayerNumber], sizeof(CAMERA_AIM));
 }
 // 0.3.7
@@ -129,6 +130,7 @@ void GameSetLocalPlayerAim()
 // 0.3.7
 void GameStoreLocalPlayerAim()
 {
+	if(!pcaInternalAim) return;
 	memcpy(&caLocalPlayerAim, pcaInternalAim, sizeof(CAMERA_AIM));
 }
 // 0.3.7

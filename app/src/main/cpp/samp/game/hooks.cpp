@@ -1093,14 +1093,10 @@ void SendBulletSync(CVector* vecOrigin, CVector* a2, CColPoint *colPoint, CEntit
     pGame->FindPlayerPed()->ProcessBulletData(&bulletData);
 }
 
-extern bool g_customFire;
+extern bool g_customFire;// Не используеться! БОЛЬШЕ
 /* 0.3.7 */
-uint32_t(*CWeapon__FireInstantHit)(CWeapon* thiz, CPedGTA* pFiringEntity, CVector* vecOrigin, CVector* muzzlePosn, CEntityGTA* targetEntity,
-								  CVector* target, CVector* originForDriveBy, bool arg6, bool muzzle);
-uint32_t CWeapon__FireInstantHit_hook(CWeapon* thiz, CPedGTA* pFiringEntity,
-                                      CVector* vecOrigin, CVector* muzzlePosn,
-                                      CEntityGTA* targetEntity, CVector* target,
-                                      CVector* originForDriveBy, bool arg6, bool muzzle)
+uint32_t (*CWeapon__FireInstantHit)(CWeapon * thiz, CPedGTA * pFiringEntity, CVector * vecOrigin, CVector * muzzlePosn, CEntity * targetEntity, CVector * target, CVector * originForDriveBy, int arg6, int muzzle);
+uint32_t CWeapon__FireInstantHit_hook(CWeapon * thiz, CPedGTA * pFiringEntity, CVector * vecOrigin, CVector * muzzlePosn, CEntity * targetEntity, CVector * target, CVector * originForDriveBy, int arg6, int muzzle) __attribute__((optimize("O0")))
 {
     if (pNetGame && pNetGame->GetPlayerPool() && pNetGame->GetPlayerPool()->GetLocalPlayer()) {
 
@@ -1238,7 +1234,7 @@ uint32_t CWorld__ProcessLineOfSight_hook(CVector* vecOrigin, CVector* vecEnd, CC
 	return CWorld__ProcessLineOfSight(vecOrigin, vecEnd, colPoint, ppEntity, b1, b2, b3, b4, b5, b6, b7, b8);
 }
 // 0.3.7
-uint32_t(*CWeapon__FireSniper)(CWeapon* thiz, CPedGTA* pFiringEntity, CEntityGTA* victim, CVector* target);
+uint32_t(*CWeapon__FireSniper)(CWeapon* thiz, CPedGTA* pFiringEntity, CEntityGTA* victim, CVector* target);// Не используеться БОЛЬШЕ КРАШ!
 uint32_t CWeapon__FireSniper_hook(CWeapon* thiz, CPedGTA* pFiringEntity, CEntityGTA* victim, CVector* target)
 {
 	if (GamePool_FindPlayerPed() == pFiringEntity)
@@ -1273,114 +1269,91 @@ bool CBulletInfo_AddBullet_hook(CEntityGTA* creator, int weaponType, CVector pos
 struct CPedDamageResponseCalculator
 {
     CPedGTA* m_pDamager;
-	float m_fDamageFactor;
-	int m_pedPieceType;
-	int m_weaponType;
+    float m_fDamageFactor;
+    int m_pedPieceType;
+    int m_weaponType;
 };
 #pragma pack(pop)
 // 0.3.7
 bool ComputeDamageResponse(CPedDamageResponseCalculator* calculator, CPedGTA* pPed)
 {
     CPedGTA* pGamePed = GamePool_FindPlayerPed();
-	bool isLocalPed = false;
+    bool isLocalPed = false;
 
-	if (!pNetGame) return false;
+    if (!pNetGame) return false;
 
     CPedGTA* pDamager = calculator->m_pDamager;
-	if (pDamager != pGamePed && IsValidGamePed(pGamePed)) /* CCivilianPed */
-		return true;
+    if (pDamager != pGamePed && IsValidGamePed(pGamePed)) /* CCivilianPed */
+        return true;
 
-	if (pPed == pGamePed) {
-		isLocalPed = true;
-	}
-	else if (pDamager != pGamePed) {
-		return false;
-	}
+    if (pPed == pGamePed) {
+        isLocalPed = true;
+    }
+    else if (pDamager != pGamePed) {
+        return false;
+    }
 
-	CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
-	CLocalPlayer* pLocalPlayer = pPlayerPool->GetLocalPlayer();
-	PLAYERID PlayerID;
+    CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
+    CLocalPlayer* pLocalPlayer = pPlayerPool->GetLocalPlayer();
+    PLAYERID PlayerID;
 
-	if (isLocalPed)
-	{
-		PlayerID = FindPlayerIDFromGtaPtr(pDamager);
-		pLocalPlayer->SendTakeDamageEvent(PlayerID,
-										  calculator->m_fDamageFactor,
-										  calculator->m_weaponType,
-										  calculator->m_pedPieceType);
-	}
-	else
-	{
-		PlayerID = FindPlayerIDFromGtaPtr(pPed);
-		if (PlayerID != INVALID_PLAYER_ID)
-		{
-			pLocalPlayer->SendGiveDamageEvent(PlayerID,
-											  calculator->m_fDamageFactor,
-											  calculator->m_weaponType,
-											  calculator->m_pedPieceType);
-			if (pPlayerPool->GetAt(PlayerID)->IsNPC())
-				return true;
-		}
-		else
-		{
-			PLAYERID ActorID = FindActorIDFromGtaPtr(pPed);
-			if (ActorID != INVALID_PLAYER_ID) {
-				pLocalPlayer->SendGiveDamageEvent(ActorID,
-												  calculator->m_fDamageFactor,
-												  calculator->m_weaponType,
-												  calculator->m_pedPieceType);
-				return true;
-			}
-		}
-	}
-
-
-	// :check_friendly_fire
-	if (!pNetGame->m_pNetSet->bFriendlyFire)
-		return false;
-	uint8_t byteTeam = pPlayerPool->GetLocalPlayer()->m_byteTeam;
-	if (byteTeam == NO_TEAM ||
-		PlayerID == INVALID_PLAYER_ID ||
-		pPlayerPool->GetAt(PlayerID)->m_byteTeam != byteTeam) {
-		return false;
-	}
-
-	return true;
-}
-
-// 0.3.7
-void (*CPedDamageResponseCalculator__ComputeDamageResponse)(uintptr_t* pIssuer, uintptr_t* pDamaged, uintptr_t* a3, uint32_t a4);// EDGAR 3.0 FIX
-void CPedDamageResponseCalculator__ComputeDamageResponse_hook(uintptr_t* pIssuer, uintptr_t* pDamaged, uintptr_t *a3, uint32_t a4)
-{
-
-    FLog("FHeall");
-	if (pIssuer == nullptr || pDamaged == nullptr || a3 == nullptr) return;
-
-    if (!pNetGame) return;
-
-    CPedGTA* pPedPlayer = GamePool_FindPlayerPed();
-    if (pDamaged && (pPedPlayer == (CPedGTA*)pIssuer))
+    if (isLocalPed)
     {
-        if (pNetGame->GetPlayerPool()->FindRemotePlayerIDFromGtaPtr((CPedGTA*)pDamaged) != INVALID_PLAYER_ID)
+        PlayerID = FindPlayerIDFromGtaPtr(pDamager);
+        pLocalPlayer->SendTakeDamageEvent(PlayerID,
+                                          calculator->m_fDamageFactor,
+                                          calculator->m_weaponType,
+                                          calculator->m_pedPieceType);
+    }
+    else
+    {
+        PlayerID = FindPlayerIDFromGtaPtr(pPed);
+        if (PlayerID != INVALID_PLAYER_ID)
         {
-            CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
-            CAMERA_AIM* caAim = pPlayerPool->GetLocalPlayer()->GetPlayerPed()->GetCurrentAim();
-
-            CVector aim;
-            aim.x = caAim->f1x;
-            aim.y = caAim->f1y;
-            aim.z = caAim->f1z;
-
-            FLog("FHeall");
-
-            pPlayerPool->GetLocalPlayer()->SendBulletSyncData(pPlayerPool->FindRemotePlayerIDFromGtaPtr((CPedGTA*)pDamaged), 1, aim);
+            pLocalPlayer->SendGiveDamageEvent(PlayerID,
+                                              calculator->m_fDamageFactor,
+                                              calculator->m_weaponType,
+                                              calculator->m_pedPieceType);
+            if (pPlayerPool->GetAt(PlayerID)->IsNPC())
+                return true;
+        }
+        else
+        {
+            PLAYERID ActorID = FindActorIDFromGtaPtr(pPed);
+            if (ActorID != INVALID_PLAYER_ID) {
+                pLocalPlayer->SendGiveDamageEvent(ActorID,
+                                                  calculator->m_fDamageFactor,
+                                                  calculator->m_weaponType,
+                                                  calculator->m_pedPieceType);
+                return true;
+            }
         }
     }
 
-    /*if (ComputeDamageResponse(thiz, pPed))
-        return;*/
 
-    return CPedDamageResponseCalculator__ComputeDamageResponse(pIssuer, pDamaged, a3, a4);
+    // :check_friendly_fire
+    if (!pNetGame->m_pNetSet->bFriendlyFire)
+        return false;
+    uint8_t byteTeam = pPlayerPool->GetLocalPlayer()->m_byteTeam;
+    if (byteTeam == NO_TEAM ||
+        PlayerID == INVALID_PLAYER_ID ||
+        pPlayerPool->GetAt(PlayerID)->m_byteTeam != byteTeam) {
+        return false;
+    }
+
+    return true;
+}
+
+// 0.3.7
+void (*CPedDamageResponseCalculator__ComputeDamageResponse)(CPedDamageResponseCalculator* thiz, CPedGTA* pPed, uintptr_t* a3, uint32_t a4);
+void CPedDamageResponseCalculator__ComputeDamageResponse_hook(CPedDamageResponseCalculator* thiz, CPedGTA* pPed, uintptr_t *a3, uint32_t a4)
+{
+    if (thiz == nullptr || pPed == nullptr || a3 == nullptr) return;
+
+    if (ComputeDamageResponse(thiz, pPed))
+        return;
+
+    CPedDamageResponseCalculator__ComputeDamageResponse(thiz, pPed, a3, a4);
 }
 
 void (*CRenderer_RenderEverythingBarRoads)();
@@ -2630,8 +2603,8 @@ void InstallHooks()
     CHook::InlineHook("_ZN17CTaskSimpleUseGun17RemoveStanceAnimsEP4CPedf", &CTaskSimpleUseGun__RemoveStanceAnims_hook, &CTaskSimpleUseGun__RemoveStanceAnims);
 
     // Bullet sync
-    CHook::InlineHook("_ZN7CWeapon14FireInstantHitEP7CEntityP7CVectorS3_S1_S3_S3_bb", &CWeapon__FireInstantHit_hook, &CWeapon__FireInstantHit);
-    CHook::InlineHook("_ZN7CWeapon10FireSniperEP4CPedP7CEntityP7CVector", &CWeapon__FireSniper_hook, &CWeapon__FireSniper);
+    ///CHook::InlineHook("_ZN7CWeapon14FireInstantHitEP7CEntityP7CVectorS3_S1_S3_S3_bb", &CWeapon__FireInstantHit_hook, &CWeapon__FireInstantHit);
+    ///CHook::InlineHook("_ZN7CWeapon10FireSniperEP4CPedP7CEntityP7CVector", &CWeapon__FireSniper_hook, &CWeapon__FireSniper);
     CHook::InlineHook("_ZN6CWorld18ProcessLineOfSightERK7CVectorS2_R9CColPointRP7CEntitybbbbbbbb", &CWorld__ProcessLineOfSight_hook, &CWorld__ProcessLineOfSight);
     CHook::InlineHook("_ZN28CPedDamageResponseCalculator21ComputeDamageResponseEP4CPedR18CPedDamageResponseb", &CPedDamageResponseCalculator__ComputeDamageResponse_hook, &CPedDamageResponseCalculator__ComputeDamageResponse);
     CHook::InlineHook("_ZN7CWeapon18ProcessLineOfSightERK7CVectorS2_R9CColPointRP7CEntity11eWeaponTypeS6_bbbbbbb", &CWeapon__ProcessLineOfSight_hook, &CWeapon__ProcessLineOfSight);

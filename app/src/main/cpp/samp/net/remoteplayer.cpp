@@ -945,31 +945,6 @@ void CRemotePlayer::StoreBulletFullSyncData(BULLET_SYNC_DATA* btSync)
 		//pChatWindow->AddDebugMessage("sendWasted from sync");
 		//pPlayerPool->GetLocalPlayer()->SendWastedNotification();
 	}
-
-	m_pPlayerPed->ProcessBulletData(&btData);
-	if (pNetGame && pNetGame->GetPlayerPool() && pNetGame->GetPlayerPool()->GetLocalPlayer())
-	{
-		pNetGame->GetPlayerPool()->ApplyCollisionChecking();
-		//pUI->chat()->addClientMessage("[HOOK] CollisionChecking applied", ImColor(255, 255, 255));
-
-		if (pGame)
-		{
-			if (m_pPlayerPed)
-			{
-				//pUI->chat()->addClientMessage("[HOOK] FireInstant triggered", ImColor(255, 255, 255));
-				m_pPlayerPed->FireInstant();
-			}
-			else
-			{
-				//pUI->chat()->addClientMessage("[HOOK] pPlayerPed is NULL", ImColor(255, 255, 255));
-			}
-		}
-		pNetGame->GetPlayerPool()->ResetCollisionChecking();
-		//pUI->chat()->addClientMessage("[HOOK] CollisionChecking reset", ImColor(255, 255, 255));
-	}
-
-	//m_pPlayerPed->ProcessBulletData(&btData);
-	//m_pPlayerPed->FireInstant(); //TODO: Проверить!! Я Отключил Без Теста!
 }
 // 0.3.7
 void CRemotePlayer::RemoveFromVehicle()

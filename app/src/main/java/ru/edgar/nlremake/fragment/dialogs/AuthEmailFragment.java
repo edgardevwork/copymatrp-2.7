@@ -168,6 +168,7 @@ public class AuthEmailFragment {
                     }
 
                     // Проверка зарегистрирована ли почта
+                    isFreeEmail = true;// Баг тест
                     LoadingFragment.getInstance().show();
                     FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -229,6 +230,8 @@ public class AuthEmailFragment {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+                            LoadingFragment.getInstance().hide();// Тест
+                            Toast.makeText(MainScreenActivity.getInstance(), "Ошибка проверки почты", Toast.LENGTH_SHORT).show();
                             System.out.println("The read failed: " + databaseError.getCode());
                         }
                     });
@@ -838,7 +841,7 @@ public class AuthEmailFragment {
         mHandler.removeCallbacksAndMessages(null);
         main_btn_no.setVisibility(View.VISIBLE);
         main_btn_no.setAlpha(1.0f);
-        isFreeEmail = false;
+        isFreeEmail = true; // Тест Глеба
         isSendCode = false;
         secs = 60;
 
