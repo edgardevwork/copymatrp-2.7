@@ -13,12 +13,10 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <FrameLayout
+    <FrameLayout
             android:id="@+id/btn_back"
             android:layout_width="@dimen/_28sdp"
             android:layout_height="@dimen/_28sdp"
@@ -52,6 +50,7 @@
         app:layout_constraintTop_toTopOf="@+id/btn_back" />
 
     <ImageView
+        android:id="@+id/imageView3"
         android:layout_width="@dimen/_9sdp"
         android:layout_height="@dimen/_9sdp"
         android:layout_marginRight="@dimen/_3sdp"
@@ -238,6 +237,95 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4"/>
 
+    <LinearLayout
+        android:id="@+id/btn_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_26sdp"
+        android:background="@drawable/ic_btn_dark"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginRight="@dimen/_24sdp"
+        android:layout_marginBottom="@dimen/_14sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <ImageView
+            android:layout_width="@dimen/_9sdp"
+            android:layout_height="@dimen/_9sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            app:srcCompat="@drawable/ic_settings" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_1sdp"
+            android:fontFamily="@font/geologica_medium"
+            android:text="Управление аккаунтом"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/_8sdp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_payment"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_26sdp"
+        android:background="@drawable/ic_btn_dark"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginRight="@dimen/_7sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_settings"
+        app:layout_constraintEnd_toStartOf="@+id/btn_settings">
+
+        <ImageView
+            android:layout_width="@dimen/_9sdp"
+            android:layout_height="@dimen/_9sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            app:srcCompat="@drawable/ic_payment" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_1sdp"
+            android:fontFamily="@font/geologica_medium"
+            android:text="Управление оплатой"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/_8sdp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_promo"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_26sdp"
+        android:background="@drawable/ic_btn_dark"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginRight="@dimen/_8sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_payment"
+        app:layout_constraintEnd_toStartOf="@+id/btn_payment">
+
+        <ImageView
+            android:layout_width="@dimen/_9sdp"
+            android:layout_height="@dimen/_9sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            app:srcCompat="@drawable/ic_promo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_1sdp"
+            android:fontFamily="@font/geologica_medium"
+            android:text="Активировать промокод"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/_8sdp" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

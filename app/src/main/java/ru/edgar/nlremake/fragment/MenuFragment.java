@@ -218,7 +218,7 @@ public class MenuFragment {
         btn_play.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, btn_play));
         btn_play.setOnClickListener(v -> {
             // Проверки
-            AppConfig.nickName = "Majorka_Incestezz";// AdminPass 2012
+            AppConfig.nickName = "Vanek_Kitok";// AdminPass 2012
             SAMP.getInstance().connectEdgar();
             hide();
         });

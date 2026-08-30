@@ -142,7 +142,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
         loading.setVisibility(View.VISIBLE);
         downloadBar.setVisibility(View.GONE);
 
-        setupVideoPlayer();
+        //setupVideoPlayer();
 
         dialogManager = new DialogManager();
         noty = new Noty();
@@ -489,7 +489,7 @@ public class MainScreenActivity  extends AppCompatActivity {// TODO: Оптим�
                         if(response.isSuccessful())
                         {
                             if(response.body() != null) {
-                                if(response.body().getLauncherVersion() != 75) {
+                                if(response.body().getLauncherVersion() != 76) {
                                     dialogManager.showDialog("Доступна новая\nверсия клиента!", "Скачать обновление и продолжить играть", "Скачать обновление", "Отмена", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {

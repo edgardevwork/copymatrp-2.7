@@ -55,8 +55,8 @@ public class ProfileFragment {
         profileData.add(new ProfileData("Денег в банке", "4525", true));
         profileData.add(new ProfileData("Дом", "Нет", false));
         profileData.add(new ProfileData("Телефон", "2229070", false));
-        profileData.add(new ProfileData("Семья", ".:Nkleves:.", false));
-        profileData.add(new ProfileData("Фракция", "Служба безопасности", false));
+        profileData.add(new ProfileData("Семья", "Нет", false));
+        profileData.add(new ProfileData("Фракция", "Нет", false));
         profileData.add(new ProfileData("Бизнес", "Нет", false));
 
         ProfileDataAdapter adapter = new ProfileDataAdapter(profileData);
