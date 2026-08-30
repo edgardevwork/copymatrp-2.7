@@ -42,7 +42,7 @@ public class ProfileDataAdapter extends RecyclerView.Adapter<ProfileDataAdapter.
             holder.tvStatValue.setText(currentItem.getValue());
         }
 
-        if (currentItem.getValue().equals("Нет")) {
+        if (currentItem.getValue().equals("Нет") || currentItem.getValue().equals("0")) {
             holder.tvStatValue.setAlpha(0.4f);
         } else {
             holder.tvStatValue.setAlpha(1.0f);

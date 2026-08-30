@@ -295,7 +295,9 @@ void DoInitStuff()
 		pGame->SetWorldTime(12,0);
 		pGame->DisplayHUD(false);
 		pPlayerPed->TogglePlayerControllable(false);
-		fufy = new CPlayerPed(34, 98, 1725.1f, -2352.7f, 11.00f, 7.0f);
+		if(!fufy) {
+			fufy = new CPlayerPed(34, 98, 1725.1f, -2352.7f, 11.00f, 7.0f);
+		}
 		//pNetGame = new CNetGame("80.242.59.112", 1969, "Edgar_Tgg", pSettings->Get().szPassword);
         pJavaWrapper->hideSplash();
 
