@@ -464,7 +464,6 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     public void hideSplash() { runOnUiThread(() -> {
         MenuFragment menuFragment = UiManager.getUiManager().getTyped(UiManager.MENU);
         menuFragment.show();
-        handler.post(menuFragment.carouselStoryRunnable);
         mVideoView.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
             @Override
             public void run() {

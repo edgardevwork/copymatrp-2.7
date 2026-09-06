@@ -502,11 +502,11 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
         processCutout();
     }
     /* Auth */
-    DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1234){
+            DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
@@ -529,7 +529,7 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
                                     Info.put("way", 2);
                                     FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
 
-                                    //SAMP.getInstance().hideSplash();
+                                    SAMP.getInstance().hideSplash();
                                 } else {
                                     dialogManager.hideAuthDialog();
                                     dialogManager.showErrorDialog("Ошибка авторизации через Google!", "Попробуйте ещё раз.", "Понятно", new View.OnClickListener() {
@@ -548,7 +548,7 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
                                             if(!AppConfig.isAuth) {
                                                 dialogManager.hideDialog();
                                                 dialogManager.showAuthDialog(false);
-                                            } //else SAMP.getInstance().hideSplash();
+                                            } else SAMP.getInstance().hideSplash();
                                         }
                                     }, true, "Сообщить об ошибке");
                                 }

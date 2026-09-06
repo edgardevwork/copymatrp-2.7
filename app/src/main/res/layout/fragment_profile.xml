@@ -279,6 +279,7 @@
         android:background="@drawable/ic_btn_dark"
         android:gravity="center"
         android:orientation="horizontal"
+        android:alpha="0.5"
         android:layout_marginRight="@dimen/_7sdp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_settings"
         app:layout_constraintEnd_toStartOf="@+id/btn_settings">

@@ -1,16 +1,25 @@
 package ru.edgar.nlremake.fragment;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -21,6 +30,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.model.Stories;
@@ -31,7 +41,8 @@ import ru.edgar.space.SAMP;
 
 public class MenuFragment implements LauncherUiComponent {
 
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private boolean isCarouselRunning = false;
     private ViewGroup viewGroup = null;
     private FrameLayout nick_name_layout, news, btn_vk, btn_telegram, btn_settings;
     private FrameLayout btn_support, btn_balance, btn_donate, frame_server, btn_play;
@@ -40,11 +51,13 @@ public class MenuFragment implements LauncherUiComponent {
     private ImageView news_image, news_image_two;
     private boolean isFirstImageVisible = true;
     private int currentStoryIndex = 0;
+    View[] bars;
 
     public Runnable carouselStoryRunnable;
 
     private ArrayList<Stories> storiesList;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void init(Activity activity) {
         if (viewGroup != null && !AppConfig.isStartGame) {
@@ -66,12 +79,12 @@ public class MenuFragment implements LauncherUiComponent {
 
         LinearLayout barsContainer = viewGroup.findViewById(R.id.bars);
 
-        View[] bars = new View[7];
+        bars = new View[7];
 
         for (int i = 0; i < 7; i++) {
             if (barsContainer.getChildAt(i) instanceof View) {
                 bars[i] = barsContainer.getChildAt(i);
-                if (i >= 3/*storiesList.size()*/)
+                if (i >= storiesList.size())
                     bars[i].setVisibility(View.GONE);
             }
         }
@@ -79,65 +92,10 @@ public class MenuFragment implements LauncherUiComponent {
         carouselStoryRunnable = new Runnable() {
             @Override
             public void run() {
-                currentStoryIndex++;
-                if (currentStoryIndex >= 3/*storiesList.size()*/) {
-                    currentStoryIndex = 0;
-                }
-                for (int i = 0; i < 6; i++) {
-                    if (i == currentStoryIndex) {
-                        bars[i].setAlpha(1.0f);
-                    } else
-                        bars[i].setAlpha(0.5f);
-                }
-
-                final TextView visibleTargetText = isFirstImageVisible ? news_date_two : news_date;
-                final TextView invisibleTargetText = isFirstImageVisible ? news_date : news_date_two;
-
-                final ImageView visibleTarget = isFirstImageVisible ? news_image_two : news_image;
-                final ImageView invisibleTarget = isFirstImageVisible ? news_image : news_image_two;
-
-                invisibleTargetText.animate()
-                        .alpha(0.0f)
-                        .setDuration(300L)
-                        .start();
-
-                invisibleTarget.animate()
-                        .alpha(0.0f)
-                        .setDuration(300L)
-                        .start();
-
-                visibleTargetText.setText(storiesList.get(currentStoryIndex).getMiniDate());
-                visibleTargetText.animate()
-                        .alpha(1.0f)
-                        .setDuration(300L)
-                        .start();
-
-                Glide.with(visibleTarget.getContext())
-                        .load(storiesList.get(currentStoryIndex).getImageUrl())
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                visibleTarget.animate()
-                                        .alpha(1.0f)
-                                        .setDuration(300L)
-                                        .start();
-
-                                isFirstImageVisible = !isFirstImageVisible;
-                                return false;
-                            }
-                        })
-                        .into(visibleTarget);
-
+                replaceStory();
                 handler.postDelayed(this, 5000L);
             }
         };
-
-        //handler.post(carouselStoryRunnable);
 
         nick_name_layout = viewGroup.findViewById(R.id.nick_name_layout);
         nick_name_layout.setOnTouchListener(new UiManager.animClickBtn(activity, nick_name_layout));
@@ -149,21 +107,78 @@ public class MenuFragment implements LauncherUiComponent {
         });
 
         news = viewGroup.findViewById(R.id.news);
-        news.setOnTouchListener(new UiManager.animClickBtn(activity, news));
+//news.setOnTouchListener(new UiManager.animClickBtn(activity, news));
+        news.setOnTouchListener(new View.OnTouchListener() {
+            AnimatorSet animatorSet = (AnimatorSet) AnimatorInflater.loadAnimator(activity, R.animator.reduce_size);
+            AnimatorSet animatorSet1 = (AnimatorSet) AnimatorInflater.loadAnimator(activity, R.animator.regain_size);
+            boolean isPressed = false;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction() & 255;
+
+                if (action == MotionEvent.ACTION_DOWN) {
+                    // Нажали - уменьшаем
+                    if (animatorSet1.isRunning()) {
+                        animatorSet1.end();
+                    }
+                    animatorSet.setTarget(news);
+                    animatorSet.start();
+                    isPressed = true;
+                    return true;
+
+                } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+                    // Отпустили или отменили - возвращаем размер
+                    if (animatorSet.isRunning()) {
+                        animatorSet.end();
+                    }
+                    animatorSet1.setTarget(news);
+                    animatorSet1.start();
+
+                    // Если это был ACTION_UP и палец был на кнопке - выполняем клик
+                    if (action == MotionEvent.ACTION_UP && isPressed) {
+                        // Проверяем что палец отпущен в пределах кнопки
+                        float x = event.getX();
+                        float y = event.getY();
+                        if (x >= 0 && x <= v.getWidth() && y >= 0 && y <= v.getHeight()) {
+                            // Вызываем performClick чтобы сработал OnClickListener
+                            v.performClick();
+                        } else {
+                            // Палец отпущен вне кнопки - заменяем историю
+                            replaceStory();
+                        }
+                    }
+
+                    isPressed = false;
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
         news.setOnClickListener(v -> {
             // Переход на новости.
+            System.out.println("FFFFFFFFFFFFFFFFFFF");
+            //Toast.makeText(activity, "Клик", Toast.LENGTH_SHORT).show();
+            NotyManager notyManager = UiManager.getUiManager().getTyped(UiManager.NOTY);
+            Random random = new Random();
+            int i = random.nextInt(10);
+            notyManager.show(i, "Клик по истории.", ">>", null, 2);
         });
 
         btn_vk = viewGroup.findViewById(R.id.btn_vk);
         btn_vk.setOnTouchListener(new UiManager.animClickBtn(activity, btn_vk));
         btn_vk.setOnClickListener(v -> {
-            // Переход на новости.
+            // Переход в вк.
+            activity.startActivity(new Intent("android.intent.action.VIEW", Uri.parse("https://vk.com/spacerp_t")));
         });
 
         btn_telegram = viewGroup.findViewById(R.id.btn_telegram);
         btn_telegram.setOnTouchListener(new UiManager.animClickBtn(activity, btn_telegram));
         btn_telegram.setOnClickListener(v -> {
-            // Переход на новости.
+            // Переход в телеграмм.
+            activity.startActivity(new Intent("android.intent.action.VIEW", Uri.parse("https://t.me/sp_gamedev")));
         });
 
         btn_shop = viewGroup.findViewById(R.id.btn_shop);
@@ -222,13 +237,82 @@ public class MenuFragment implements LauncherUiComponent {
         viewGroup.setVisibility(View.GONE);
     }
 
+    public void replaceStory() {
+        currentStoryIndex++;
+        if (currentStoryIndex >= storiesList.size()) {
+            currentStoryIndex = 0;
+        }
+        for (int i = 0; i < 6; i++) {
+            if (i == currentStoryIndex) {
+                bars[i].setAlpha(1.0f);
+            } else
+                bars[i].setAlpha(0.5f);
+        }
+
+        final TextView visibleTargetText = isFirstImageVisible ? news_date_two : news_date;
+        final TextView invisibleTargetText = isFirstImageVisible ? news_date : news_date_two;
+
+        final ImageView visibleTarget = isFirstImageVisible ? news_image_two : news_image;
+        final ImageView invisibleTarget = isFirstImageVisible ? news_image : news_image_two;
+
+        invisibleTargetText.animate()
+                .alpha(0.0f)
+                .setDuration(300L)
+                .start();
+
+        invisibleTarget.animate()
+                .alpha(0.0f)
+                .setDuration(300L)
+                .start();
+
+        visibleTargetText.setText(storiesList.get(currentStoryIndex).getMiniDate());
+        visibleTargetText.animate()
+                .alpha(1.0f)
+                .setDuration(300L)
+                .start();
+
+        Glide.with(visibleTarget.getContext())
+                .load(storiesList.get(currentStoryIndex).getImageUrl())
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        visibleTarget.animate()
+                                .alpha(1.0f)
+                                .setDuration(300L)
+                                .start();
+
+                        isFirstImageVisible = !isFirstImageVisible;
+                        return false;
+                    }
+                })
+                .into(visibleTarget);
+    }
+
     @Override
     public void show() {
+        if (!isCarouselRunning && carouselStoryRunnable != null) {
+            handler.post(carouselStoryRunnable);
+            isCarouselRunning = true;
+        }
+
         UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
     }
 
     @Override
     public void hide() {
+        if (handler != null) {
+            handler.removeCallbacks(carouselStoryRunnable); // Удаляем конкретную задачу
+            currentStoryIndex--;
+            // handler.removeCallbacksAndMessages(null); // Или всё подряд, если там висят другие таски
+        }
+
+        isCarouselRunning = false;
+
         UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
     }
 }

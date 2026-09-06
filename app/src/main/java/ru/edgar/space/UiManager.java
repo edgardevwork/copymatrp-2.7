@@ -82,7 +82,7 @@ public class UiManager {
         launcherUi[PROFILE] = new ProfileFragment();
         //launcherUi[2] = new NewsFragment();
         //launcherUi[3] = new ServersFragment();
-        launcherUi[DIALOG] = new DialogManager(); // Если он не реализует интерфейс
+        launcherUi[DIALOG] = new DialogManager();
         launcherUi[NOTY] = new NotyManager();
         launcherUi[LOADING] = new LoadingFragment();
 

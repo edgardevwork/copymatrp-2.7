@@ -29,7 +29,7 @@ import ru.edgar.space.SAMP;
 public class ProfileFragment implements LauncherUiComponent {
 
     private ViewGroup viewGroup;
-    private LinearLayout btn_settings, btn_back;
+    private LinearLayout btn_settings, btn_back, btn_payment;
     private RecyclerView recyclerView;
 
     @Override
@@ -44,8 +44,11 @@ public class ProfileFragment implements LauncherUiComponent {
         layoutParams.height = -1;
         viewGroup.setLayoutParams(layoutParams);
 
+        DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+
         btn_back = viewGroup.findViewById(R.id.btn_back);
         btn_settings = viewGroup.findViewById(R.id.btn_settings);
+        btn_payment = viewGroup.findViewById(R.id.btn_payment);
         recyclerView = viewGroup.findViewById(R.id.profileStatsRecyclerView);
 
         btn_back.setOnTouchListener(new UiManager.animClickBtn(activity, btn_back));
@@ -56,8 +59,17 @@ public class ProfileFragment implements LauncherUiComponent {
 
         btn_settings.setOnTouchListener(new UiManager.animClickBtn(activity, btn_settings));
         btn_settings.setOnClickListener(v -> {
-            DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
             dialogManager.showAccountDialog();
+        });
+
+        btn_payment.setOnTouchListener(new UiManager.animClickBtn(activity, btn_payment));
+        btn_payment.setOnClickListener(v -> {
+            dialogManager.showDialog("Упс! Данная функиця\nвременно не доступна!", "Но это не повод переживать!\nВозможно уже в ближайщее время ее сделают рабочей :)", "Хорошо", null, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogManager.hideDialog();
+                }
+            }, null);
         });
 
         viewGroup.setVisibility(View.GONE);
