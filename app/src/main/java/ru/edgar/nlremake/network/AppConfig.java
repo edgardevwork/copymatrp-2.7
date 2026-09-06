@@ -1,10 +1,15 @@
 package ru.edgar.nlremake.network;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 
 public class AppConfig {
 	public static String nickName = "";
 	public static boolean isAuth = false;
+	public static boolean isStartGame = false;
+
+	public static FirebaseAuth mAuth;
 
 	public static ArrayList archives = new ArrayList<>();
 	public static ArrayList deleted = new ArrayList<>();

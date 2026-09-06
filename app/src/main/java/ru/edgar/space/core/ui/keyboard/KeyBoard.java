@@ -3,6 +3,7 @@ package ru.edgar.space.core.ui.keyboard;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -40,7 +41,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.space.UiManager;
 import ru.edgar.matrp.R;
 import ru.edgar.space.SAMP;
 
@@ -54,7 +55,7 @@ public final class KeyBoard implements ViewTreeObserver.OnGlobalLayoutListener, 
     public int clickkeys;
     public int mess = -1;
     public ArrayList<String> messange = new ArrayList<>();
-    public NvEventQueueActivity nvEventQueueActivity;
+    public Activity nvEventQueueActivity;
     public CustomEditText customEditText;
     public ViewGroup viewGroup;
     public keys[] keys;
@@ -65,8 +66,8 @@ public final class KeyBoard implements ViewTreeObserver.OnGlobalLayoutListener, 
     public LinearLayout[] f2225s;
     public FrameLayout key_hint, layout_keyboard, history_up, history_down, send_button;
 
-    public KeyBoard(NvEventQueueActivity nvEventQueueActivity, int guiId) {
-        viewGroup = InterfacesManager.getInterfacesManager().viewGroup[guiId];
+    public KeyBoard(Activity nvEventQueueActivity, int guiId) {
+        //viewGroup = UiManager.getUiManager().viewGroup[guiId];
         this.nvEventQueueActivity = nvEventQueueActivity;
         f2225s = new LinearLayout[4];
         keys = new keys[44];
@@ -122,7 +123,7 @@ public final class KeyBoard implements ViewTreeObserver.OnGlobalLayoutListener, 
     }
 
     @SuppressLint("DiscouragedApi")
-    public static View getIdRes(NvEventQueueActivity nvEventQueueActivity, Resources resources, String str, String str2, ViewGroup viewGroup) {
+    public static View getIdRes(Activity nvEventQueueActivity, Resources resources, String str, String str2, ViewGroup viewGroup) {
         return viewGroup.findViewById(resources.getIdentifier(str, str2, nvEventQueueActivity.getPackageName()));
     }
 
@@ -256,7 +257,7 @@ public final class KeyBoard implements ViewTreeObserver.OnGlobalLayoutListener, 
             } else {
                 this.customEditText = customEditTextOne;
                 isDialog = true;
-                InterfacesManager.getInterfacesManager().getDialogManager().gravity(49);
+                UiManager.getUiManager().getDialogManager().gravity(49);
                 Log.i("edgar", "dialogtext  ==" + customEditTextOne);
             }
             u();
@@ -272,7 +273,7 @@ public final class KeyBoard implements ViewTreeObserver.OnGlobalLayoutListener, 
         } else/* if (customEditTextOne != null)*/ {
             this.customEditText = customEditTextOne;
             isDialog = true;
-            InterfacesManager.getInterfacesManager().getDialogManager().gravity(49);
+            UiManager.getUiManager().getDialogManager().gravity(49);
             Log.i("edgar", "diakog" + customEditTextOne);
         }
         layout_main = (LinearLayout) viewGroup.findViewById(R.id.layout_main);
@@ -818,7 +819,7 @@ public final class KeyBoard implements ViewTreeObserver.OnGlobalLayoutListener, 
             if (vGrop()) {
                 w();
                 if(isDialog) {
-                    InterfacesManager.getInterfacesManager().getDialogManager().gravity(17);
+                    UiManager.getUiManager().getDialogManager().gravity(17);
                 }
                 viewGroup.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 //NvEventQueueActivity.getInstance().getHeightProvider().f9601b.remove(this);
@@ -851,9 +852,9 @@ public final class KeyBoard implements ViewTreeObserver.OnGlobalLayoutListener, 
                     messange.add(0, customEditText.getText().toString());
                 if(!isChatClose) {
                     String text = customEditText.getText().toString();
-                    InterfacesManager.getInterfacesManager().getChatManager().ChatClose();
+                    UiManager.getUiManager().getChatManager().ChatClose();
                     try {
-                        InterfacesManager.getInterfacesManager().getChatManager().sendChatMessages(text.getBytes("windows-1251"));
+                        UiManager.getUiManager().getChatManager().sendChatMessages(text.getBytes("windows-1251"));
                     } catch (UnsupportedEncodingException e) {
                         Log.e("edgar", "SLYZILCZ PIZDEC");
                         throw new RuntimeException(e);
@@ -861,7 +862,7 @@ public final class KeyBoard implements ViewTreeObserver.OnGlobalLayoutListener, 
                     isChatClose = true;
                 }
                 if(isDialog) {
-                    InterfacesManager.getInterfacesManager().getDialogManager().gravity(17);
+                    UiManager.getUiManager().getDialogManager().gravity(17);
                 }
                 this.viewGroup.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 //NvEventQueueActivity.getInstance().getHeightProvider().f9601b.remove(this);

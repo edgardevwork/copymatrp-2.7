@@ -1,15 +1,13 @@
 package ru.edgar.nlremake.fragment.dialogs;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,26 +17,25 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import javax.annotation.Nullable;
-
 import ru.edgar.matrp.R;
-import ru.edgar.nlremake.activity.MainScreenActivity;
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.nlremake.network.AppConfig;
+import ru.edgar.space.UiManager;
 
-public class DialogFragment extends AppCompatActivity {
+public class DialogFragment {
 
     private ViewGroup viewGroup;
+    private Activity context;
     public CheckBox checkBox;
     private CheckBox checkBox2;
 
-    public DialogFragment() {
-        if(viewGroup != null) {
+    public DialogFragment(Activity activity) {
+        if(viewGroup != null && !AppConfig.isStartGame) {
             return;
         }
-        viewGroup = (ViewGroup) ((LayoutInflater) MainScreenActivity.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_dialog, (ViewGroup) null);
-        MainScreenActivity.getInstance().getMainScreen().addView(viewGroup, -1, -1);
+        context = activity;
+
+        viewGroup = (ViewGroup) ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_dialog, (ViewGroup) null);
+        UiManager.getUiManager().getFrontUI().addView(viewGroup, -1, -1);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) viewGroup.getLayoutParams();
         layoutParams.width = -1;
         layoutParams.height = -1;
@@ -61,8 +58,25 @@ public class DialogFragment extends AppCompatActivity {
         viewGroup.setVisibility(View.GONE);
     }
 
+    public void changingButtonPriority(boolean isPriority) {
+        FrameLayout main_btn_no = viewGroup.findViewById(R.id.main_btn_no);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                context.getResources().getDimensionPixelSize(R.dimen._28sdp));
+
+        layoutParams.weight = (isPriority ? 0.0f : 1.0f);
+
+        int marginBottom = context.getResources().getDimensionPixelSize(R.dimen._18sdp);
+        int marginLeft = context.getResources().getDimensionPixelSize(R.dimen._8sdp);
+        layoutParams.bottomMargin = marginBottom;
+        layoutParams.leftMargin = marginLeft;
+
+        main_btn_no.setLayoutParams(layoutParams);
+    }
+
     public void showDialog(String name, String dname, String b1, String b2, View.OnClickListener click1, View.OnClickListener click2) {
-        MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
+        changingButtonPriority(true);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
 
         checkBox.setVisibility(View.GONE);
         checkBox2.setVisibility(View.GONE);
@@ -76,7 +90,7 @@ public class DialogFragment extends AppCompatActivity {
 
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) text2.getLayoutParams();
 
-            int marginRightInPixels = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._18sdp);
+            int marginRightInPixels = context.getResources().getDimensionPixelSize(R.dimen._18sdp);
 
             params.rightMargin = marginRightInPixels;
 
@@ -100,7 +114,7 @@ public class DialogFragment extends AppCompatActivity {
         }
         if(click1 != null) {
             FrameLayout main_btn_yes = viewGroup.findViewById(R.id.main_btn_yes);
-            main_btn_yes.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_yes));
+            main_btn_yes.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_yes));
             main_btn_yes.setOnClickListener(click1);
             main_btn_yes.setVisibility(View.VISIBLE);
         } else {
@@ -109,7 +123,7 @@ public class DialogFragment extends AppCompatActivity {
         }
         if(click2 != null) {
             FrameLayout main_btn_no = viewGroup.findViewById(R.id.main_btn_no);
-            main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
+            main_btn_no.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_no));
             main_btn_no.setOnClickListener(click2);
             main_btn_no.setVisibility(View.VISIBLE);
         } else {
@@ -119,7 +133,8 @@ public class DialogFragment extends AppCompatActivity {
     }
 
     public void showErrorDialog(String name, String dname, String b1, View.OnClickListener click1, boolean isCheckBox, String dCheckBox) {
-        MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
+        changingButtonPriority(true);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
 
         checkBox.setChecked(false);
         checkBox2.setVisibility(View.GONE);
@@ -139,7 +154,7 @@ public class DialogFragment extends AppCompatActivity {
 
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) text2.getLayoutParams();
 
-            int marginRightInPixels = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._18sdp);
+            int marginRightInPixels = context.getResources().getDimensionPixelSize(R.dimen._18sdp);
 
             params.rightMargin = marginRightInPixels;
 
@@ -159,7 +174,7 @@ public class DialogFragment extends AppCompatActivity {
         text34.setVisibility(View.GONE);
         if(click1 != null) {
             FrameLayout main_btn_yes = viewGroup.findViewById(R.id.main_btn_yes);
-            main_btn_yes.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_yes));
+            main_btn_yes.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_yes));
             main_btn_yes.setOnClickListener(click1);
             main_btn_yes.setVisibility(View.VISIBLE);
         } else {
@@ -171,7 +186,8 @@ public class DialogFragment extends AppCompatActivity {
     }
 
     public void showDialogCheckBoxes(String name, String dname, String b1, View.OnClickListener click1, CheckBox[] checkBoxes) {
-        MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
+        changingButtonPriority(true);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
 
         checkBox.setChecked(checkBoxes[0].isChecked());
         checkBox2.setChecked(checkBoxes[1].isChecked());
@@ -226,7 +242,7 @@ public class DialogFragment extends AppCompatActivity {
 
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) text2.getLayoutParams();
 
-            int marginRightInPixels = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._44sdp);
+            int marginRightInPixels = context.getResources().getDimensionPixelSize(R.dimen._44sdp);
 
             params.rightMargin = marginRightInPixels;
 
@@ -241,7 +257,7 @@ public class DialogFragment extends AppCompatActivity {
         }
         if(click1 != null) {
             FrameLayout main_btn_yes = viewGroup.findViewById(R.id.main_btn_yes);
-            main_btn_yes.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_yes));
+            main_btn_yes.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_yes));
             main_btn_yes.setOnClickListener(click1);
             main_btn_yes.setVisibility(View.VISIBLE);
         }
@@ -276,6 +292,6 @@ public class DialogFragment extends AppCompatActivity {
     }
 
     public void hideDialog() {
-        MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.GONE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
     }
 }

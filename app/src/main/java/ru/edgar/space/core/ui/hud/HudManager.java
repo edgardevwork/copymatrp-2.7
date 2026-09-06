@@ -1,5 +1,6 @@
 package ru.edgar.space.core.ui.hud;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -13,24 +14,21 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.nvidia.devtech.NvEventQueueActivity;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Formatter;
 
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.space.UiManager;
 import ru.edgar.matrp.R;
 import ru.edgar.space.SAMP;
 import ru.edgar.space.core.ui.chatedgar.ChatManager;
 import ru.edgar.space.core.ui.keyboard.KeyBoard;
 
 public class HudManager {
-    public NvEventQueueActivity nvEventQueueActivity = null;
+    public Activity activity = null;
     public ViewGroup viewGroup = null;
     private boolean isHudSetPos = false;
     public FrameLayout hud_layout, btn_shop;
@@ -43,11 +41,11 @@ public class HudManager {
 
     public ProgressBar progressHP;
 
-    public HudManager(NvEventQueueActivity nvEventQueueActivity, int guiId) {
-        this.nvEventQueueActivity = nvEventQueueActivity;
-        viewGroup = InterfacesManager.getInterfacesManager().viewGroup[guiId];
+    public HudManager(Activity activity, int guiId) {
+        this.activity = activity;
+        //viewGroup = UiManager.getUiManager().viewGroup[guiId];
         show();
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
+        viewGroup.setVisibility(View.GONE);
     }
 
     public void show() {
@@ -83,21 +81,21 @@ public class HudManager {
         chat_icon = viewGroup.findViewById(R.id.chat_icon);
 
         btn_shop.setOnClickListener(v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(nvEventQueueActivity, R.anim.button_click));
+            v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.button_click));
             //SAMP.getInstance().sendCommand("/mm".getBytes(StandardCharsets.UTF_8));
         });
 
-        weapon_melee_layout.setOnTouchListener(new InterfacesManager.animClickBtn(SAMP.getInstance(), weapon_melee_layout));
+        weapon_melee_layout.setOnTouchListener(new UiManager.animClickBtn(SAMP.getInstance(), weapon_melee_layout));
         weapon_melee_layout.setOnClickListener(v -> {
             SAMP.getInstance().onWeaponChanged();
         });
 
         btn_bp.setOnClickListener(v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(nvEventQueueActivity, R.anim.button_click));
+            v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.button_click));
             //SAMP.getInstance().sendCommand("/mm".getBytes(StandardCharsets.UTF_8));
         });
 
-        btn_1.setOnTouchListener(new InterfacesManager.animClickBtn(SAMP.getInstance(), btn_1));
+        btn_1.setOnTouchListener(new UiManager.animClickBtn(SAMP.getInstance(), btn_1));
         btn_1.setOnClickListener(v -> {
             //InterfacesManager.getInterfacesManager().getUserMenuManager().ShowMenu();
         });
@@ -125,16 +123,16 @@ public class HudManager {
             if (ChatManager.statusChat == 3) {
                 i = 1;
             } else i = ChatManager.statusChat + 2;
-            InterfacesManager.getInterfacesManager().getChatManager().setChatStatys(i);
+            UiManager.getUiManager().getChatManager().setChatStatys(i);
             chat_icon.setImageResource(i == 1 ? R.drawable.ic_hud_chat_active : i == 2 ? R.drawable.ic_hud_chat_middle : R.drawable.ic_hud_chat_inactive);
         });
-        hud_chat_btn.setOnTouchListener(new KeyBoard.clicabilel(nvEventQueueActivity, hud_chat_btn));
+        hud_chat_btn.setOnTouchListener(new KeyBoard.clicabilel(activity, hud_chat_btn));
 
         /*String str;
-        float dimensionPixelSize = nvEventQueueActivity.getResources().getDimensionPixelSize(R.dimen._9sdp);
-        float dimensionPixelSize2 = nvEventQueueActivity.getResources().getDimensionPixelSize(R.dimen._9sdp);
-        float dimensionPixelSize3 = nvEventQueueActivity.getResources().getDimensionPixelSize(R.dimen._92sdp) + dimensionPixelSize;
-        float dimensionPixelSize4 = nvEventQueueActivity.getResources().getDimensionPixelSize(R.dimen._92sdp) + dimensionPixelSize2;
+        float dimensionPixelSize = nvEventQueueactivity.getResources().getDimensionPixelSize(R.dimen._9sdp);
+        float dimensionPixelSize2 = nvEventQueueactivity.getResources().getDimensionPixelSize(R.dimen._9sdp);
+        float dimensionPixelSize3 = nvEventQueueactivity.getResources().getDimensionPixelSize(R.dimen._92sdp) + dimensionPixelSize;
+        float dimensionPixelSize4 = nvEventQueueactivity.getResources().getDimensionPixelSize(R.dimen._92sdp) + dimensionPixelSize2;
 //CHUD::hud_radar
         setRadarSizes(0.0f + dimensionPixelSize, dimensionPixelSize2 + 0.0f, dimensionPixelSize3 - 0.0f, dimensionPixelSize4 - 0.0f);
         float f1 = dimensionPixelSize4 - 0.0f;
@@ -169,7 +167,7 @@ public class HudManager {
         String s= formatter.format(money);
         hud_money.setText(s);
 
-        int id = viewGroup.getResources().getIdentifier(new Formatter().format("weapon_%d", Integer.valueOf(weaponidweik)).toString(), "drawable", nvEventQueueActivity.getPackageName());
+        int id = viewGroup.getResources().getIdentifier(new Formatter().format("weapon_%d", Integer.valueOf(weaponidweik)).toString(), "drawable", activity.getPackageName());
         hud_weapon.setImageResource(id);
 
     }
@@ -216,14 +214,14 @@ public class HudManager {
 
     public void ShowHud()
     {
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.VISIBLE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
         hud_map_bg.post(() -> {
             if(!isHudSetPos) { // проверка чтобы не было краша при новом показе худа
                 // отправка в CHUD::Rect(), кастомный bg
                 //SetRadarBgPos(hud_bg.getX(), hud_bg.getY(), hud_radar.getX()+hud_radar.getWidth(), hud_radar.getY()+hud_radar.getHeight());
 
                 SAMP.getInstance().SetRadarBgPos(hud_map_bg.getX(), hud_map_bg.getY(), hud_map_bg.getWidth(), hud_map_bg.getHeight()); // fix
-                InterfacesManager.getInterfacesManager().setRadarSize();
+                UiManager.getUiManager().setRadarSize();
 
                 // показываем что все готово для хука CSprite2d__Draw
                 SAMP.getInstance().SetRadarEnabled(true);
@@ -233,13 +231,13 @@ public class HudManager {
                 System.out.println("CHUD::Render() | gtaX: " + gtaX + " | gtaY: " + gtaY);
                 System.out.println("****************************************************");*/
 
-                //NvEventQueueActivity.getInstance().showNotification(2, "CHUD::Render()", 7, "", "");
+                //NvEventQueueactivity.getInstance().showNotification(2, "CHUD::Render()", 7, "", "");
             }});
     }
 
     public void HideHud()
     {
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
     }
 
 }

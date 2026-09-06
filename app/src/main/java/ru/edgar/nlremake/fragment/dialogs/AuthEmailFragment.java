@@ -1,5 +1,6 @@
 package ru.edgar.nlremake.fragment.dialogs;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -44,15 +45,19 @@ import ru.edgar.nlremake.fragment.LoadingFragment;
 import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.nlremake.network.Interface;
 import ru.edgar.nlremake.network.AppConfig;
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.space.SAMP;
+import ru.edgar.space.UiManager;
 
 public class AuthEmailFragment {
 
     private int secs = 60;
     private String codeMail;
     private ViewGroup viewGroup;
+    private Activity context;
+    private DialogManager dialogManager;
 
     private boolean isSendCode = false;
+    LoadingFragment loadingFragment;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private static final String PASSWORD_REGEX = "^[a-zA-Z0-9]{6,30}$";
     private AuthStatus status_auth = AuthStatus.EMAIL_CHECK; // 0 - email, 1 - login, 2 - pases, 3 - code, 4 - recover email, 5 - recover code, 6 - recover creste pass;
@@ -73,12 +78,14 @@ public class AuthEmailFragment {
     private LinearLayout email_layout_email, email_layout_pass, email_layout_pass2, email_layout_code;
     private EditText email_layout_email_input, email_layout_pass_input, email_layout_pass2_input, email_layout_code_input;
 
-    public AuthEmailFragment() {
-        if(viewGroup != null) {
+    public AuthEmailFragment(Activity activity) {
+        if(viewGroup != null && !AppConfig.isStartGame) {
             return;
         }
-        viewGroup = (ViewGroup) ((LayoutInflater) MainScreenActivity.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_auth_email, (ViewGroup) null);
-        MainScreenActivity.getInstance().getMainScreen().addView(viewGroup, -1, -1);
+        context = activity;
+
+        viewGroup = (ViewGroup) ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_auth_email, (ViewGroup) null);
+        UiManager.getUiManager().getFrontUI().addView(viewGroup, -1, -1);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) viewGroup.getLayoutParams();
         layoutParams.width = -1;
         layoutParams.height = -1;
@@ -86,6 +93,10 @@ public class AuthEmailFragment {
 
         bigText = viewGroup.findViewById(R.id.bigText);
         littleText = viewGroup.findViewById(R.id.littleText);
+        
+        dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+        
+        loadingFragment = UiManager.getUiManager().getTyped(UiManager.LOADING);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(/*AppConfig.apiLink*/"https://google.com/")
@@ -152,7 +163,7 @@ public class AuthEmailFragment {
         });
 
         main_btn_yes = viewGroup.findViewById(R.id.main_btn_yes);
-        main_btn_yes.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_yes));
+        main_btn_yes.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_yes));
         main_btn_yes.setOnClickListener(v -> {
             switch (status_auth) {
                 case EMAIL_CHECK:
@@ -169,7 +180,7 @@ public class AuthEmailFragment {
 
                     // Проверка зарегистрирована ли почта
                     isFreeEmail = true;// Баг тест
-                    LoadingFragment.getInstance().show();
+                    loadingFragment.show();
                     FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -177,7 +188,7 @@ public class AuthEmailFragment {
                                 String paramValue = userSnapshot.child("email").getValue(String.class);
                                 if (paramValue != null) {
                                     if (email_layout_email_input.getText().toString().equals(paramValue.toString())) {
-                                        LoadingFragment.getInstance().hide();
+                                        loadingFragment.hide();
 
                                         isFreeEmail = false;
                                         status_auth = AuthStatus.EMAIL_LOGIN;
@@ -194,7 +205,7 @@ public class AuthEmailFragment {
                                         bigText.setText("Авторизация по эл. почте");
                                         littleText.setText("Введи свой адрес эл. почты, чтобы продолжить\nпроцесс регистрации или авторизовать твой аккаунт\nв игре.");
 
-                                        InputMethodManager immm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        InputMethodManager immm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                                         immm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
 
                                         return;
@@ -202,7 +213,7 @@ public class AuthEmailFragment {
                                 }
                             }
                             if (isFreeEmail) {
-                                LoadingFragment.getInstance().hide();
+                                loadingFragment.hide();
 
                                 status_auth = AuthStatus.EMAIL_CREATE_PASS;
 
@@ -223,15 +234,15 @@ public class AuthEmailFragment {
                                 bigText.setText("Зарегистрироваться по\nэл. почте");
                                 littleText.setText("Введи свой пароль, чтобы создать аккаунт.");
 
-                                InputMethodManager immm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                InputMethodManager immm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                                 immm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
                             }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            LoadingFragment.getInstance().hide();// Тест
-                            Toast.makeText(MainScreenActivity.getInstance(), "Ошибка проверки почты", Toast.LENGTH_SHORT).show();
+                            loadingFragment.hide();// Тест
+                            Toast.makeText(context, "Ошибка проверки почты", Toast.LENGTH_SHORT).show();
                             System.out.println("The read failed: " + databaseError.getCode());
                         }
                     });
@@ -247,10 +258,10 @@ public class AuthEmailFragment {
                         return;
                     } else {
                         if (!pass.matches(PASSWORD_REGEX)) {
-                            DialogManager.getDialogManager().showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
+                            dialogManager.showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    DialogManager.getDialogManager().hideDialog();
+                                    dialogManager.hideDialog();
                                 }
                             }, null);
                             return;
@@ -258,13 +269,17 @@ public class AuthEmailFragment {
                     }
 
                     // Вход
-                    MainScreenActivity.getInstance().mAuth.signInWithEmailAndPassword("mail" + email_layout_email_input.getText().toString().trim(), email_layout_pass_input.getText().toString().trim())
+                    AppConfig.mAuth.signInWithEmailAndPassword("mail" + email_layout_email_input.getText().toString().trim(), email_layout_pass_input.getText().toString().trim())
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         hideAuthEmailDialog();
-                                        MainScreenActivity.getInstance().onRequestPermissions();
+                                        if(!AppConfig.isStartGame) {
+                                            MainScreenActivity.getInstance().onRequestPermissions();
+                                        } else {
+                                            SAMP.getInstance().hideSplash();
+                                        }
                                     } else {
                                         email_pass_error_text.setText("Введен неправильный пароль");
                                         email_layout_pass.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg_error);
@@ -285,10 +300,10 @@ public class AuthEmailFragment {
                         return;
                     } else {
                         if (!p1.matches(PASSWORD_REGEX)) {
-                            DialogManager.getDialogManager().showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
+                            dialogManager.showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    DialogManager.getDialogManager().hideDialog();
+                                    dialogManager.hideDialog();
                                 }
                             }, null);
                             return;
@@ -302,10 +317,10 @@ public class AuthEmailFragment {
                         return;
                     } else {
                         if (!p2.matches(PASSWORD_REGEX)) {
-                            DialogManager.getDialogManager().showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
+                            dialogManager.showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    DialogManager.getDialogManager().hideDialog();
+                                    dialogManager.hideDialog();
                                 }
                             }, null);
                             return;
@@ -320,7 +335,7 @@ public class AuthEmailFragment {
                     }
 
                     // Отправка кода
-                    LoadingFragment.getInstance().show();
+                    loadingFragment.show();
 
                     String mail = email_layout_email_input.getText().toString();
 
@@ -331,7 +346,7 @@ public class AuthEmailFragment {
                         public void onResponse(Call<String> call, Response<String> response) {
 
                             if (response.body() != null && response.isSuccessful()) {
-                                LoadingFragment.getInstance().hide();
+                                loadingFragment.hide();
                                 codeMail = response.body();
                                 status_auth = AuthStatus.EMAIL_CHECK_CODE;
 
@@ -350,22 +365,22 @@ public class AuthEmailFragment {
 
                                 littleText.setText("Мы отправили код на твой email. Пожалуйста,\nпроверь также папку \"Спам\". ");
 
-                                main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
+                                main_btn_no.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_no));
                                 ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
                                 main_btn_no.setVisibility(View.VISIBLE);
 
-                                InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
                             } else {
-                                LoadingFragment.getInstance().hide();
-                                Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                                loadingFragment.hide();
+                                Toast.makeText(context, "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
-                            LoadingFragment.getInstance().hide();
-                            Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                            loadingFragment.hide();
+                            Toast.makeText(context, "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
                         }
                     });
                     break;
@@ -379,12 +394,12 @@ public class AuthEmailFragment {
                     }
 
                     // Регистрация почты
-                    MainScreenActivity.getInstance().mAuth.createUserWithEmailAndPassword("mail" + email_layout_email_input.getText().toString().trim(), email_layout_pass_input.getText().toString().trim())
+                    AppConfig.mAuth.createUserWithEmailAndPassword("mail" + email_layout_email_input.getText().toString().trim(), email_layout_pass_input.getText().toString().trim())
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){
-                                        FirebaseUser currentUser = MainScreenActivity.getInstance().mAuth.getCurrentUser();
+                                        FirebaseUser currentUser = AppConfig.mAuth.getCurrentUser();
                                         if(currentUser != null) {
                                             AppConfig.isAuth = true;
                                         } else {
@@ -396,18 +411,22 @@ public class AuthEmailFragment {
                                         Info.put("way", 1);
                                         FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
                                         // EDGAR 3.0 NLRemake version от 24.08.2026
-                                        DialogManager.getDialogManager().hideAuthEmailDialog();
-                                        MainScreenActivity.getInstance().onRequestPermissions();
+                                        dialogManager.hideAuthEmailDialog();
+                                        if(!AppConfig.isStartGame) {
+                                            MainScreenActivity.getInstance().onRequestPermissions();
+                                        } else {
+                                            SAMP.getInstance().hideSplash();
+                                        }
                                     } else {
-                                        DialogManager.getDialogManager().hideAuthEmailDialog();
-                                        DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через почту!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
+                                        dialogManager.hideAuthEmailDialog();
+                                        dialogManager.showErrorDialog("Ошибка авторизации через почту!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                if(DialogManager.getDialogManager().getIsChecked()) {
-                                                    CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), ".createUserWithEmailAndPassword(email_layout_email_input", task.getException().toString());
+                                                if(dialogManager.getIsChecked()) {
+                                                    CrashReporter.sendBugReport(context, AppConfig.mAuth.getUid(), ".createUserWithEmailAndPassword(email_layout_email_input", task.getException().toString());
                                                 }
-                                                DialogManager.getDialogManager().hideDialog();
-                                                DialogManager.getDialogManager().showAuthDialog(false);
+                                                dialogManager.hideDialog();
+                                                dialogManager.showAuthDialog(false);
                                             }
                                         }, true, "Сообщить об ошибке");
                                     }
@@ -438,7 +457,7 @@ public class AuthEmailFragment {
                                         isFreeEmail = false;
 
                                         // Отправка кода
-                                        LoadingFragment.getInstance().show();
+                                        loadingFragment.show();
 
                                         Call<String> call1 = sInterface.verifyAuth(AppConfig.verifyAuthUrl, email);
 
@@ -447,7 +466,7 @@ public class AuthEmailFragment {
                                             public void onResponse(Call<String> call, Response<String> response) {
 
                                                 if (response.body() != null && response.isSuccessful()) {
-                                                    LoadingFragment.getInstance().hide();
+                                                    loadingFragment.hide();
                                                     codeMail = response.body();
                                                     status_auth = AuthStatus.EMAIL_RECOVER_CODE;
 
@@ -462,23 +481,23 @@ public class AuthEmailFragment {
 
                                                     littleText.setText("Введи код подтверждения, который был направлен\nна твою эл. почту.");
 
-                                                    main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
+                                                    main_btn_no.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_no));
                                                     ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
                                                     main_btn_no.setVisibility(View.VISIBLE);
 
-                                                    InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                                                     imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
                                                 } else {
-                                                    LoadingFragment.getInstance().hide();
-                                                    Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                                                    loadingFragment.hide();
+                                                    Toast.makeText(context, "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
 
                                             @Override
                                             public void onFailure(Call<String> call, Throwable t) {
                                                 //System.out.println(t.getMessage());
-                                                LoadingFragment.getInstance().hide();
-                                                Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                                                loadingFragment.hide();
+                                                Toast.makeText(context, "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
@@ -536,10 +555,10 @@ public class AuthEmailFragment {
                         return;
                     } else {
                         if (!pass1.matches(PASSWORD_REGEX)) {
-                            DialogManager.getDialogManager().showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
+                            dialogManager.showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    DialogManager.getDialogManager().hideDialog();
+                                    dialogManager.hideDialog();
                                 }
                             }, null);
                             return;
@@ -553,10 +572,10 @@ public class AuthEmailFragment {
                         return;
                     } else {
                         if (!pass2.matches(PASSWORD_REGEX)) {
-                            DialogManager.getDialogManager().showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
+                            dialogManager.showDialog("Упс!", "Пароль должен состоять минимум из 6 символов, максимум 30 символов. Разрешены буквы(англ) и цифры. Запрещены специальные символы", "Понял", null, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    DialogManager.getDialogManager().hideDialog();
+                                    dialogManager.hideDialog();
                                 }
                             }, null);
                             return;
@@ -580,18 +599,18 @@ public class AuthEmailFragment {
                             if (response.body() != null && response.isSuccessful()) {
                                 showAuthEmailDialog(); // Конец
 
-                                InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
                             } else {
                                 System.out.println("edgar + " + call.toString() + " r " + response.body().toString());
-                                Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при смене пароля", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Ошибка при смене пароля", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
                             System.out.println("edgar + " + call.toString() + " r " + t.getMessage().toString());
-                            Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при смене пароля", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Ошибка при смене пароля", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -600,7 +619,7 @@ public class AuthEmailFragment {
         });
 
         main_btn_no = viewGroup.findViewById(R.id.main_btn_no);
-        main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
+        main_btn_no.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_no));
         main_btn_no.setOnClickListener(v -> {
             switch (status_auth) {
                 case EMAIL_LOGIN:
@@ -622,7 +641,7 @@ public class AuthEmailFragment {
                 case EMAIL_RECOVER_CODE:
                     if(!isSendCode) {
                         // Отправка кода
-                        LoadingFragment.getInstance().show();
+                        loadingFragment.show();
                         String email = email_layout_email_input.getText().toString();
 
                         Call<String> call = sInterface.verifyAuth(AppConfig.verifyAuthUrl, email);
@@ -632,7 +651,7 @@ public class AuthEmailFragment {
                             public void onResponse(Call<String> call, Response<String> response) {
 
                                 if (response.body() != null && response.isSuccessful()) {
-                                    LoadingFragment.getInstance().hide();
+                                    loadingFragment.hide();
                                     codeMail = response.body();
 
                                     main_btn_no.setOnTouchListener(null);
@@ -640,18 +659,18 @@ public class AuthEmailFragment {
                                     main_btn_no.setAlpha(0.5f);
                                     isSendCode = true;
 
-                                    InputMethodManager imm = (InputMethodManager) MainScreenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm.hideSoftInputFromWindow(viewGroup.getWindowToken(), 0);
                                 } else {
-                                    LoadingFragment.getInstance().hide();
-                                    Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                                    loadingFragment.hide();
+                                    Toast.makeText(context, "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<String> call, Throwable t) {
-                                LoadingFragment.getInstance().hide();
-                                Toast.makeText(MainScreenActivity.getInstance(), "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
+                                loadingFragment.hide();
+                                Toast.makeText(context, "Ошибка при отправки кода", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -660,10 +679,21 @@ public class AuthEmailFragment {
         });
 
         btn_back = viewGroup.findViewById(R.id.btn_back);
-        btn_back.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), btn_back));
+        btn_back.setOnTouchListener(new UiManager.animClickBtn(context, btn_back));
         btn_back.setOnClickListener(v -> {
             hideAuthEmailDialog();
-            DialogManager.getDialogManager().showAuthDialog(false);
+            dialogManager.showAuthDialog(false);
+        });
+
+        // === ЗАЩИТА ОТ СКВОЗНЫХ КЛИКОВ ===
+        // Говорим системе, что этот слой сам поглощает все нажатия и не пускает их вниз
+        viewGroup.setClickable(true);
+        viewGroup.setFocusable(true);
+        viewGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Оставляем пустым. Касание фона просто поглощается и не идет дальше
+            }
         });
 
         viewGroup.setVisibility(View.GONE);
@@ -680,7 +710,7 @@ public class AuthEmailFragment {
                 secs = secs + (-1);
                 mHandler.postDelayed(this, 1000L);
             } else {
-                main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
+                main_btn_no.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_no));
                 ((TextView) main_btn_no.getChildAt(0)).setText("Отправить снова");
                 main_btn_no.setAlpha(1.0f);
                 isSendCode = false;
@@ -707,7 +737,7 @@ public class AuthEmailFragment {
         if(isTextView) {
             view.measure(-2, -2);
         } else {
-            int fixedHeight = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._28sdp);
+            int fixedHeight = context.getResources().getDimensionPixelSize(R.dimen._28sdp);
             int parentWidth = ((View) view.getParent()).getWidth();
             view.measure(
                     View.MeasureSpec.makeMeasureSpec(parentWidth, View.MeasureSpec.EXACTLY),
@@ -716,7 +746,7 @@ public class AuthEmailFragment {
         }
 
         final int measuredHeight = view.getMeasuredHeight();
-        final int topMarginTarget = isTextView ? MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._2sdp) : MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._8sdp);
+        final int topMarginTarget = isTextView ? context.getResources().getDimensionPixelSize(R.dimen._2sdp) : context.getResources().getDimensionPixelSize(R.dimen._8sdp);
         final int totalHeightDelta = measuredHeight + topMarginTarget;
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
         params.topMargin = 0;
@@ -769,13 +799,13 @@ public class AuthEmailFragment {
             view.measure(-2, -2);
             measuredHeight = view.getMeasuredHeight();
         } else {
-            int fixedHeight = MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._28sdp);
+            int fixedHeight = context.getResources().getDimensionPixelSize(R.dimen._28sdp);
             measuredHeight = fixedHeight;
         }
 
         final int topMarginTarget = isTextView
-                ? MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._2sdp)
-                : MainScreenActivity.getInstance().getResources().getDimensionPixelSize(R.dimen._8sdp);
+                ? context.getResources().getDimensionPixelSize(R.dimen._2sdp)
+                : context.getResources().getDimensionPixelSize(R.dimen._8sdp);
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
 
@@ -824,7 +854,7 @@ public class AuthEmailFragment {
     }
 
     public void showAuthEmailDialog() {
-        MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
         email_layout_email.setVisibility(View.VISIBLE);
         email_layout_pass.setVisibility(View.GONE);
         email_layout_pass2.setVisibility(View.GONE);
@@ -837,7 +867,7 @@ public class AuthEmailFragment {
         email_layout_pass2.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
         email_layout_code.setBackgroundResource(R.drawable.ic_dialog_nl_input_bg);
         ((TextView) main_btn_no.getChildAt(0)).setText("Я не помню пароль");
-        main_btn_no.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_no));
+        main_btn_no.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_no));
         mHandler.removeCallbacksAndMessages(null);
         main_btn_no.setVisibility(View.VISIBLE);
         main_btn_no.setAlpha(1.0f);
@@ -891,6 +921,6 @@ public class AuthEmailFragment {
     }
 
     public void hideAuthEmailDialog() {
-        MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.GONE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
     }
 }

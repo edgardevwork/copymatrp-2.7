@@ -2,6 +2,7 @@ package ru.edgar.nlremake.fragment.dialogs;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,29 +37,34 @@ import com.vk.id.onetap.compose.onetap.OneTapTitleScenario;
 import com.vk.id.onetap.xml.OneTap;
 
 import java.util.HashMap;
-import java.util.Random;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
-import ru.edgar.nlremake.fragment.Noty;
+import ru.edgar.nlremake.fragment.NotyManager;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.network.CrashReporter;
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.space.SAMP;
+import ru.edgar.space.UiManager;
 
 public class AuthFragment {
 
     private ViewGroup viewGroup;
+    private Activity context;
     private FrameLayout main_btn_google;
     private OneTap vk_onetap;
     private CheckBox checkBox, checkBox1;
     private LinearLayout main_btn_email;
+    private DialogManager dialogManager;
+    private NotyManager notyManager;
 
-    public AuthFragment() {
-        if(viewGroup != null) {
+    public AuthFragment(Activity activity) {
+        if(viewGroup != null && !AppConfig.isStartGame) {
             return;
         }
-        viewGroup = (ViewGroup) ((LayoutInflater) MainScreenActivity.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_auth, (ViewGroup) null);
-        MainScreenActivity.getInstance().getMainScreen().addView(viewGroup, -1, -1);
+        context = activity;
+
+        viewGroup = (ViewGroup) ((LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_auth, (ViewGroup) null);
+        UiManager.getUiManager().getFrontUI().addView(viewGroup, -1, -1);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) viewGroup.getLayoutParams();
         layoutParams.width = -1;
         layoutParams.height = -1;
@@ -66,6 +72,10 @@ public class AuthFragment {
 
         checkBox = viewGroup.findViewById(R.id.checkBox);
         checkBox1 = viewGroup.findViewById(R.id.checkBox1);
+        
+        dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+
+        notyManager = UiManager.getUiManager().getTyped(UiManager.NOTY);
 
         StringBuilder sb1 = new StringBuilder();
         String str1 = String.format("Я принимаю <a href=\"https://crmp.pro\">%s</a>", "Пользовательское соглашение (EULA)");
@@ -90,19 +100,19 @@ public class AuthFragment {
         checkBox1.setHighlightColor(0);
 
         main_btn_google = viewGroup.findViewById(R.id.main_btn_google);
-        main_btn_google.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_google));
+        main_btn_google.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_google));
         main_btn_google.setOnClickListener(v -> {
             if(checkBox.isChecked() && checkBox1.isChecked()) {
                 onClickAuthGoogle();
             } else {
                 // Уточняющий диалог
-                DialogManager.getDialogManager().showDialogCheckBoxes("Ошибка", "Чтобы продолжить, прими пользовательское\nсоглашение и политику конфиденциальности", "Продолжить", new View.OnClickListener() {
+                dialogManager.showDialogCheckBoxes("Ошибка", "Чтобы продолжить, прими пользовательское\nсоглашение и политику конфиденциальности", "Продолжить", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DialogManager.getDialogManager().hideDialog();
-                        if(!checkBox.isChecked() && !checkBox1.isChecked()) {
+                        dialogManager.hideDialog();
+                        if(!checkBox.isChecked() || !checkBox1.isChecked()) {
                             // Открываем уведомление
-                            MainScreenActivity.getInstance().getNoty().show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, null, 5);
+                            notyManager.show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, null, 5);
                         } else onClickAuthGoogle();
                     }
                 }, new CheckBox[]{checkBox, checkBox1});
@@ -113,8 +123,8 @@ public class AuthFragment {
 
         View transparentView = viewGroup.findViewById(R.id.view_vk);
         transparentView.setOnTouchListener(new View.OnTouchListener() {
-            AnimatorSet animatorSet = (AnimatorSet) AnimatorInflater.loadAnimator(MainScreenActivity.getInstance(), R.animator.reduce_size);
-            AnimatorSet animatorSet1 = (AnimatorSet) AnimatorInflater.loadAnimator(MainScreenActivity.getInstance(), R.animator.regain_size);
+            AnimatorSet animatorSet = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.reduce_size);
+            AnimatorSet animatorSet1 = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.regain_size);
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -137,13 +147,13 @@ public class AuthFragment {
 
                     if (!checkBox.isChecked() || !checkBox1.isChecked()) {
                         // Уточняющий диалог
-                        DialogManager.getDialogManager().showDialogCheckBoxes("Ошибка", "Чтобы продолжить, прими пользовательское\nсоглашение и политику конфиденциальности", "Продолжить", new View.OnClickListener() {
+                        dialogManager.showDialogCheckBoxes("Ошибка", "Чтобы продолжить, прими пользовательское\nсоглашение и политику конфиденциальности", "Продолжить", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                DialogManager.getDialogManager().hideDialog();
-                                if(!checkBox.isChecked() && !checkBox1.isChecked()) {
+                                dialogManager.hideDialog();
+                                if(!checkBox.isChecked() || !checkBox1.isChecked()) {
                                     // Открываем уведомление
-                                    MainScreenActivity.getInstance().getNoty().show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, null, 5);
+                                    notyManager.show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, null, 5);
                                 } // Тут должно открываться вк вход, но у меня чет не получаеться отправить клик.
                             }
                         }, new CheckBox[]{checkBox, checkBox1});
@@ -177,11 +187,11 @@ public class AuthFragment {
                                     if (paramValue != null) {
                                         if (paramValue.equals(id)) {
                                             isAcc = true;
-                                            MainScreenActivity.getInstance().mAuth.signInWithEmailAndPassword(id + "@vk.com", id + "pass").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                            AppConfig.mAuth.signInWithEmailAndPassword(id + "@vk.com", id + "pass").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                                     if(task.isSuccessful()){
-                                                        FirebaseUser currentUser = MainScreenActivity.getInstance().mAuth.getCurrentUser();
+                                                        FirebaseUser currentUser = AppConfig.mAuth.getCurrentUser();
                                                         if(currentUser != null) {
                                                             AppConfig.isAuth = true;
                                                         } else {
@@ -196,16 +206,20 @@ public class AuthFragment {
                                                         Info.put("vk-id", id);
                                                         Info.put("way", 3);
                                                         FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
-                                                        DialogManager.getDialogManager().hideAuthDialog();
-                                                        MainScreenActivity.getInstance().onRequestPermissions();/// загрузка игры после входа
+                                                        dialogManager.hideAuthDialog();
+                                                        if(!AppConfig.isStartGame) {
+                                                            MainScreenActivity.getInstance().onRequestPermissions();/// загрузка игры после входа
+                                                        } else {
+                                                            SAMP.getInstance().hideSplash();
+                                                        }
                                                     } else {
                                                         //ошибка
-                                                        DialogManager.getDialogManager().hideAuthDialog();
-                                                        DialogManager.getDialogManager().showDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", null, new View.OnClickListener() {
+                                                        dialogManager.hideAuthDialog();
+                                                        dialogManager.showDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", null, new View.OnClickListener() {
                                                             @Override
                                                             public void onClick(View v) {
-                                                                DialogManager.getDialogManager().hideDialog();
-                                                                DialogManager.getDialogManager().showAuthDialog(false);
+                                                                dialogManager.hideDialog();
+                                                                dialogManager.showAuthDialog(false);
                                                             }
                                                         }, null);
 
@@ -216,11 +230,11 @@ public class AuthFragment {
                                     }
                                 }
                                 if (!isAcc) {
-                                    MainScreenActivity.getInstance().mAuth.createUserWithEmailAndPassword(id + "@vk.com", id + "pass").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    AppConfig.mAuth.createUserWithEmailAndPassword(id + "@vk.com", id + "pass").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                         @Override
                                         public void onComplete(@NonNull Task<AuthResult> task) {
                                             if(task.isSuccessful()){
-                                                FirebaseUser currentUser = MainScreenActivity.getInstance().mAuth.getCurrentUser();
+                                                FirebaseUser currentUser = AppConfig.mAuth.getCurrentUser();
                                                 if(currentUser != null) {
                                                     AppConfig.isAuth = true;
                                                 } else {
@@ -236,18 +250,22 @@ public class AuthFragment {
                                                 Info.put("way", 3);
                                                 FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
                                                 // EDGAR 3.0 NLRemake version от 31.07.2026
-                                                DialogManager.getDialogManager().hideAuthDialog();
-                                                MainScreenActivity.getInstance().onRequestPermissions();
+                                                dialogManager.hideAuthDialog();
+                                                if(!AppConfig.isStartGame) {
+                                                    MainScreenActivity.getInstance().onRequestPermissions();
+                                                } else {
+                                                    SAMP.getInstance().hideSplash();
+                                                }
                                             } else {
-                                                DialogManager.getDialogManager().hideAuthDialog();
-                                                DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
+                                                dialogManager.hideAuthDialog();
+                                                dialogManager.showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {
-                                                        if(DialogManager.getDialogManager().getIsChecked()) {
-                                                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), ".createUserWithEmailAndPassword( !task.isSuccessful()", task.getException().toString());
+                                                        if(dialogManager.getIsChecked()) {
+                                                            CrashReporter.sendBugReport(context, AppConfig.mAuth.getUid(), ".createUserWithEmailAndPassword( !task.isSuccessful()", task.getException().toString());
                                                         }
-                                                        DialogManager.getDialogManager().hideDialog();
-                                                        DialogManager.getDialogManager().showAuthDialog(false);
+                                                        dialogManager.hideDialog();
+                                                        dialogManager.showAuthDialog(false);
                                                     }
                                                 }, true, "Сообщить об ошибке");
                                             }
@@ -258,15 +276,15 @@ public class AuthFragment {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                DialogManager.getDialogManager().hideAuthDialog();
-                                DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
+                                dialogManager.hideAuthDialog();
+                                dialogManager.showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if(DialogManager.getDialogManager().getIsChecked()) {
-                                            CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), "(oAuth, accessToken) - onCancelled", error.toString());
+                                        if(dialogManager.getIsChecked()) {
+                                            CrashReporter.sendBugReport(context, AppConfig.mAuth.getUid(), "(oAuth, accessToken) - onCancelled", error.toString());
                                         }
-                                        DialogManager.getDialogManager().hideDialog();
-                                        DialogManager.getDialogManager().showAuthDialog(false);
+                                        dialogManager.hideDialog();
+                                        dialogManager.showAuthDialog(false);
                                     }
                                 }, true, "Сообщить об ошибке");
 
@@ -277,15 +295,15 @@ public class AuthFragment {
                     } else {
                         // Если произошла ошибка или токен отсутствует
                         //Log.e("VK_AUTH", "Ошибка обработки токена(пустой)!");
-                        DialogManager.getDialogManager().hideAuthDialog();
-                        DialogManager.getDialogManager().showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
+                        dialogManager.hideAuthDialog();
+                        dialogManager.showErrorDialog("Ошибка авторизации через VK!\nПопробуйте ещё раз.", null,"Понятно", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if(DialogManager.getDialogManager().getIsChecked()) {
-                                    CrashReporter.sendBugReport(MainScreenActivity.getInstance(), MainScreenActivity.getInstance().mAuth.getUid(), "(oAuth, accessToken)", "Ошибка обработки токена(пустой)!");
+                                if(dialogManager.getIsChecked()) {
+                                    CrashReporter.sendBugReport(context, AppConfig.mAuth.getUid(), "(oAuth, accessToken)", "Ошибка обработки токена(пустой)!");
                                 }
-                                DialogManager.getDialogManager().hideDialog();
-                                DialogManager.getDialogManager().showAuthDialog(false);
+                                dialogManager.hideDialog();
+                                dialogManager.showAuthDialog(false);
                             }
                         }, true, "Сообщить об ошибке");
                     }
@@ -307,26 +325,37 @@ public class AuthFragment {
         );
 
         main_btn_email = viewGroup.findViewById(R.id.main_btn_email);
-        main_btn_email.setOnTouchListener(new InterfacesManager.animClickBtn(MainScreenActivity.getInstance(), main_btn_email));
+        main_btn_email.setOnTouchListener(new UiManager.animClickBtn(context, main_btn_email));
         main_btn_email.setOnClickListener(v -> {
             if(checkBox.isChecked() && checkBox1.isChecked()) {
                 hideAuthDialog();
-                DialogManager.getDialogManager().showAuthEmailDialog();
+                dialogManager.showAuthEmailDialog();
             } else {
                 // Уточняющий диалог
-                DialogManager.getDialogManager().showDialogCheckBoxes("Ошибка", "Чтобы продолжить, прими пользовательское\nсоглашение и политику конфиденциальности", "Продолжить", new View.OnClickListener() {
+                dialogManager.showDialogCheckBoxes("Ошибка", "Чтобы продолжить, прими пользовательское\nсоглашение и политику конфиденциальности", "Продолжить", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DialogManager.getDialogManager().hideDialog();
+                        dialogManager.hideDialog();
                         if(!checkBox.isChecked() || !checkBox1.isChecked()) {
-                            MainScreenActivity.getInstance().getNoty().show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, null, 5);
+                            notyManager.show(1, "Чтобы продолжить, прими пользовательское соглашение и\nполитику конфиденциальности", null, null, 5);
                         } else {
                             hideAuthDialog();
-                            //MainScreenActivity.getInstance().mAuth.signOut(); - debug
-                            DialogManager.getDialogManager().showAuthEmailDialog();
+                            //AppConfig.mAuth.signOut(); - debug
+                            dialogManager.showAuthEmailDialog();
                         }
                     }
                 }, new CheckBox[]{checkBox, checkBox1});
+            }
+        });
+
+        // === ЗАЩИТА ОТ СКВОЗНЫХ КЛИКОВ ===
+        // Говорим системе, что этот слой сам поглощает все нажатия и не пускает их вниз
+        viewGroup.setClickable(true);
+        viewGroup.setFocusable(true);
+        viewGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Оставляем пустым. Касание фона просто поглощается и не идет дальше
             }
         });
 
@@ -369,7 +398,7 @@ public class AuthFragment {
     }
 
     public void showAuthDialog(boolean isOnce) {
-        MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.VISIBLE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
         resetVkButtonState();
         if(isOnce) {
             checkBox.setChecked(false);
@@ -378,21 +407,21 @@ public class AuthFragment {
     }
 
     public void hideAuthDialog() {
-        MainScreenActivity.getInstance().AnimVisibale(viewGroup, View.GONE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
     }
 
     private void onClickAuthGoogle() {
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(MainScreenActivity.getInstance().getString(R.string.default_web_client_id))
+                .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(MainScreenActivity.getInstance(), options);
-        if (GoogleSignIn.getLastSignedInAccount(MainScreenActivity.getInstance()) != null) {
-            googleSignInClient.signOut().addOnCompleteListener(MainScreenActivity.getInstance(), new Auth(googleSignInClient));
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(context, options);
+        if (GoogleSignIn.getLastSignedInAccount(context) != null) {
+            googleSignInClient.signOut().addOnCompleteListener(context, new Auth(googleSignInClient));
             return;
         }
         Intent i = googleSignInClient.getSignInIntent();
-        MainScreenActivity.getInstance().startActivityForResult(i, 1234);
+        context.startActivityForResult(i, 1234);
     }
 
     private class Auth implements OnCompleteListener<Void> {

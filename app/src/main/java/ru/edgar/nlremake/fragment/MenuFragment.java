@@ -1,5 +1,6 @@
 package ru.edgar.nlremake.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -18,20 +19,18 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.nvidia.devtech.NvEventQueueActivity;
 
 import java.util.ArrayList;
 
 import ru.edgar.matrp.R;
-import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.nlremake.model.Stories;
 import ru.edgar.nlremake.network.AppConfig;
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.nlremake.other.LauncherUiComponent;
+import ru.edgar.space.UiManager;
 import ru.edgar.space.SAMP;
 
-public class MenuFragment {
+public class MenuFragment implements LauncherUiComponent {
 
-    private NvEventQueueActivity nvEventQueueActivity = null;
     private final Handler handler = new Handler();
     private ViewGroup viewGroup = null;
     private FrameLayout nick_name_layout, news, btn_vk, btn_telegram, btn_settings;
@@ -46,19 +45,14 @@ public class MenuFragment {
 
     private ArrayList<Stories> storiesList;
 
-    public MenuFragment(NvEventQueueActivity nvEventQueueActivity, int guiId) {
-        this.nvEventQueueActivity = nvEventQueueActivity;
-        viewGroup = InterfacesManager.getInterfacesManager().viewGroup[guiId];
-        init();
-    }
-
-    private void init() {
-        if (viewGroup != null) {
+    @Override
+    public void init(Activity activity) {
+        if (viewGroup != null && !AppConfig.isStartGame) {
             //Log.e("edgar", "view" + viewGroup.toString());
             return;
         }
-        viewGroup = (ViewGroup) ((LayoutInflater) SAMP.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_menu, (ViewGroup) null);
-        SAMP.getInstance().getFrontUILayout().addView(this.viewGroup, -1, -1);
+        viewGroup = (ViewGroup) ((LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_menu, (ViewGroup) null);
+        UiManager.getUiManager().getFrontUI().addView(this.viewGroup, -1, -1);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) this.viewGroup.getLayoutParams();
         layoutParams.width = -1;
         layoutParams.height = -1;
@@ -146,76 +140,76 @@ public class MenuFragment {
         //handler.post(carouselStoryRunnable);
 
         nick_name_layout = viewGroup.findViewById(R.id.nick_name_layout);
-        nick_name_layout.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, nick_name_layout));
+        nick_name_layout.setOnTouchListener(new UiManager.animClickBtn(activity, nick_name_layout));
         nick_name_layout.setOnClickListener(v -> {
             // Переход на персонажа
-            //SAMP.getInstance().mAuth.signOut();
+            //SAMP.getInstance().AppConfig.mAuth.signOut();
             hide();
-            new ProfileFragment();
+            UiManager.getUiManager().getTyped(UiManager.PROFILE).show();
         });
 
         news = viewGroup.findViewById(R.id.news);
-        news.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, news));
+        news.setOnTouchListener(new UiManager.animClickBtn(activity, news));
         news.setOnClickListener(v -> {
             // Переход на новости.
         });
 
         btn_vk = viewGroup.findViewById(R.id.btn_vk);
-        btn_vk.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, btn_vk));
+        btn_vk.setOnTouchListener(new UiManager.animClickBtn(activity, btn_vk));
         btn_vk.setOnClickListener(v -> {
             // Переход на новости.
         });
 
         btn_telegram = viewGroup.findViewById(R.id.btn_telegram);
-        btn_telegram.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, btn_telegram));
+        btn_telegram.setOnTouchListener(new UiManager.animClickBtn(activity, btn_telegram));
         btn_telegram.setOnClickListener(v -> {
             // Переход на новости.
         });
 
         btn_shop = viewGroup.findViewById(R.id.btn_shop);
-        btn_shop.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity,btn_shop));
+        btn_shop.setOnTouchListener(new UiManager.animClickBtn(activity,btn_shop));
         btn_shop.setOnClickListener(v -> {
             // Переход в донат
         });
 
         btn_settings = viewGroup.findViewById(R.id.btn_settings);
-        btn_settings.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, btn_settings));
+        btn_settings.setOnTouchListener(new UiManager.animClickBtn(activity, btn_settings));
         btn_settings.setOnClickListener(v -> {
             // Переход в настройки
         });
 
         btn_support = viewGroup.findViewById(R.id.btn_support);
-        btn_support.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, btn_support));
+        btn_support.setOnTouchListener(new UiManager.animClickBtn(activity, btn_support));
         btn_support.setOnClickListener(v -> {
             // Переход в поддержку
         });
 
         btn_balance = viewGroup.findViewById(R.id.btn_balance);
-        btn_balance.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, btn_balance));
+        btn_balance.setOnTouchListener(new UiManager.animClickBtn(activity, btn_balance));
         btn_balance.setOnClickListener(v -> {
             // Переход в хз донат наверное
         });
 
         btn_donate = viewGroup.findViewById(R.id.btn_donate);
-        btn_donate.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, btn_donate));
+        btn_donate.setOnTouchListener(new UiManager.animClickBtn(activity, btn_donate));
         btn_donate.setOnClickListener(v -> {
             // Переход в донат
         });
 
         gift_window = viewGroup.findViewById(R.id.gift_window);
-        gift_window.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, gift_window));
+        gift_window.setOnTouchListener(new UiManager.animClickBtn(activity, gift_window));
         gift_window.setOnClickListener(v -> {
             // Диалог какой-то
         });
 
         frame_server = viewGroup.findViewById(R.id.frame_server);
-        frame_server.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, frame_server));
+        frame_server.setOnTouchListener(new UiManager.animClickBtn(activity, frame_server));
         frame_server.setOnClickListener(v -> {
             // Переход в выбор сервера
         });
 
         btn_play = viewGroup.findViewById(R.id.btn_play);
-        btn_play.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, btn_play));
+        btn_play.setOnTouchListener(new UiManager.animClickBtn(activity, btn_play));
         btn_play.setOnClickListener(v -> {
             // Проверки
             AppConfig.nickName = "Vanek_Kitok";// AdminPass 2012
@@ -223,12 +217,18 @@ public class MenuFragment {
             hide();
         });
 
-        ((TextView) viewGroup.findViewById(R.id.uidtext)).setText(SAMP.getInstance().mAuth.getUid());
+        ((TextView) viewGroup.findViewById(R.id.uidtext)).setText(AppConfig.mAuth.getUid());
         viewGroup.setLayoutParams(layoutParams);
-        viewGroup.setVisibility(View.VISIBLE);
+        viewGroup.setVisibility(View.GONE);
     }
 
+    @Override
+    public void show() {
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
+    }
+
+    @Override
     public void hide() {
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
     }
 }

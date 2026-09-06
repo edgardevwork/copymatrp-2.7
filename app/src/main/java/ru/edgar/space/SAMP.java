@@ -2,9 +2,7 @@ package ru.edgar.space;
 
 import android.content.ClipData;
 import android.media.AudioAttributes;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -15,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,9 +29,13 @@ import java.nio.charset.StandardCharsets;
 
 import kotlin.jvm.internal.Intrinsics;
 import ru.edgar.matrp.R;
-import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.nlremake.fragment.MenuFragment;
+import ru.edgar.nlremake.fragment.dialogs.DialogManager;
+import ru.edgar.nlremake.loader.GameStarter;
 import ru.edgar.nlremake.network.AppConfig;
+import ru.edgar.nlremake.other.LauncherUiComponent;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
+import ru.edgar.nlremake.utils.VideoUtils;
 
 @Obfuscate
 public class SAMP extends GTASA implements HeightProvider.HeightListener {
@@ -58,12 +61,10 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     private FullHeightVideoView mVideoView = null;
 
     private InputManager mInputManager = null;
-    private HeightProvider mHeightProvider = null;
+    public HeightProvider mHeightProvider = null;
     private GameRender mGameRender = null;
     public SoundPool soundPool;
-    private InterfacesManager mInterfacesManager = null;
-
-    public FirebaseAuth mAuth;
+    private UiManager mInterfacesManager = null;
 
     public native void sendCommand(byte[] str);
     public native void onWeaponChanged();
@@ -204,7 +205,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
         instance = this;
 
-        mAuth = FirebaseAuth.getInstance();
+        AppConfig.mAuth = FirebaseAuth.getInstance();
 
         //if(!SignatureChecker.isSignatureValid(this, getPackageName()))
         //{
@@ -246,32 +247,11 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setAlpha(1.0f);
-        /*mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading));
-        mVideoView.setVisibility(View.VISIBLE);
-        mVideoView.setAlpha(1.0f);*/
+        //VideoUtils.setupVideoPlayer(mVideoView, this.getPackageName());
         logoBig.setVisibility(View.VISIBLE);
         logoBig.setAlpha(1.0f);
 
         lm_loadicon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation));
-
-        /*mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.setLooping(true);
-            }
-        });
-
-        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setLooping(true);
-                mVideoView.start();
-            }
-        });
-
-        mVideoView.start();*/
 
         SurfaceHolder holder = view.getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
@@ -285,7 +265,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
         mInputManager = new InputManager(this);
         mHeightProvider = new HeightProvider(this).init(mRootFrame).setHeightListener(this);
         mGameRender = new GameRender(this);
-        mInterfacesManager = new InterfacesManager(this);
+        mInterfacesManager = new UiManager(this);
         //mInterfacesManager = new ru.edgar.space.core.ui.keyboard.j5.a(this);
 
         DoResumeEvent();
@@ -320,7 +300,9 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
         //mHeightProvider.init(view);
     }
 
-    public native void onEventBackPressed();
+    public void onEventBackPressed() {
+
+    };
 
     @Override
     public void onBackPressed() {
@@ -382,12 +364,12 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     }
 
     public void showDialog(int dialogId, int dialogTypeId, String caption, String content, String leftBtnText, String rightBtnText) {
-        runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getDialogManager().show(dialogId, dialogTypeId, caption, content, leftBtnText, rightBtnText); });
+        runOnUiThread(() -> { UiManager.getUiManager().getDialogManager().show(dialogId, dialogTypeId, caption, content, leftBtnText, rightBtnText); });
     }
 
-    public void hideDialogWithoutReset() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getDialogManager().hideWithoutReset(); }); }
+    public void hideDialogWithoutReset() { runOnUiThread(() -> { UiManager.getUiManager().getDialogManager().hideWithoutReset(); }); }
 
-    public void showDialogWithOldContent() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getDialogManager().showWithOldContent(); }); }
+    public void showDialogWithOldContent() { runOnUiThread(() -> { UiManager.getUiManager().getDialogManager().showWithOldContent(); }); }
 
     public byte[] getClipboardText()
     {
@@ -433,23 +415,23 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     }
     //
 
-    public void updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int playerid, int money, int wanted) { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().UpdateHudInfo(health, armour, hunger, weaponidweik, ammo, playerid, money, wanted); }); }
+    public void updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int playerid, int money, int wanted) { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().UpdateHudInfo(health, armour, hunger, weaponidweik, ammo, playerid, money, wanted); }); }
 
-    public void showHud() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().ShowHud(); }); }
+    public void showHud() { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().ShowHud(); }); }
 
-    public void hideHud() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().HideHud(); }); }
+    public void hideHud() { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().HideHud(); }); }
 
-    public void showGps() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().ShowGps(); }); }
+    public void showGps() { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().ShowGps(); }); }
 
-    public void hideGps() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().HideGps(); }); }
+    public void hideGps() { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().HideGps(); }); }
 
-    public void showZona() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().ShowZona(); }); }
+    public void showZona() { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().ShowZona(); }); }
 
-    public void hideZona() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().HideZona(); }); }
+    public void hideZona() { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().HideZona(); }); }
 
-    public void showx2() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().ShowX2(); }); }
+    public void showx2() { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().ShowX2(); }); }
 
-    public void hidex2() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().HideX2(); }); }
+    public void hidex2() { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().HideX2(); }); }
 
     public void setPauseState(final boolean z6) {
         if (mHeadUILayout == null) {
@@ -463,28 +445,30 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
         });
     }
 
-    public void updateSpeedInfo(int speed, int fuel, int hp, int mileage, int engine, int light, int belt, int lock) { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getSpeedometerManager().UpdateSpeedInfo(speed, fuel, hp, mileage, engine, light, belt, lock); }); }
+    public void updateSpeedInfo(int speed, int fuel, int hp, int mileage, int engine, int light, int belt, int lock) { runOnUiThread(() -> { UiManager.getUiManager().getSpeedometerManager().UpdateSpeedInfo(speed, fuel, hp, mileage, engine, light, belt, lock); }); }
 
-    public void showSpeed() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getSpeedometerManager().ShowSpeed(); }); } //setNativeHudElementScale(6, 5, 5);
+    public void showSpeed() { runOnUiThread(() -> { UiManager.getUiManager().getSpeedometerManager().ShowSpeed(); }); } //setNativeHudElementScale(6, 5, 5);
 
-    public void hideSpeed() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getSpeedometerManager().HideSpeed(); }); }
+    public void hideSpeed() { runOnUiThread(() -> { UiManager.getUiManager().getSpeedometerManager().HideSpeed(); }); }
 
     //public void RadarBR() { runOnUiThread(() -> { setNativeHudElementPosition(6, 5, 5); }); }
 
     public void showNotification(int type, String text, int duration, String actionforBtn, String textBtn) {  }
 
-    public void showradar() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().ShowRadar(); }); }
+    public void showradar() { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().ShowRadar(); }); }
 
-    public void hideradar() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getHudManager().HideRadar(); }); }
+    public void hideradar() { runOnUiThread(() -> { UiManager.getUiManager().getHudManager().HideRadar(); }); }
 
     public void updateSplash(int percent, int pon) { runOnUiThread(() -> { /*InterfacesManager.getInterfacesManager().getChooseServerManager().Update(percent, pon); */} ); }
 
     public void hideSplash() { runOnUiThread(() -> {
-        handler.post(InterfacesManager.getInterfacesManager().menuFragment.carouselStoryRunnable);
+        MenuFragment menuFragment = UiManager.getUiManager().getTyped(UiManager.MENU);
+        menuFragment.show();
+        handler.post(menuFragment.carouselStoryRunnable);
         mVideoView.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
             @Override
             public void run() {
-                mVideoView.stopPlayback();
+                VideoUtils.releaseVideoPlayer(mVideoView);
                 mVideoView.setVisibility(View.GONE);
             }
         }).start();
@@ -504,22 +488,22 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     }
     //BY EDGAR 3.0
     //BY EDGAR 3.0
-    public void AddChatMessage(String msg, int color) {runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getChatManager().AddChatMessage(msg, color);});}
+    public void AddChatMessage(String msg, int color) {runOnUiThread(() -> { UiManager.getUiManager().getChatManager().AddChatMessage(msg, color);});}
 
     public GameRender getGameRender() {
         return this.mGameRender;
     }
 
-    public void setTurnState(int state) { runOnUiThread(() -> InterfacesManager.getInterfacesManager().getSpeedometerManager().setTurnlight(state)); }
+    public void setTurnState(int state) { runOnUiThread(() -> UiManager.getUiManager().getSpeedometerManager().setTurnlight(state)); }
 
     public void setUseFullscreen(int b)
     {
         //mUseFullscreen = b;
     }
 
-    public void showSpawnMenu() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getSpawnMenu().ShowSpawnMenu(); } ); }
+    public void showSpawnMenu() { runOnUiThread(() -> { UiManager.getUiManager().getSpawnMenu().ShowSpawnMenu(); } ); }
 
-    public void hideSpawnMenu() { runOnUiThread(() -> { InterfacesManager.getInterfacesManager().getSpawnMenu().HideSpawnMenu(); } ); }
+    public void hideSpawnMenu() { runOnUiThread(() -> { UiManager.getUiManager().getSpawnMenu().HideSpawnMenu(); } ); }
 
 
     public void RadarBR() {/* runOnUiThread(() -> { setNativeHudElementPosition(6, 5, 5); });*/ }
@@ -530,9 +514,9 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
         System.out.println(json.toString());
         //FirebaseCrashlytics.getInstance().log("onPacketIncoming(screenId = " + i + ", json = " + json + ")");
         if (json.optInt("o") == 1) {
-            InterfacesManager.getInterfacesManager().openingScreen(i, json);
+            UiManager.getUiManager().openingScreen(i, json);
         } else if (json.optInt("c") == 1) {
-            InterfacesManager.getInterfacesManager().closingScreen(i, json);
+            UiManager.getUiManager().closingScreen(i, json);
         }
     }
 
@@ -541,6 +525,64 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     public void connectEdgar() {
         runOnUiThread(() -> {
             connn(EdgarConectV2.host, EdgarConectV2.port, AppConfig.nickName);
+        });
+    }
+
+    public void startGameFromButton() {
+        runOnUiThread(() -> {
+            UiManager.getUiManager().cleanLauncherUi();
+            // Показываем видео, лого и прогресс
+            mVideoView.setVisibility(View.VISIBLE);
+            mVideoView.setAlpha(1.0f);
+            VideoUtils.setupVideoPlayer(mVideoView, getPackageName());
+
+            logoBig.setVisibility(View.VISIBLE);
+            logoBig.setAlpha(1.0f);
+
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setAlpha(1.0f);
+
+            lm_loadicon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation));
+
+            DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+            // Создаем GameStarter
+            GameStarter gameStarter = new GameStarter(this, dialogManager);
+            gameStarter.setCallback(new GameStarter.StartCallback() {
+                @Override
+                public void onHideSplash() {
+                    runOnUiThread(() -> {
+                        dialogManager.hideAuthDialog();
+                        hideSplash();
+                        gameStarter.destroy();
+                    });
+                }
+
+                @Override
+                public void onAuthRequired() {
+                    runOnUiThread(() -> {
+                        dialogManager.showAuthDialog(true);
+                        gameStarter.destroy();
+                    });
+                }
+
+                @Override
+                public void onTestClosed() {
+                    runOnUiThread(() -> {
+                        finish();
+                        onDestroy();
+                        gameStarter.destroy();
+                    });
+                }
+
+                @Override
+                public void onError(String error) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(SAMP.this, "Ошибка: " + error, Toast.LENGTH_LONG).show();
+                        gameStarter.destroy();
+                    });
+                }
+            });
+            gameStarter.startGame();
         });
     }
 }

@@ -5,19 +5,30 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.firebase.database.annotations.NotNull;
 import com.nvidia.devtech.NvEventQueueActivity;
 
 import org.json.JSONObject;
 
+import java.io.FileReader;
+
 import ru.edgar.matrp.R;
+import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.nlremake.fragment.LoadingFragment;
 import ru.edgar.nlremake.fragment.MenuFragment;
+import ru.edgar.nlremake.fragment.NotyManager;
+import ru.edgar.nlremake.fragment.ProfileFragment;
+import ru.edgar.nlremake.fragment.dialogs.DialogManager;
+import ru.edgar.nlremake.model.Main;
+import ru.edgar.nlremake.network.AppConfig;
+import ru.edgar.nlremake.other.LauncherUiComponent;
 import ru.edgar.space.core.ui.chatedgar.ChatManager;
 import ru.edgar.space.core.ui.dialogs.Dialog;
 import ru.edgar.space.core.ui.hud.HudManager;
@@ -26,11 +37,8 @@ import ru.edgar.space.core.ui.keyboard.KeyBoard;
 import ru.edgar.space.core.ui.spawnmenu.SpawnMenu;
 import ru.edgar.space.core.util.ConvertViewCoordsToGta;
 
-public class InterfacesManager {
-    private static InterfacesManager mInterfacesManager = null;
-    public NvEventQueueActivity nvEventQueueActivity = null;
-    public ViewGroup[] viewGroup;
-
+public class UiManager {
+    private static UiManager mUiManager = null;
     /*
     1 - Hud
     2 - Spedometr
@@ -49,23 +57,95 @@ public class InterfacesManager {
     private SpawnMenu mSpawnMenu = null;
     public MenuFragment menuFragment = null;
 
-    public InterfacesManager(NvEventQueueActivity nvEventQueueActivity) {
-        this.nvEventQueueActivity = nvEventQueueActivity;
-        mInterfacesManager = this;
-        viewGroup = new ViewGroup[256];
+    private LauncherUiComponent[] launcherUi;
+    /* Launcher UI
+    1 - MenuFragment
+    2 - ProfileFragment
+    3 - NewsFragment
 
-        mHudManager = new HudManager(nvEventQueueActivity, 1);
-        mSpeedometer = new Speedometer(nvEventQueueActivity, 2);
-        mChatManager = new ChatManager(nvEventQueueActivity, 3);
-        mDialog = new Dialog(nvEventQueueActivity, 4);
-        mKeyBoard = new KeyBoard(nvEventQueueActivity, 5);
-        mSpawnMenu = new SpawnMenu(nvEventQueueActivity, 6);
-        menuFragment = new MenuFragment(nvEventQueueActivity, 7);
+    5 - DialogManager
+    6 - LoadingFragment
+     */
+    public static final int MENU = 0;
+    public static final int PROFILE = 1;
+    public static final int NEWS = 2;
+    public static final int SERVERS = 3;
+    public static final int DIALOG = 4;
+    public static final int NOTY = 5;
+    public static final int LOADING = 6;
+
+    public UiManager(Activity activity) {
+        mUiManager = this;
+        launcherUi = new LauncherUiComponent[7];
+
+        launcherUi[MENU] = new MenuFragment();
+        launcherUi[PROFILE] = new ProfileFragment();
+        //launcherUi[2] = new NewsFragment();
+        //launcherUi[3] = new ServersFragment();
+        launcherUi[DIALOG] = new DialogManager(); // Если он не реализует интерфейс
+        launcherUi[NOTY] = new NotyManager();
+        launcherUi[LOADING] = new LoadingFragment();
+
+        // Вызываем инициализацию для каждого элемента
+        for (LauncherUiComponent component : launcherUi) {
+            if (component != null) {
+                component.init(activity);
+            }
+        }
+
+        if(AppConfig.isStartGame) {
+            mHudManager = new HudManager(activity, 1);
+            mSpeedometer = new Speedometer(activity, 2);
+            mChatManager = new ChatManager(activity, 3);
+            mDialog = new Dialog(activity, 4);
+            mKeyBoard = new KeyBoard(activity, 5);
+            mSpawnMenu = new SpawnMenu(activity, 6);
+        }
+    }
+    public void cleanLauncherUi() {
+        for (LauncherUiComponent component : launcherUi) {
+            if (component != null) {
+                component.hide();
+            }
+        }
     }
 
-    public static InterfacesManager getInterfacesManager() {
-        return mInterfacesManager;
+    public static UiManager getUiManager() {
+        return mUiManager;
     }
+
+    @SuppressWarnings("unchecked")
+    public <T extends LauncherUiComponent> T getTyped(int index) {
+        // Проверка границ массива и null
+        if (index < 0 || index >= launcherUi.length || launcherUi[index] == null) {
+            return null;
+        }
+
+        // Получаем объект базового типа
+        LauncherUiComponent component = launcherUi[index];
+
+        // Приводим к нужному типу.
+        // Если типы несовместимы, ClassCastException вылетит автоматически при возврате значения.
+        return (T) component;
+    }
+
+    public LauncherUiComponent get(int index) {
+        if (index <= 0 || index >= launcherUi.length || launcherUi[index] == null) {
+            return null; // Или бросать исключение
+        }
+        return launcherUi[index];
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends LauncherUiComponent> T findByType(Class<T> clazz) {
+        for (LauncherUiComponent component : launcherUi) {
+            if (component != null && clazz.isInstance(component)) {
+                return (T) component;
+            }
+        }
+        return null;
+    }
+    // Использование: uiManager.findByType(DialogManager.class).showDialog();
 
     public void setRadarSize() {
         ConvertViewCoordsToGta.Data data = ConvertViewCoordsToGta.convertCoordsToGta(
@@ -164,13 +244,13 @@ public class InterfacesManager {
         switch (i) {
             case 31: {
                 SAMP.getInstance().runOnUiThread(() -> {
-                    //InterfacesManager.getInterfacesManager().getDonateManager().show(json);
+                    //UiManager.getUiManager().getDonateManager().show(json);
                 });
                 break;
             }
             case 32: {
                 SAMP.getInstance().runOnUiThread(() -> {
-                    InterfacesManager.getInterfacesManager().getSpawnMenu().ShowSpawnMenu();
+                    UiManager.getUiManager().getSpawnMenu().ShowSpawnMenu();
                 });
                 break;
             }
@@ -180,9 +260,18 @@ public class InterfacesManager {
         switch (i) {
             case 31: {
                 SAMP.getInstance().runOnUiThread(() -> {
-                    //InterfacesManager.getInterfacesManager().getDonateManager().hide(json);
+                    //UiManager.getUiManager().getDonateManager().hide(json);
                 });
             }
+        }
+    }
+
+    public FrameLayout getFrontUI() {
+        System.out.println("bolean is start gamer - " + AppConfig.isStartGame);
+        if(AppConfig.isStartGame) {
+            return SAMP.getInstance().getFrontUILayout();
+        } else {
+            return MainScreenActivity.getInstance().getMainScreen();
         }
     }
 

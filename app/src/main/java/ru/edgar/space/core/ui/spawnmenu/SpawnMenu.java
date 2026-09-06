@@ -1,5 +1,6 @@
 package ru.edgar.space.core.ui.spawnmenu;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -9,27 +10,26 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nvidia.devtech.NvEventQueueActivity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.space.UiManager;
 import ru.edgar.matrp.R;
 import ru.edgar.space.SAMP;
 
 public class SpawnMenu {
 
-    public NvEventQueueActivity nvEventQueueActivity = null;
+    public Activity activity = null;
     public ViewGroup viewGroup = null;
     public LinearLayout[] cont = new LinearLayout[9];
     public boolean is[] = new boolean[9];
 
-    public SpawnMenu(NvEventQueueActivity nvEventQueueActivity, int guiId) {
-        this.nvEventQueueActivity = nvEventQueueActivity;
-        viewGroup = InterfacesManager.getInterfacesManager().viewGroup[guiId];
+    public SpawnMenu(Activity activity, int guiId) {
+        this.activity = activity;
+        //viewGroup = UiManager.getUiManager().viewGroup[guiId];
         init();
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
+        viewGroup.setVisibility(View.GONE);
+        //UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
     }
 
     public void init() {
@@ -45,8 +45,8 @@ public class SpawnMenu {
         viewGroup.setLayoutParams(layoutParams);
 
         for (int i10 = 0; i10 < 8; i10++) {
-            cont[i10] = (LinearLayout) viewGroup.findViewById(viewGroup.getResources().getIdentifier("sm_button_" + i10, "id", nvEventQueueActivity.getPackageName()));
-            ((LinearLayout) cont[i10]).setOnTouchListener(new InterfacesManager.animClickBtn(SAMP.getInstance(), cont[i10]));
+            cont[i10] = (LinearLayout) viewGroup.findViewById(viewGroup.getResources().getIdentifier("sm_button_" + i10, "id", activity.getPackageName()));
+            ((LinearLayout) cont[i10]).setOnTouchListener(new UiManager.animClickBtn(SAMP.getInstance(), cont[i10]));
             is[i10] = false;
         }
         clikc(1);
@@ -60,7 +60,7 @@ public class SpawnMenu {
                     ((LinearLayout) cont[i10]).setBackground(viewGroup.getResources().getDrawable(R.drawable.bankomat_main_item_bg));
                     ((TextView) cont[i10].getChildAt(1)).setTextColor(Color.parseColor("#FFFFFF"));
                     int finalI1 = i10;
-                    ((LinearLayout) cont[i10]).setOnTouchListener(new InterfacesManager.animClickBtn(SAMP.getInstance(), cont[i10]));
+                    ((LinearLayout) cont[i10]).setOnTouchListener(new UiManager.animClickBtn(SAMP.getInstance(), cont[i10]));
                     ((LinearLayout) cont[i10]).setOnClickListener(v -> {
                         clikc(finalI1);
                     });
@@ -68,7 +68,7 @@ public class SpawnMenu {
                         ((LinearLayout) cont[i10]).setVisibility(View.GONE);
                     }
                 } else {
-                    InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
+                    UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
                     try {
                         JSONObject jSONObject = new JSONObject();
                         jSONObject.put("i", id);
@@ -81,7 +81,7 @@ public class SpawnMenu {
                 ((LinearLayout) cont[i10]).setVisibility(View.VISIBLE);
                 ((LinearLayout) cont[i10]).setBackground(viewGroup.getResources().getDrawable(R.drawable.spawnmenu_blocked_bg));
                 ((TextView) cont[i10].getChildAt(1)).setTextColor(Color.parseColor("#33FFFFFF"));
-                ((LinearLayout) cont[i10]).setOnTouchListener(new InterfacesManager.animClickBtn(SAMP.getInstance(), cont[i10]));
+                ((LinearLayout) cont[i10]).setOnTouchListener(new UiManager.animClickBtn(SAMP.getInstance(), cont[i10]));
                 int finalI2 = i10;
                 ((LinearLayout) cont[i10]).setOnClickListener(v -> {
                     clikc(finalI2);
@@ -99,15 +99,15 @@ public class SpawnMenu {
             System.err.println("viewGroup is null when trying to show menu");
             return;
         }
-        if (!InterfacesManager.getInterfacesManager().getKeyBoardManager().isChatClose) {
-            InterfacesManager.getInterfacesManager().getKeyBoardManager().x();
+        if (!UiManager.getUiManager().getKeyBoardManager().isChatClose) {
+            UiManager.getUiManager().getKeyBoardManager().x();
         } else {
-            InterfacesManager.getInterfacesManager().getKeyBoardManager().q();
+            UiManager.getUiManager().getKeyBoardManager().q();
         }
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.VISIBLE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
     }
 
     public void HideSpawnMenu() {
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
     }
 }

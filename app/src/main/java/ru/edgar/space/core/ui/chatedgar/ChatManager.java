@@ -1,5 +1,6 @@
 package ru.edgar.space.core.ui.chatedgar;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -15,19 +16,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nvidia.devtech.NvEventQueueActivity;
-
 import java.util.ArrayList;
 
 import ru.edgar.nlremake.network.AppConfig;
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.space.UiManager;
 import ru.edgar.matrp.R;
 import ru.edgar.space.SAMP;
 import ru.edgar.space.core.util.Utils;
 import ru.edgar.space.core.views.CustomRecyclerView;
 
 public class ChatManager {
-    public NvEventQueueActivity nvEventQueueActivity;
+    public Activity activity;
     private static ChatManager instance;
     public static int statusChat = 1;
     public ViewGroup viewGroup;
@@ -41,9 +40,9 @@ public class ChatManager {
 
     public native void sendChatMessages(byte[] messages);
 
-    public ChatManager(NvEventQueueActivity nvEventQueueActivity, int guiId){
-        this.nvEventQueueActivity = nvEventQueueActivity;
-        viewGroup = InterfacesManager.getInterfacesManager().viewGroup[1];
+    public ChatManager(Activity activity, int guiId){
+        this.activity = activity;
+        //viewGroup = UiManager.getUiManager().viewGroup[1];
         show();
         //instance = this;
     }
@@ -71,11 +70,11 @@ public class ChatManager {
         msg_box = viewGroup.findViewById(R.id.msg_box);
 
         msg_messages.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(nvEventQueueActivity, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false);
         msg_messages.setLayoutManager(layoutManager);
 
         msglist = AppConfig.msglist;
-        chatAdapter = new ChatAdapter(nvEventQueueActivity, msglist);
+        chatAdapter = new ChatAdapter(activity, msglist);
         msg_messages.setAdapter(chatAdapter);
         msg_messages.setVerticalScrollBarEnabled(false);
         msg_messages.setEnableScrolling(false);
@@ -90,7 +89,7 @@ public class ChatManager {
         }
         msg_box.animate().alpha(1.0f).setDuration(300).start();
         msg_box.clearAnimation();
-        InterfacesManager.getInterfacesManager().getKeyBoardManager().OpenKeyBoard(null);
+        UiManager.getUiManager().getKeyBoardManager().OpenKeyBoard(null);
         Log.i("edgar", "Signal Open KeyBoard");
         isChat = true;
     }
@@ -103,7 +102,7 @@ public class ChatManager {
         }
         msg_box.animate().alpha(0.0f).setDuration(300).start();
         msg_box.clearAnimation();
-        InterfacesManager.getInterfacesManager().getKeyBoardManager().q();
+        UiManager.getUiManager().getKeyBoardManager().q();
         Log.i("edgar", "Signal Close KeyBoard");
         isChat = false;
     }
@@ -203,7 +202,7 @@ public class ChatManager {
         }
 
         public void addItem(String item) {
-            nvEventQueueActivity.runOnUiThread(() -> {
+            activity.runOnUiThread(() -> {
                 if(this.chat_message.size() > 40){
                     this.chat_message.remove(0);
                     notifyItemRemoved(0);

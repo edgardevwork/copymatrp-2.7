@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import java.util.ArrayList;
 
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.space.UiManager;
 
 @SuppressLint({"AppCompatCustomView"})
 public class CustomEditText extends EditText {
@@ -41,7 +41,7 @@ public class CustomEditText extends EditText {
                 if (dVar != null) {
                     dVar.a();
                 } else {
-                    InterfacesManager.getInterfacesManager().getKeyBoardManager().OpenKeyBoard(CustomEditText.this);
+                    UiManager.getUiManager().getKeyBoardManager().OpenKeyBoard(CustomEditText.this);
                 }
             }
         }
@@ -77,10 +77,10 @@ public class CustomEditText extends EditText {
         if (i10 != 4 || (cVar = this.f4348a) == null) {
             return false;
         }
-        if (!InterfacesManager.getInterfacesManager().getKeyBoardManager().isChatClose) {
-            InterfacesManager.getInterfacesManager().getKeyBoardManager().x();
+        if (!UiManager.getUiManager().getKeyBoardManager().isChatClose) {
+            UiManager.getUiManager().getKeyBoardManager().x();
         } else {
-            InterfacesManager.getInterfacesManager().getKeyBoardManager().q();
+            UiManager.getUiManager().getKeyBoardManager().q();
         }
         return true;
     }

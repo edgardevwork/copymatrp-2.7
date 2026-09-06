@@ -1,5 +1,6 @@
 package ru.edgar.space.core.ui.dialogs;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -12,9 +13,8 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.nvidia.devtech.CustomEditText;
-import com.nvidia.devtech.NvEventQueueActivity;
 
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.space.UiManager;
 import ru.edgar.matrp.R;
 import ru.edgar.space.SAMP;
 import ru.edgar.space.core.views.CustomRecyclerView;
@@ -32,7 +32,7 @@ public class Dialog {
     private static final int DIALOG_STYLE_PASSWORD = 3;
     private static final int DIALOG_STYLE_TABLIST = 4;
     private static final int DIALOG_STYLE_TABLIST_HEADER = 5;
-    public NvEventQueueActivity nvEventQueueActivity;
+    public Activity activity;
     public ViewGroup viewGroup;
     private TextView mCaption;
     private TextView mContent;
@@ -50,9 +50,9 @@ public class Dialog {
     private FrameLayout mRightBtn;
     private ArrayList<String> mRowsList;
 
-    public Dialog(NvEventQueueActivity nvEventQueueActivity, int guiId) {
-        this.nvEventQueueActivity = nvEventQueueActivity;
-        viewGroup = InterfacesManager.getInterfacesManager().viewGroup[guiId];
+    public Dialog(Activity activity, int guiId) {
+        this.activity = activity;
+        //viewGroup = UiManager.getUiManager().viewGroup[guiId];
     }
 
     public void show(int dialogId, int dialogTypeId, String caption, String content, String leftBtnText, String rightBtnText) {
@@ -83,8 +83,8 @@ public class Dialog {
         this.mHeadersList = new ArrayList<>();
         mInput.setShowSoftInputOnFocus(false);
         InputMethodManager inputMethodManager = (InputMethodManager) SAMP.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (inputMethodManager != null && nvEventQueueActivity.getCurrentFocus() != null) {
-            inputMethodManager.hideSoftInputFromWindow(nvEventQueueActivity.getCurrentFocus().getWindowToken(), 0);
+        if (inputMethodManager != null && activity.getCurrentFocus() != null) {
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
         LinearLayout mHeadersLayout = viewGroup.findViewById(R.id.dialog_tablist_row);
         for (int i = 0; i < mHeadersLayout.getChildCount(); i++) {
@@ -151,7 +151,7 @@ public class Dialog {
         ((TextView) this.mRightBtn.getChildAt(0)).setText(Utils.transfromColors(rightBtnText));
         if (rightBtnText.equals("")) { this.mRightBtn.setVisibility(View.GONE); }
         else { this.mRightBtn.setVisibility(View.VISIBLE); }
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.VISIBLE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
     }
 
     public void gravity(int i) {
@@ -162,11 +162,11 @@ public class Dialog {
     }
 
     public void hideWithoutReset() {
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
     }
 
     public void showWithOldContent() {
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.VISIBLE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
     }
 
     public void sendDialogResponse(int btnId) {
@@ -176,9 +176,9 @@ public class Dialog {
         ((InputMethodManager) SAMP.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(this.mInput.getWindowToken(), 0);
         try {
             SAMP.getInstance().sendDialogResponse(btnId, this.mCurrentDialogId, this.mCurrentListItem, this.mCurrentInputText.getBytes("windows-1251"));
-            InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
+            UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
             if(mCurrentDialogTypeId == 1 || mCurrentDialogTypeId == 3) {
-                InterfacesManager.getInterfacesManager().getKeyBoardManager().q();
+                UiManager.getUiManager().getKeyBoardManager().q();
             }
         }
         catch (UnsupportedEncodingException e){

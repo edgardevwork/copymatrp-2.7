@@ -1,24 +1,34 @@
 package ru.edgar.nlremake.fragment.dialogs;
 
+import android.app.Activity;
 import android.view.View;
 import android.widget.CheckBox;
 
+import com.google.android.material.slider.LabelFormatter;
+
+import org.checkerframework.checker.units.qual.A;
+
 import javax.annotation.Nullable;
 
-public class DialogManager {
+import ru.edgar.nlremake.other.LauncherUiComponent;
 
-    private static DialogManager instance;
+public class DialogManager implements LauncherUiComponent {
+
     private AuthFragment authFragment;
-
     private AuthEmailFragment authEmailFragment;
+    private AccountDialogFragment accountDialogFragment;
     private DialogFragment dialogFragment;
 
+    @Override
+    public void init(Activity activity) {
+        authFragment = new AuthFragment(activity);
+        authEmailFragment = new AuthEmailFragment(activity);
+        accountDialogFragment = new AccountDialogFragment(activity);
+        dialogFragment = new DialogFragment(activity);
+    }
 
-    public DialogManager() {
-        instance = this;
-        authFragment = new AuthFragment();
-        authEmailFragment = new AuthEmailFragment();
-        dialogFragment = new DialogFragment();
+    public void changingButtonPriority(boolean isPriority) {
+        getDialogFragment().changingButtonPriority(isPriority);
     }
 
     public void showDialog(String name, String dname, String b1, String b2, View.OnClickListener click1, View.OnClickListener click2) {
@@ -53,9 +63,12 @@ public class DialogManager {
         getAuthEmailFragment().hideAuthEmailDialog();
     }
 
+    public void showAccountDialog() {
+        getAccountDialogFragment().showAccountDialog();
+    }
 
-    public static DialogManager getDialogManager() {
-        return instance;
+    public void hideAccountDialog() {
+        getAccountDialogFragment().hideAccountDialog();
     }
 
     private AuthFragment getAuthFragment() {
@@ -64,6 +77,10 @@ public class DialogManager {
 
     private AuthEmailFragment getAuthEmailFragment() {
         return authEmailFragment;
+    }
+
+    private AccountDialogFragment getAccountDialogFragment() {
+        return accountDialogFragment;
     }
 
     private DialogFragment getDialogFragment() {

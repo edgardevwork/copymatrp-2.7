@@ -26,6 +26,7 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -50,15 +51,35 @@ import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.FirebaseDatabase;
 import com.joom.paranoid.Obfuscate;
 import ru.edgar.matrp.R;
+import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.nlremake.fragment.dialogs.DialogManager;
+import ru.edgar.nlremake.network.AppConfig;
+import ru.edgar.nlremake.network.CrashReporter;
+import ru.edgar.space.SAMP;
+import ru.edgar.space.UiManager;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -479,6 +500,67 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
         });
 
         processCutout();
+    }
+    /* Auth */
+    DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1234){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+
+                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
+                FirebaseAuth.getInstance().signInWithCredential(credential)
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()){
+                                    dialogManager.hideAuthDialog();
+                                    FirebaseUser currentUser = AppConfig.mAuth.getCurrentUser();
+                                    if(currentUser != null) {
+                                        AppConfig.isAuth = true;
+                                    } else {
+                                        AppConfig.isAuth = false;
+                                    }
+                                    HashMap<String, Object> Info = new HashMap<>();
+                                    Info.put("google-email", AppConfig.mAuth.getCurrentUser().getEmail());
+                                    Info.put("way", 2);
+                                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+
+                                    //SAMP.getInstance().hideSplash();
+                                } else {
+                                    dialogManager.hideAuthDialog();
+                                    dialogManager.showErrorDialog("Ошибка авторизации через Google!", "Попробуйте ещё раз.", "Понятно", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(dialogManager.getIsChecked()) {
+                                                CrashReporter.sendBugReport(MainScreenActivity.getInstance(), AppConfig.mAuth.getUid(), "signInWithCredential()", task.getException().toString());
+                                            }
+                                            dialogManager.hideDialog();
+                                            FirebaseUser currentUser = AppConfig.mAuth.getCurrentUser();
+                                            if(currentUser != null) {
+                                                AppConfig.isAuth = true;
+                                            } else {
+                                                AppConfig.isAuth = false;
+                                            }
+                                            if(!AppConfig.isAuth) {
+                                                dialogManager.hideDialog();
+                                                dialogManager.showAuthDialog(false);
+                                            } //else SAMP.getInstance().hideSplash();
+                                        }
+                                    }, true, "Сообщить об ошибке");
+                                }
+
+                            }
+                        });
+            } catch (ApiException e) {
+                //e.printStackTrace();
+                //Log.e("GOOGLE AUTH", "Error - " + e.getMessage());
+                // ФИКС ДИАЛОГА ОШИБКИ! (КНОПКА НАЗАД - ОШИБКА)
+            }
+        }
     }
 
     public void onConfigurationChanged(Configuration newConfig) {

@@ -1,6 +1,7 @@
 package ru.edgar.space.core.ui.hud;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -13,17 +14,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nvidia.devtech.NvEventQueueActivity;
-
 import java.util.Formatter;
 
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.space.UiManager;
 import ru.edgar.matrp.R;
 import ru.edgar.space.SAMP;
 import ru.edgar.space.core.views.CircularProgressBar;
 
 public class Speedometer {
-    public NvEventQueueActivity nvEventQueueActivity = null;
+    public Activity activity = null;
     public ViewGroup viewGroup = null;
     public TextView mCarHP;
     public FrameLayout mStrela;
@@ -54,9 +53,9 @@ public class Speedometer {
 
     native void sendClick(int clickId);
 
-    public Speedometer(NvEventQueueActivity nvEventQueueActivity, int guiId) {
-        this.nvEventQueueActivity = nvEventQueueActivity;
-        viewGroup = InterfacesManager.getInterfacesManager().viewGroup[guiId];
+    public Speedometer(Activity activity, int guiId) {
+        this.activity = activity;
+        //viewGroup = UiManager.getUiManager().viewGroup[guiId];
         textViews = new TextView[11];
         show();
     }
@@ -78,7 +77,7 @@ public class Speedometer {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("speed_");
             stringBuilder.append(i10);
-            textViewArr[i10] = (TextView) viewGroup.findViewById(nvEventQueueActivity.getResources().getIdentifier(stringBuilder.toString(), "id", nvEventQueueActivity.getPackageName()));
+            textViewArr[i10] = (TextView) viewGroup.findViewById(activity.getResources().getIdentifier(stringBuilder.toString(), "id", activity.getPackageName()));
         }
 
         turnlight_tick_sound_1 = SAMP.getInstance().soundPool.load(SAMP.getInstance(), R.raw.turnlight_tick_1, 0);
@@ -102,16 +101,16 @@ public class Speedometer {
         mBG.setOnClickListener( view -> {
             sendClick(BUTTON_TURN_ALL);
         });
-        mStrela.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, mStrela));
+        mStrela.setOnTouchListener(new UiManager.animClickBtn(activity, mStrela));
         mStrela.setOnClickListener(view -> {
             sendClick(BUTTON_TURN_LEFT);
         });
-        mStrela2.setOnTouchListener(new InterfacesManager.animClickBtn(nvEventQueueActivity, mStrela2));
+        mStrela2.setOnTouchListener(new UiManager.animClickBtn(activity, mStrela2));
         mStrela2.setOnClickListener(view -> {
-            view.startAnimation(AnimationUtils.loadAnimation(nvEventQueueActivity, R.anim.button_click));
+            view.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.button_click));
             sendClick(BUTTON_TURN_RIGHT);
         });
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
+        viewGroup.setVisibility(View.GONE);
     }
 
     public void setTurnlight(int turnlight){
@@ -184,10 +183,10 @@ public class Speedometer {
     }
 
     public void ShowSpeed() {
-        InterfacesManager.getInterfacesManager().showViewGroup(viewGroup);
+        UiManager.getUiManager().showViewGroup(viewGroup);
     }
 
     public void HideSpeed() {
-        InterfacesManager.getInterfacesManager().AnimVisibale(viewGroup, View.GONE);
+        UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
     }
 }

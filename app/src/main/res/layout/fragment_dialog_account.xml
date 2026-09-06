@@ -18,21 +18,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:layout_marginBottom="@dimen/_18sdp"
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/btn_back"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_marginLeft="@dimen/_18sdp"
-                android:layout_marginTop="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_18sdp">
+                android:layout_marginRight="@dimen/_21sdp"
+                android:orientation="horizontal">
 
                 <FrameLayout
-                    android:id="@+id/btn_back"
                     android:layout_width="@dimen/_28sdp"
                     android:layout_height="@dimen/_28sdp"
                     android:background="@drawable/ic_dialog_back"
+                    android:backgroundTint="#333439"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -48,10 +50,13 @@
                     android:id="@+id/bigText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginLeft="@dimen/_9sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/_1sdp"
                     android:text="Управление аккаунтом"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_14sdp"
+                    android:letterSpacing="0.02"
                     android:fontFamily="@font/geologica_semibold" />
             </LinearLayout>
 
@@ -59,25 +64,23 @@
             <LinearLayout
                 android:id="@+id/btn_delete"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_28sdp"
-                android:layout_marginBottom="@dimen/_8sdp"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_marginBottom="@dimen/_7sdp"
+                android:layout_marginRight="@dimen/_17sdp"
                 android:background="@drawable/ic_btn_dark"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginLeft="@dimen/_18sdp"
-                android:layout_marginRight="@dimen/_18sdp"
+                android:layout_marginTop="@dimen/_11sdp"
                 android:visibility="visible">
 
                 <ImageView
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
+                    android:layout_width="@dimen/_9sdp"
+                    android:layout_height="@dimen/_9sdp"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/_4sdp"
                     app:srcCompat="@drawable/ic_trash" />
 
                 <TextView
-                    android:id="@+id/b1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -85,31 +88,29 @@
                     android:fontFamily="@font/geologica_light"
                     android:layout_marginBottom="@dimen/_1sdp"
                     android:text="Удалить аккаунт"
+                    android:letterSpacing="0.01"
                     android:textColor="#ffffff"
-                    android:textSize="@dimen/_9sdp" />
+                    android:textSize="@dimen/_8sdp" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/btn_exit"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_28sdp"
-                android:layout_marginBottom="@dimen/_18sdp"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_marginRight="@dimen/_17sdp"
                 android:background="@drawable/ic_btn_dark"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginLeft="@dimen/_18sdp"
-                android:layout_marginRight="@dimen/_18sdp"
                 android:visibility="visible">
 
                 <ImageView
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
+                    android:layout_width="@dimen/_9sdp"
+                    android:layout_height="@dimen/_9sdp"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/_4sdp"
                     app:srcCompat="@drawable/ic_logout" />
 
                 <TextView
-                    android:id="@+id/b2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -118,7 +119,7 @@
                     android:layout_marginBottom="@dimen/_1sdp"
                     android:text="Выйти"
                     android:textColor="#ffffff"
-                    android:textSize="@dimen/_9sdp" />
+                    android:textSize="@dimen/_8sdp" />
             </LinearLayout>
 
         </LinearLayout>

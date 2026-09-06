@@ -14,22 +14,20 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nvidia.devtech.NvEventQueueActivity;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
-import ru.edgar.space.InterfacesManager;
+import ru.edgar.nlremake.other.LauncherUiComponent;
+import ru.edgar.space.UiManager;
 import ru.edgar.space.SAMP;
 
-public class Noty {
+public class NotyManager implements LauncherUiComponent {
 
     private final List<NotyInstance> activeNoties = new ArrayList<>();
     private final int MAX_NOTIES = 4;
-    private FrameLayout contentView;
     private Activity context;
 
     private class NotyInstance {
@@ -40,14 +38,9 @@ public class Noty {
         Runnable autoHideRunnable;
     }
 
-    public Noty() {
-        try {
-            context = SAMP.getInstance();
-            contentView = ((SAMP)context).getFrontUILayout();
-        } catch (Exception e) {
-            context = MainScreenActivity.getInstance();
-            contentView = ((MainScreenActivity)context).getMainScreen();
-        }
+    @Override
+    public void init(Activity activity) {
+        context = activity;
     }
 
     public void show(int id, String text, String btnText, String btnCmd, int delaySeconds) { // TODO: сделать не статичным или хз - сделать кнопку!!!!!
@@ -62,7 +55,7 @@ public class Noty {
             removeNoty(activeNoties.get(0), true);
         }
 
-        ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.noty, contentView, false);
+        ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.noty, UiManager.getUiManager().getFrontUI(), false);
 
         ImageView iconView = viewGroup.findViewById(R.id.noty_icon);
         TextView textView = viewGroup.findViewById(R.id.noty_text);
@@ -74,7 +67,7 @@ public class Noty {
             isBtn = true;
             notyBtnText.setText(btnText);
             notyBtn.setVisibility(View.VISIBLE);
-            notyBtn.setOnTouchListener(new InterfacesManager.animClickBtn(context, notyBtn));
+            notyBtn.setOnTouchListener(new UiManager.animClickBtn(context, notyBtn));
         } else {
             isBtn = false;
             notyBtn.setVisibility(View.GONE);
@@ -107,7 +100,7 @@ public class Noty {
             });
         }
 
-        contentView.addView(viewGroup, -1, -1);
+        UiManager.getUiManager().getFrontUI().addView(viewGroup, -1, -1);
         activeNoties.add(instance);
 
         updatePositions(context);
