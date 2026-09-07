@@ -76,7 +76,7 @@ public class ProfileFragment implements LauncherUiComponent {
 
         btn_promo.setOnTouchListener(new UiManager.animClickBtn(activity, btn_promo));
         btn_promo.setOnClickListener(v -> {
-            new PromoDialogFragment(activity);
+            dialogManager.showPromoDialog();
         });
 
         viewGroup.setVisibility(View.GONE);

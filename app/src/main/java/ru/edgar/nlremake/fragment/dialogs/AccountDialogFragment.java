@@ -17,10 +17,8 @@ import java.util.logging.LogRecord;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
-import ru.edgar.nlremake.loader.GameStarter;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.network.CrashReporter;
-import ru.edgar.nlremake.network.SettingsLoader;
 import ru.edgar.nlremake.service.DownloadService;
 import ru.edgar.space.SAMP;
 import ru.edgar.space.UiManager;

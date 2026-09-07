@@ -31,7 +31,7 @@ import kotlin.jvm.internal.Intrinsics;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.fragment.MenuFragment;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
-import ru.edgar.nlremake.loader.GameStarter;
+import ru.edgar.nlremake.loader.LauncherLoader;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.other.LauncherUiComponent;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
@@ -544,15 +544,15 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
             lm_loadicon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation));
 
             DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
-            // Создаем GameStarter
-            GameStarter gameStarter = new GameStarter(this, dialogManager);
-            gameStarter.setCallback(new GameStarter.StartCallback() {
+            // Запускаем единую логику загрузки без проверки игровых файлов.
+            LauncherLoader launcherLoader = new LauncherLoader(this, dialogManager);
+            launcherLoader.setCallback(new LauncherLoader.LauncherLoadCallback() {
                 @Override
-                public void onHideSplash() {
+                public void onLoaded(LauncherLoader.LaunchMode mode) {
                     runOnUiThread(() -> {
                         dialogManager.hideAuthDialog();
                         hideSplash();
-                        gameStarter.destroy();
+                        //launcherLoader.destroy();
                     });
                 }
 
@@ -560,7 +560,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
                 public void onAuthRequired() {
                     runOnUiThread(() -> {
                         dialogManager.showAuthDialog(true);
-                        gameStarter.destroy();
+                        //launcherLoader.destroy();
                     });
                 }
 
@@ -569,7 +569,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
                     runOnUiThread(() -> {
                         finish();
                         onDestroy();
-                        gameStarter.destroy();
+                        //launcherLoader.destroy();
                     });
                 }
 
@@ -577,11 +577,17 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
                 public void onError(String error) {
                     runOnUiThread(() -> {
                         Toast.makeText(SAMP.this, "Ошибка: " + error, Toast.LENGTH_LONG).show();
-                        gameStarter.destroy();
+                        launcherLoader.destroy();
+                        launcherLoader.load(LauncherLoader.LaunchMode.WITHOUT_GAME_LOADING);
                     });
                 }
+
+                @Override
+                public void onUpdateRequired(String url, String path, String name) {
+                    // В игровом режиме обновление обрабатывается общей логикой лаунчера.
+                }
             });
-            gameStarter.startGame();
+            launcherLoader.load(LauncherLoader.LaunchMode.WITHOUT_GAME_LOADING);
         });
     }
 }

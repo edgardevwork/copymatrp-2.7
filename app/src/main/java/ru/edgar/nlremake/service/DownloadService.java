@@ -1,5 +1,6 @@
 package ru.edgar.nlremake.service;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -20,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,10 +28,8 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
 import ru.edgar.matrp.R;
-import ru.edgar.nlremake.model.Archive;
-import ru.edgar.nlremake.model.ArchivePath;
-import ru.edgar.nlremake.model.Deleted;
-import ru.edgar.nlremake.other.Helper;
+import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.other.Utils;
 
 public class DownloadService extends Service {
@@ -86,7 +84,7 @@ public class DownloadService extends Service {
 
     public void startGameDownload(List<String> url, List<String> path, List<String> unZip, List<String> toUnZip) {
         isApkDownload = false;
-        File directory = new File(Helper.androidPath);
+        File directory = new File(AppConfig.getAndroidPath(MainScreenActivity.getInstance()));
         if (!directory.exists() || !directory.isDirectory()) {
             boolean created = directory.mkdirs();
             if (!created) {
@@ -326,7 +324,7 @@ public class DownloadService extends Service {
                     unZip(unn, unn2);
                     i++;
                 } else {
-                    String basePathFinal = Helper.androidPath;
+                    String basePathFinal = AppConfig.getAndroidPath(MainScreenActivity.getInstance());
                     Set<PosixFilePermission> folderPermissions = new HashSet<>();
                     folderPermissions.add(PosixFilePermission.OWNER_READ);
                     folderPermissions.add(PosixFilePermission.OWNER_WRITE);

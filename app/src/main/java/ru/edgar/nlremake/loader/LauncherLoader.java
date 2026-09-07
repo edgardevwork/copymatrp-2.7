@@ -1,4 +1,4 @@
-package ru.edgar.nlremake.network;
+package ru.edgar.nlremake.loader;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,31 +29,42 @@ import ru.edgar.nlremake.network.Interface;
 import ru.edgar.nlremake.utils.NetworkUtils;
 import ru.edgar.space.EdgarConectV2;
 
-public class SettingsLoader {
+public class LauncherLoader {
     private Context context;
     private DialogManager dialogManager;
     private String apiLink;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
-    private SettingsLoadCallback callback;
+    private LauncherLoadCallback callback;
+    private LaunchMode launchMode = LaunchMode.WITH_GAME_LOADING;
 
-    public interface SettingsLoadCallback {
-        void onSettingsLoaded();
+    public interface LauncherLoadCallback {
+        void onLoaded(LaunchMode mode);
         void onAuthRequired();
         void onError(String error);
         void onUpdateRequired(String url, String path, String name);
         void onTestClosed();
     }
 
-    public SettingsLoader(Context context, DialogManager dialogManager) {
+    public LauncherLoader(Context context, DialogManager dialogManager) {
         this.context = context;
         this.dialogManager = dialogManager;
     }
 
-    public void setCallback(SettingsLoadCallback callback) {
+    public void setCallback(LauncherLoadCallback callback) {
         this.callback = callback;
     }
 
-    public void loadSettings() {
+    public enum LaunchMode {
+        WITH_GAME_LOADING,
+        WITHOUT_GAME_LOADING
+    }
+
+    public void load(LaunchMode mode) {
+        launchMode = mode != null ? mode : LaunchMode.WITH_GAME_LOADING;
+        loadSettings();
+    }
+
+    private void loadSettings() {
         if(!NetworkUtils.isNetworkAvailable(context)) {
             dialogManager.showDialog("Чтобы продолжить\nподключитесь к интернету!", "Подключиться к интернету и продолжить играть", "Подключиться", null, new View.OnClickListener() {
                 @Override
@@ -122,7 +133,7 @@ public class SettingsLoader {
                 public void onResponse(Call<Api> call, Response<Api> response) {
                     if(response.isSuccessful()) {
                         if(response.body() != null) {
-                            if(response.body().getLauncherVersion() != 76) {
+                            if (launchMode == LaunchMode.WITH_GAME_LOADING && response.body().getLauncherVersion() != 76) {
                                 dialogManager.showDialog("Доступна новая\nверсия клиента!", "Скачать обновление и продолжить играть", "Скачать обновление", "Отмена", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -261,7 +272,7 @@ public class SettingsLoader {
 
                                                         if(AppConfig.isAuth) {
                                                             if(callback != null) {
-                                                                callback.onSettingsLoaded();
+                                                                callback.onLoaded(launchMode);
                                                             }
                                                         } else {
                                                             if(callback != null) {
@@ -387,4 +398,11 @@ public class SettingsLoader {
             });
         });
     }
+
+    public void destroy() {
+        if (callback != null) {
+            callback = null;
+        }
+    }
+
 }

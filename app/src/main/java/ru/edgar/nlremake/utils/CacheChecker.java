@@ -7,7 +7,6 @@ import java.util.List;
 import ru.edgar.nlremake.model.Archive;
 import ru.edgar.nlremake.model.ArchivePath;
 import ru.edgar.nlremake.model.Deleted;
-import ru.edgar.nlremake.other.Helper;
 
 public class CacheChecker {
     private Context context;

@@ -43,7 +43,7 @@ import java.util.List;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.network.CrashReporter;
-import ru.edgar.nlremake.network.SettingsLoader;
+import ru.edgar.nlremake.loader.LauncherLoader;
 import ru.edgar.nlremake.other.Utils;
 import ru.edgar.nlremake.service.DownloadService;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
@@ -67,7 +67,7 @@ public class MainScreenActivity extends AppCompatActivity {
     private ProgressBar progress;
     private DownloadService downloadService;
     private DownloadService.DownloadCallback downloadCallback;
-    private SettingsLoader settingsLoader;
+    private LauncherLoader launcherLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +100,9 @@ public class MainScreenActivity extends AppCompatActivity {
         dialogManager = uiManager.getTyped(UiManager.DIALOG);
 
         setupDownloadCallback();
-        setupSettingsLoader();
+        setupLauncherLoader();
 
-        settingsLoader.loadSettings();
+        launcherLoader.load(LauncherLoader.LaunchMode.WITH_GAME_LOADING);
     }
 
     private void setupDownloadCallback() {
@@ -139,7 +139,7 @@ public class MainScreenActivity extends AppCompatActivity {
                                 CrashReporter.sendBugReport(MainScreenActivity.getInstance(), AppConfig.mAuth.getUid(), "DownloadService - error()", error);
                             }
                             dialogManager.hideDialog();
-                            settingsLoader.loadSettings();
+                            launcherLoader.load(LauncherLoader.LaunchMode.WITH_GAME_LOADING);
                         }
                     }, true, "Сообщить об ошибке");
                 });
@@ -156,12 +156,14 @@ public class MainScreenActivity extends AppCompatActivity {
         };
     }
 
-    private void setupSettingsLoader() {
-        settingsLoader = new SettingsLoader(this, dialogManager);
-        settingsLoader.setCallback(new SettingsLoader.SettingsLoadCallback() {
+    private void setupLauncherLoader() {
+        launcherLoader = new LauncherLoader(this, dialogManager);
+        launcherLoader.setCallback(new LauncherLoader.LauncherLoadCallback() {
             @Override
-            public void onSettingsLoaded() {
-                onRequestPermissions();
+            public void onLoaded(LauncherLoader.LaunchMode mode) {
+                if (mode == LauncherLoader.LaunchMode.WITH_GAME_LOADING) {
+                    onRequestPermissions();
+                }
             }
 
             @Override
