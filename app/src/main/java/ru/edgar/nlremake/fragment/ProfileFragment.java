@@ -20,6 +20,7 @@ import java.util.List;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.adapter.ProfileDataAdapter;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
+import ru.edgar.nlremake.fragment.dialogs.PromoDialogFragment;
 import ru.edgar.nlremake.model.ProfileData;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.other.LauncherUiComponent;
@@ -29,7 +30,7 @@ import ru.edgar.space.SAMP;
 public class ProfileFragment implements LauncherUiComponent {
 
     private ViewGroup viewGroup;
-    private LinearLayout btn_settings, btn_back, btn_payment;
+    private LinearLayout btn_settings, btn_back, btn_payment, btn_promo;
     private RecyclerView recyclerView;
 
     @Override
@@ -49,6 +50,7 @@ public class ProfileFragment implements LauncherUiComponent {
         btn_back = viewGroup.findViewById(R.id.btn_back);
         btn_settings = viewGroup.findViewById(R.id.btn_settings);
         btn_payment = viewGroup.findViewById(R.id.btn_payment);
+        btn_promo = viewGroup.findViewById(R.id.btn_promo);
         recyclerView = viewGroup.findViewById(R.id.profileStatsRecyclerView);
 
         btn_back.setOnTouchListener(new UiManager.animClickBtn(activity, btn_back));
@@ -70,6 +72,11 @@ public class ProfileFragment implements LauncherUiComponent {
                     dialogManager.hideDialog();
                 }
             }, null);
+        });
+
+        btn_promo.setOnTouchListener(new UiManager.animClickBtn(activity, btn_promo));
+        btn_promo.setOnClickListener(v -> {
+            new PromoDialogFragment(activity);
         });
 
         viewGroup.setVisibility(View.GONE);
