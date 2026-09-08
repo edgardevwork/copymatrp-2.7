@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginStart="@dimen/_59sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:layout_width="@dimen/_28sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:background="@drawable/ic_dialog_back">
+
+            <ImageView
+                android:layout_width="@dimen/_11sdp"
+                android:layout_height="@dimen/_11sdp"
+                android:src="@drawable/ic_back"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:layout_gravity="center"
+            android:alpha="0.4"
+            android:text="Создание персонажа"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14sdp"
+            android:fontFamily="@font/geologica_semibold" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/geologica_semibold"
+        android:text="Сервер"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14sdp"
+        android:layout_marginBottom="@dimen/_6sdp"
+        app:layout_constraintBottom_toTopOf="@+id/iiii"
+        app:layout_constraintStart_toStartOf="@+id/btn_back" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/iiii"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/btn_back"
+        android:background="@drawable/ic_green_indicator"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_14sdp">
+
+        <TextView
+            android:id="@+id/tv_server_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/geologica_semibold"
+            android:text="МАТРЕШКА MOBILE #18"
+            android:textColor="#000"
+            android:textSize="@dimen/_14sdp"
+            android:layout_marginRight="@dimen/_6sdp"
+            android:layout_marginLeft="@dimen/_6sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6" /> <!-- 40% отступа слева -->
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/ic_dialog_nlremake"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_14sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/iiii"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_back"
+        app:layout_constraintStart_toStartOf="@id/guideline" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
