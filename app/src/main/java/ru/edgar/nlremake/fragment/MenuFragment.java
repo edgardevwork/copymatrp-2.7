@@ -33,11 +33,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import ru.edgar.matrp.R;
+import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Stories;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.other.LauncherUiComponent;
 import ru.edgar.space.UiManager;
 import ru.edgar.space.SAMP;
+import ru.edgar.space.core.ui.dialogs.Dialog;
 
 public class MenuFragment implements LauncherUiComponent {
 
@@ -221,6 +223,9 @@ public class MenuFragment implements LauncherUiComponent {
         frame_server.setOnTouchListener(new UiManager.animClickBtn(activity, frame_server));
         frame_server.setOnClickListener(v -> {
             // Переход в выбор сервера
+            hide();
+            DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+            dialogManager.showCreateChesterDialog();
         });
 
         btn_play = viewGroup.findViewById(R.id.btn_play);

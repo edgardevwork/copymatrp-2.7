@@ -3,6 +3,7 @@ package ru.edgar.nlremake.fragment.dialogs;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -18,7 +19,6 @@ public class CreateChasterFragment {
     private ViewGroup viewGroup;
     private Activity context;
     private LinearLayout btn_back;
-    private MenuFragment menuFragment;
 
     public CreateChasterFragment(Activity activity) {
         if (viewGroup != null && !AppConfig.isStartGame) {
@@ -33,12 +33,11 @@ public class CreateChasterFragment {
         layoutParams.height = -1;
         viewGroup.setLayoutParams(layoutParams);
 
-        menuFragment = UiManager.getUiManager().getTyped(UiManager.MENU);
-
         btn_back = viewGroup.findViewById(R.id.btn_back);
         btn_back.setOnTouchListener(new UiManager.animClickBtn(context, btn_back));
         btn_back.setOnClickListener(v -> {
             hideCreateChasterDialog();
+            MenuFragment menuFragment = UiManager.getUiManager().getTyped(UiManager.MENU);
             menuFragment.show();
         });
 
