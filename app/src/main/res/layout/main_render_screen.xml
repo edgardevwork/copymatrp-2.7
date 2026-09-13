@@ -84,6 +84,4 @@
 
     </FrameLayout >
 
-    <include layout="@layout/fragment_create_character" ></include>
-
 </FrameLayout>

@@ -67,8 +67,8 @@
             <LinearLayout
                 android:id="@+id/email_layout_email"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_28sdp"
-                android:layout_marginTop="@dimen/_16sdp"
+                android:layout_height="@dimen/_29sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginLeft="@dimen/_18sdp"
                 android:layout_marginRight="@dimen/_18sdp"
                 android:background="@drawable/ic_dialog_nl_input_bg"
@@ -87,6 +87,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     android:background="@null"
                     android:ellipsize="end"
@@ -106,9 +107,9 @@
             <LinearLayout
                 android:id="@+id/email_layout_pass"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_28sdp"
+                android:layout_height="@dimen/_29sdp"
                 android:layout_marginLeft="@dimen/_18sdp"
-                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_7sdp"
                 android:layout_marginRight="@dimen/_18sdp"
                 android:background="@drawable/ic_dialog_nl_input_bg"
                 android:orientation="horizontal">
@@ -126,6 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     android:background="@null"
                     android:ellipsize="end"
@@ -156,9 +158,9 @@
             <LinearLayout
                 android:id="@+id/email_layout_pass2"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_28sdp"
+                android:layout_height="@dimen/_29sdp"
                 android:layout_marginLeft="@dimen/_18sdp"
-                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_7sdp"
                 android:layout_marginRight="@dimen/_18sdp"
                 android:background="@drawable/ic_dialog_nl_input_bg"
                 android:orientation="horizontal">
@@ -176,6 +178,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     android:background="@null"
                     android:ellipsize="end"
@@ -195,9 +198,9 @@
             <LinearLayout
                 android:id="@+id/email_layout_code"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_28sdp"
+                android:layout_height="@dimen/_29sdp"
                 android:layout_marginLeft="@dimen/_18sdp"
-                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_7sdp"
                 android:layout_marginRight="@dimen/_18sdp"
                 android:background="@drawable/ic_dialog_nl_input_bg"
                 android:orientation="horizontal">
@@ -215,6 +218,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     android:background="@null"
                     android:ellipsize="end"
@@ -255,8 +259,8 @@
                     android:id="@+id/main_btn_yes"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="@dimen/_28sdp"
-                    android:layout_marginBottom="@dimen/_18sdp"
+                    android:layout_height="@dimen/_29sdp"
+                    android:layout_marginBottom="@dimen/_17sdp"
                     android:background="@drawable/ic_dialog_newbtnin">
 
                     <TextView
@@ -272,9 +276,9 @@
                 <FrameLayout
                     android:id="@+id/main_btn_no"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_28sdp"
+                    android:layout_height="@dimen/_29sdp"
                     android:layout_marginLeft="@dimen/_8sdp"
-                    android:layout_marginBottom="@dimen/_18sdp">
+                    android:layout_marginBottom="@dimen/_17sdp">
 
                     <TextView
                         android:layout_width="wrap_content"
