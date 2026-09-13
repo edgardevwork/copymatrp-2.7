@@ -49,8 +49,8 @@ android {
         applicationId 'ru.edgar.matrp'
         minSdk 26
         targetSdk 36
-        versionCode 23
-        versionName "copymatrp-2.7.0.2.3"
+        versionCode 24
+        versionName "copymatrp-2.7.0.2.4-TEST1-d3v_felix"
 
         multiDexEnabled true
         /*externalNativeBuild {

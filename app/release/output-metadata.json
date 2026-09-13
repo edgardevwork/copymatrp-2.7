@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "ru.edgar.matrp",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 24,
+      "versionName": "copymatrp-2.7.0.2.4-TEST1-d3v_felix",
+      "outputFile": "launcher-copymatrp-2.7.0.2.4-TEST1-d3v_felix.apk"
+    }
+  ],
+  "elementType": "File",
+  "baselineProfiles": [
+    {
+      "minApi": 28,
+      "maxApi": 30,
+      "baselineProfiles": [
+        "baselineProfiles/1/launcher-copymatrp-2.7.0.2.4-TEST1-d3v_felix.dm"
+      ]
+    },
+    {
+      "minApi": 31,
+      "maxApi": 2147483647,
+      "baselineProfiles": [
+        "baselineProfiles/0/launcher-copymatrp-2.7.0.2.4-TEST1-d3v_felix.dm"
+      ]
+    }
+  ],
+  "minSdkVersionForDexing": 26
+}
