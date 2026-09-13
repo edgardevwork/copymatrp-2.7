@@ -50,7 +50,7 @@
         android:text="Сервер"
         android:textColor="@color/white"
         android:textSize="@dimen/_14sdp"
-        android:layout_marginBottom="@dimen/_6sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
         app:layout_constraintBottom_toTopOf="@+id/iiii"
         app:layout_constraintStart_toStartOf="@+id/btn_back" />
 
@@ -89,13 +89,12 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.60" /> <!-- 40% отступа слева -->
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:layout_marginEnd="@dimen/_4sdp"
-        android:layout_marginBottom="@dimen/_14sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
         android:background="@drawable/ic_dialog_nlremake"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/iiii"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
@@ -104,96 +103,101 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginLeft="@dimen/_15sdp"
-            android:layout_marginRight="@dimen/_15sdp"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_18sdp"
+            android:layout_marginEnd="@dimen/_17sdp"
+            android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/btn_cr_male"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="@dimen/_25sdp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:background="@drawable/ic_dialog_nl_input_bg"
+                android:backgroundTint="#fff">
 
-                <LinearLayout
-                    android:id="@+id/btn_cr_male"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_24sdp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:background="@drawable/ic_dialog_newbtnin"
-                    android:backgroundTint="#fff">
+                <ImageView
+                    android:id="@+id/imagemale"
+                    android:layout_width="@dimen/_9sdp"
+                    android:layout_height="@dimen/_9sdp"
+                    android:layout_marginStart="@dimen/_30sdp"
+                    app:srcCompat="@drawable/ic_male"
+                    app:tint="#000" />
 
-                    <ImageView
-                        android:id="@+id/imagemale"
-                        android:layout_width="@dimen/_8sdp"
-                        android:layout_height="@dimen/_8sdp"
-                        android:layout_marginStart="@dimen/_22sdp"
-                        app:srcCompat="@drawable/ic_launcher_male"
-                        app:tint="#000" />
-
-                    <TextView
-                        android:id="@+id/textmale"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:layout_marginEnd="@dimen/_22sdp"
-                        android:layout_marginStart="@dimen/_4sdp"
-                        android:text="Мужчина"
-                        android:textColor="#000"
-                        android:textSize="@dimen/_8sdp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/btn_cr_female"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_24sdp"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginLeft="@dimen/_4sdp"
-                    android:background="@drawable/ic_dialog_newbtnin"
-                    android:backgroundTint="#010f05">
-
-                    <ImageView
-                        android:id="@+id/imagefemale"
-                        android:layout_width="@dimen/_8sdp"
-                        android:layout_height="@dimen/_8sdp"
-                        android:layout_marginStart="@dimen/_22sdp"
-                        app:srcCompat="@drawable/ic_launcher_female"
-                        app:tint="#757E83" />
-
-                    <TextView
-                        android:id="@+id/textfemale"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/_22sdp"
-                        android:layout_marginStart="@dimen/_4sdp"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:text="Женщина"
-                        android:textColor="#757E83"
-                        android:textSize="@dimen/_8sdp" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/textmale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:layout_marginEnd="@dimen/_30sdp"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:letterSpacing="0.03"
+                    android:text="Мужчина"
+                    android:textColor="#000"
+                    android:textSize="@dimen/_7sdp" />
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rec"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_66sdp"
-                android:layout_marginTop="@dimen/_6sdp"
-                tools:itemCount="10"
-                tools:listitem="@layout/chat_message"/>
+            <LinearLayout
+                android:id="@+id/btn_cr_female"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_25sdp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginStart="@dimen/_4sdp"
+                android:background="@drawable/ic_dialog_nl_input_bg"
+                android:backgroundTint="#8044414A">
+
+                <ImageView
+                    android:id="@+id/imagefemale"
+                    android:layout_width="@dimen/_9sdp"
+                    android:layout_height="@dimen/_9sdp"
+                    android:layout_marginStart="@dimen/_29sdp"
+                    app:srcCompat="@drawable/ic_female"
+                    app:tint="#97949d" />
+
+                <TextView
+                    android:id="@+id/textfemale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_29sdp"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:letterSpacing="0.03"
+                    android:text="Женщина"
+                    android:textColor="#97949d"
+                    android:textSize="@dimen/_7sdp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/rec"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_70sdp"
+            android:layout_marginTop="@dimen/_9sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:background="@color/teal_200"
+            tools:itemCount="10"
+            tools:listitem="@layout/chat_message"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_7sdp"
+            android:layout_marginLeft="@dimen/_18sdp"
+            android:layout_marginRight="@dimen/_18sdp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/littleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginBottom="@dimen/_8sdp"
-                android:fontFamily="@font/montserrat_medium"
+                android:layout_marginBottom="@dimen/_4sdp"
+                android:fontFamily="@font/geologica_semibold"
                 android:lineHeight="@dimen/_11sdp"
-                android:letterSpacing="0.03"
                 android:text="Полное имя твоего персонажа"
-                android:textColor="#E6E9E9F3"
-                android:textSize="@dimen/_8sdp" />
+                android:textColor="#6a676e"
+                android:textSize="@dimen/_9sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -204,14 +208,15 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="@dimen/_28sdp"
-                    android:layout_marginRight="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
                     android:background="@drawable/ic_dialog_nl_input_bg"
                     android:orientation="horizontal">
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/_7sdp"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginBottom="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_12sdp"
                         android:background="@null"
                         android:ellipsize="end"
@@ -232,7 +237,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="@dimen/_28sdp"
-                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_marginStart="@dimen/_4sdp"
                     android:background="@drawable/ic_dialog_nl_input_bg"
                     android:orientation="horizontal">
 
@@ -240,7 +245,8 @@
                         android:id="@+id/email_layout_email_input"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/_7sdp"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginBottom="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_12sdp"
                         android:background="@null"
                         android:ellipsize="end"
@@ -256,6 +262,21 @@
 
                 </LinearLayout>
 
+                <FrameLayout
+                    android:layout_width="@dimen/_28sdp"
+                    android:layout_height="@dimen/_28sdp"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:background="@drawable/ic_dialog_back"
+                    android:backgroundTint="#44414a">
+
+                    <ImageView
+                        android:layout_width="@dimen/_11sdp"
+                        android:layout_height="@dimen/_11sdp"
+                        android:src="@drawable/ic_dice"
+                        android:layout_gravity="center" />
+
+                </FrameLayout>
+
             </LinearLayout>
 
             <TextView
@@ -263,13 +284,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginBottom="@dimen/_8sdp"
+                android:layout_marginBottom="@dimen/_6sdp"
                 android:fontFamily="@font/geologica_semibold"
                 android:lineHeight="@dimen/_11sdp"
-                android:letterSpacing="0.03"
                 android:text="Введи промокод"
-                android:textColor="#E6E9E9F3"
-                android:textSize="@dimen/_8sdp" />
+                android:textColor="#6a676e"
+                android:textSize="@dimen/_9sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -293,7 +313,7 @@
                     android:background="@null"
                     android:ellipsize="end"
                     android:fontFamily="@font/geologica_medium"
-                    android:hint="Введи промокод"
+                    android:hint="Введи пригласительный промокод"
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="#ffffff"
@@ -329,10 +349,9 @@
                 </FrameLayout>
 
             </LinearLayout>
-
         </LinearLayout>
 
-    </FrameLayout>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
