@@ -307,8 +307,13 @@ public class MenuFragment implements LauncherUiComponent {
     public void hide() {
         if (handler != null) {
             handler.removeCallbacks(carouselStoryRunnable); // Удаляем конкретную задачу
-            currentStoryIndex--;
+            // currentStoryIndex--;
             // handler.removeCallbacksAndMessages(null); // Или всё подряд, если там висят другие таски
+        }
+
+        // Защита от ухода индекса в минус
+        if (currentStoryIndex > 0) {
+            currentStoryIndex--;
         }
 
         isCarouselRunning = false;

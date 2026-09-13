@@ -79,6 +79,17 @@ public class ProfileFragment implements LauncherUiComponent {
             dialogManager.showPromoDialog();
         });
 
+        // === ЗАЩИТА ОТ СКВОЗНЫХ КЛИКОВ ===
+        // Говорим системе, что этот слой сам поглощает все нажатия и не пускает их вниз
+        viewGroup.setClickable(true);
+        viewGroup.setFocusable(true);
+        viewGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Оставляем пустым. Касание фона просто поглощается и не идет дальше
+            }
+        });
+
         viewGroup.setVisibility(View.GONE);
     }
 

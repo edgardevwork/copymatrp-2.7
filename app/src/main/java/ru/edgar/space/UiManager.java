@@ -25,6 +25,7 @@ import ru.edgar.nlremake.fragment.LoadingFragment;
 import ru.edgar.nlremake.fragment.MenuFragment;
 import ru.edgar.nlremake.fragment.NotyManager;
 import ru.edgar.nlremake.fragment.ProfileFragment;
+import ru.edgar.nlremake.fragment.dialogs.CreateChasterFragment;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Main;
 import ru.edgar.nlremake.network.AppConfig;
@@ -55,17 +56,18 @@ public class UiManager {
     private Dialog mDialog = null;
     private KeyBoard mKeyBoard = null;
     private SpawnMenu mSpawnMenu = null;
-    public MenuFragment menuFragment = null;
 
     private LauncherUiComponent[] launcherUi;
-    /* Launcher UI
-    1 - MenuFragment
-    2 - ProfileFragment
-    3 - NewsFragment
-
-    5 - DialogManager
-    6 - LoadingFragment
-     */
+    /*  Launcher UI
+        1 - MenuFragment
+        2 - ProfileFragment
+        3 - NewsFragment
+        4 - ServersFragment
+        5 - DialogManager (AuthFragment, AuthEmailFragment, AccountDialogFragment,
+        PromoDialogFragment, CreateChasterFragment, DialogFragment)
+        6 - NotyManager
+        7 - LoadingFragment
+    */
     public static final int MENU = 0;
     public static final int PROFILE = 1;
     public static final int NEWS = 2;

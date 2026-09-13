@@ -18,6 +18,7 @@ public class DialogManager implements LauncherUiComponent {
     private AuthEmailFragment authEmailFragment;
     private AccountDialogFragment accountDialogFragment;
     private PromoDialogFragment promoDialogFragment;
+    private CreateChasterFragment createChasterFragment;
     private DialogFragment dialogFragment;
 
     @Override
@@ -26,6 +27,7 @@ public class DialogManager implements LauncherUiComponent {
         authEmailFragment = new AuthEmailFragment(activity);
         accountDialogFragment = new AccountDialogFragment(activity);
         promoDialogFragment = new PromoDialogFragment(activity);
+        createChasterFragment = new CreateChasterFragment(activity);
         dialogFragment = new DialogFragment(activity);
     }
 
@@ -81,6 +83,14 @@ public class DialogManager implements LauncherUiComponent {
         getPromoDialogFragment().hidePromoDialog();
     }
 
+    public void showCreateChesterDialog() {
+        getCreateChasterFragment().showCreateChasterDialog();
+    }
+
+    public void hideCreateChesterDialog() {
+        getCreateChasterFragment().hideCreateChasterDialog();
+    }
+
     private AuthFragment getAuthFragment() {
         return authFragment;
     }
@@ -95,6 +105,10 @@ public class DialogManager implements LauncherUiComponent {
 
     private PromoDialogFragment getPromoDialogFragment() {
         return promoDialogFragment;
+    }
+
+    private CreateChasterFragment getCreateChasterFragment() {
+        return createChasterFragment;
     }
 
     private DialogFragment getDialogFragment() {
