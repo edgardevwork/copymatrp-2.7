@@ -22,18 +22,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/_15sdp"
-        android:layout_marginStart="@dimen/_59sdp"
+        android:layout_marginStart="@dimen/_58sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
-            android:layout_width="@dimen/_28sdp"
-            android:layout_height="@dimen/_28sdp"
+            android:layout_width="@dimen/_29sdp"
+            android:layout_height="@dimen/_29sdp"
             android:background="@drawable/ic_dialog_back">
 
             <ImageView
-                android:layout_width="@dimen/_11sdp"
-                android:layout_height="@dimen/_11sdp"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
                 android:src="@drawable/ic_back"
                 android:layout_gravity="center" />
 

@@ -16,13 +16,13 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
-            android:layout_width="@dimen/_28sdp"
-            android:layout_height="@dimen/_28sdp"
+            android:layout_width="@dimen/_29sdp"
+            android:layout_height="@dimen/_29sdp"
             android:background="@drawable/ic_dialog_back">
 
             <ImageView
-                android:layout_width="@dimen/_11sdp"
-                android:layout_height="@dimen/_11sdp"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
                 android:src="@drawable/ic_back"
                 android:layout_gravity="center" />
 
@@ -61,7 +61,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/btn_back"
         android:background="@drawable/ic_green_indicator"
-        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_14sdp">
 
         <TextView
@@ -73,8 +73,8 @@
             android:text="МАТРЕШКА MOBILE #18"
             android:textColor="#000"
             android:textSize="@dimen/_14sdp"
-            android:layout_marginRight="@dimen/_6sdp"
-            android:layout_marginLeft="@dimen/_6sdp"
+            android:layout_marginRight="@dimen/_4sdp"
+            android:layout_marginLeft="@dimen/_4sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +92,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
         android:background="@drawable/ic_dialog_nlremake"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/iiii"
@@ -207,7 +207,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="@dimen/_28sdp"
+                    android:layout_height="@dimen/_29sdp"
                     android:layout_marginEnd="@dimen/_4sdp"
                     android:background="@drawable/ic_dialog_nl_input_bg"
                     android:orientation="horizontal">
@@ -215,7 +215,7 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginStart="@dimen/_10sdp"
                         android:layout_marginBottom="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_12sdp"
                         android:background="@null"
@@ -236,7 +236,7 @@
                     android:id="@+id/promo_layout"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="@dimen/_28sdp"
+                    android:layout_height="@dimen/_29sdp"
                     android:layout_marginStart="@dimen/_4sdp"
                     android:background="@drawable/ic_dialog_nl_input_bg"
                     android:orientation="horizontal">
@@ -245,7 +245,7 @@
                         android:id="@+id/email_layout_email_input"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginStart="@dimen/_10sdp"
                         android:layout_marginBottom="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_12sdp"
                         android:background="@null"
@@ -263,8 +263,8 @@
                 </LinearLayout>
 
                 <FrameLayout
-                    android:layout_width="@dimen/_28sdp"
-                    android:layout_height="@dimen/_28sdp"
+                    android:layout_width="@dimen/_29sdp"
+                    android:layout_height="@dimen/_29sdp"
                     android:layout_marginStart="@dimen/_7sdp"
                     android:background="@drawable/ic_dialog_back"
                     android:backgroundTint="#44414a">
@@ -283,8 +283,8 @@
                 android:id="@+id/littleText1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginBottom="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginBottom="@dimen/_4sdp"
                 android:fontFamily="@font/geologica_semibold"
                 android:lineHeight="@dimen/_11sdp"
                 android:text="Введи промокод"
@@ -293,22 +293,23 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_28sdp"
+                android:layout_height="@dimen/_29sdp"
                 android:background="@drawable/ic_dialog_nl_input_bg"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/promo_layout_image"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_12sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
                     app:srcCompat="@drawable/ic_promo2" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     android:background="@null"
                     android:ellipsize="end"
@@ -328,13 +329,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/_14sdp"
+                android:layout_marginTop="@dimen/_9sdp"
                 android:visibility="visible">
 
                 <FrameLayout
                     android:id="@+id/main_btn_yes"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_28sdp"
+                    android:layout_height="@dimen/_29sdp"
                     android:layout_marginBottom="@dimen/_18sdp"
                     android:background="@drawable/ic_dialog_newbtnin">
 
@@ -343,7 +344,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/geologica_medium"
-                        android:text="Активировать"
+                        android:text="Продолжить"
                         android:textColor="#ffffff"
                         android:textSize="@dimen/_9sdp" />
                 </FrameLayout>

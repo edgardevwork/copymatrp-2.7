@@ -31,16 +31,16 @@
                 android:orientation="horizontal">
 
                 <FrameLayout
-                    android:layout_width="@dimen/_28sdp"
-                    android:layout_height="@dimen/_28sdp"
+                    android:layout_width="@dimen/_29sdp"
+                    android:layout_height="@dimen/_29sdp"
                     android:background="@drawable/ic_dialog_back"
                     android:backgroundTint="#333439"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:layout_width="@dimen/_11sdp"
-                        android:layout_height="@dimen/_11sdp"
+                        android:layout_width="@dimen/_12sdp"
+                        android:layout_height="@dimen/_12sdp"
                         android:src="@drawable/ic_back"
                         android:layout_gravity="center" />
 
