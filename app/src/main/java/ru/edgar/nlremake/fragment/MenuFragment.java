@@ -104,8 +104,8 @@ public class MenuFragment implements LauncherUiComponent {
         nick_name_layout.setOnClickListener(v -> {
             // Переход на персонажа
             //SAMP.getInstance().AppConfig.mAuth.signOut();
-            /*hide();
-            UiManager.getUiManager().getTyped(UiManager.PROFILE).show();*/
+            hide();
+            UiManager.getUiManager().getTyped(UiManager.PROFILE).show();
         });
 
         news = viewGroup.findViewById(R.id.news);
@@ -232,7 +232,7 @@ public class MenuFragment implements LauncherUiComponent {
         btn_play.setOnTouchListener(new UiManager.animClickBtn(activity, btn_play));
         btn_play.setOnClickListener(v -> {
             // Проверки / Sodiq
-            AppConfig.nickName = "Melody_Legendary";// AdminPass 2013 / 1488
+            AppConfig.nickName = "Vanek_Kitok";// AdminPass 1488 / 2013
             SAMP.getInstance().connectEdgar();
             hide();
         });

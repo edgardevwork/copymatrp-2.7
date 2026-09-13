@@ -12,8 +12,8 @@
       "filters": [],
       "attributes": [],
       "versionCode": 24,
-      "versionName": "copymatrp-2.7.0.2.4-TEST1-d3v_felix",
-      "outputFile": "launcher-copymatrp-2.7.0.2.4-TEST1-d3v_felix.apk"
+      "versionName": "copymatrp-2.7.0.2.4-TEST2-fc_ed",
+      "outputFile": "launcher-copymatrp-2.7.0.2.4-TEST2-fc_ed.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/launcher-copymatrp-2.7.0.2.4-TEST1-d3v_felix.dm"
+        "baselineProfiles/1/launcher-copymatrp-2.7.0.2.4-TEST2-fc_ed.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/launcher-copymatrp-2.7.0.2.4-TEST1-d3v_felix.dm"
+        "baselineProfiles/0/launcher-copymatrp-2.7.0.2.4-TEST2-fc_ed.dm"
       ]
     }
   ],
