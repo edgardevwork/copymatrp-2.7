@@ -61,6 +61,10 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name="ru.edgar.nlremake.service.DownloadService"
+            android:exported="false" />
+
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />

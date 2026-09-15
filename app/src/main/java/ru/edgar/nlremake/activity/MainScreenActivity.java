@@ -1,12 +1,13 @@
 package ru.edgar.nlremake.activity;
 
-import android.Manifest;
+import android.animation.ArgbEvaluator;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,7 +51,6 @@ import ru.edgar.nlremake.ui.FullHeightVideoView;
 import ru.edgar.nlremake.utils.CacheChecker;
 import ru.edgar.nlremake.utils.FileUtils;
 import ru.edgar.matrp.R;
-import ru.edgar.nlremake.utils.VideoUtils;
 import ru.edgar.space.SAMP;
 import ru.edgar.space.UiManager;
 
@@ -91,6 +91,31 @@ public class MainScreenActivity extends AppCompatActivity {
         mainScreen = (FrameLayout) findViewById(R.id.mainscreen);
         mVideoView = (FullHeightVideoView) findViewById(R.id.videoView);
 
+        AnimationDrawable animationDrawable = new AnimationDrawable();
+        animationDrawable.setOneShot(false);
+        for (int i10 = 0; i10 < 120; i10++) {
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
+            gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);
+            gradientDrawable.setGradientRadius(getResources().getDimensionPixelSize(R.dimen._128sdp));
+            if (i10 < 40) {
+                float f10 = i10 * 0.025f;
+                gradientDrawable.setColors(new int[]{((Integer) new ArgbEvaluator().evaluate(f10, -1119283065, -1283248909)).intValue(), ((Integer) new ArgbEvaluator().evaluate(f10, -1119283065, -1119283065)).intValue()});
+            } else if (i10 < 80) {
+                float f11 = (i10 - 40) * 0.025f;
+                gradientDrawable.setColors(new int[]{((Integer) new ArgbEvaluator().evaluate(f11, -1283248909, -1119283065)).intValue(), ((Integer) new ArgbEvaluator().evaluate(f11, -1119283065, -1283248909)).intValue()});
+            } else {
+                float f12 = (i10 - 80) * 0.025f;
+                gradientDrawable.setColors(new int[]{((Integer) new ArgbEvaluator().evaluate(f12, -1119283065, -1119283065)).intValue(), ((Integer) new ArgbEvaluator().evaluate(f12, -1283248909, -1119283065)).intValue()});
+            }
+            gradientDrawable.setCornerRadius(getResources().getDimensionPixelSize(R.dimen._4sdp));
+            //gradientDrawable.setStroke(getResources().getDimensionPixelSize(R.dimen._1sdp), -8637479);
+            animationDrawable.addFrame(gradientDrawable, 16);
+        }
+
+        progress.setIndeterminateDrawable(animationDrawable);
+        progress.setIndeterminate(false);
+
         loading.setVisibility(View.VISIBLE);
         downloadBar.setVisibility(View.GONE);
 
@@ -122,6 +147,17 @@ public class MainScreenActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onDownloadStarted() {
+                runOnUiThread(() -> {
+                    if (downloadBar.getVisibility() == View.GONE) {
+                        loading.setVisibility(View.GONE);
+                        downloadBar.setVisibility(View.VISIBLE);
+                    }
+                    dw_status.setText("Загружено файлов");
+                });
+            }
+
+            @Override
             public void onComplete() {
                 runOnUiThread(() -> {
                     dw_status.setText(getResources().getString(R.string.launcher_donwload_info_5));
@@ -135,7 +171,7 @@ public class MainScreenActivity extends AppCompatActivity {
                     dialogManager.showErrorDialog("Произошла ошибка начните заново установку!", null, "Повторить", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(dialogManager.getIsChecked()) {
+                            if (dialogManager.getIsChecked()) {
                                 CrashReporter.sendBugReport(MainScreenActivity.getInstance(), AppConfig.mAuth.getUid(), "DownloadService - error()", error);
                             }
                             dialogManager.hideDialog();
@@ -332,13 +368,13 @@ public class MainScreenActivity extends AppCompatActivity {
     }
 
     public void startDownload(List<String> url, List<String> path, List<String> unZip, List<String> toUnZip) {
-        downloadService = new DownloadService();
+        downloadService = new DownloadService(this);
         downloadService.setCallback(downloadCallback);
         downloadService.startGameDownload(url, path, unZip, toUnZip);
     }
 
     public void startDownloadApk(String url, String path, String name) {
-        downloadService = new DownloadService();
+        downloadService = new DownloadService(this);
         downloadService.setCallback(downloadCallback);
         downloadService.startApkDownload(url, path, name);
     }

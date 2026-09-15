@@ -64,11 +64,11 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_14sdp"
         android:layout_marginBottom="@dimen/_4sdp"
-        app:layout_constraintBottom_toTopOf="@+id/iiii"
+        app:layout_constraintBottom_toTopOf="@+id/server_layout"
         app:layout_constraintStart_toStartOf="@+id/btn_back" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/iiii"
+        android:id="@+id/server_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -78,7 +78,7 @@
         android:layout_marginBottom="@dimen/_14sdp">
 
         <TextView
-            android:id="@+id/tv_server_num"
+            android:id="@+id/server_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -108,7 +108,7 @@
         android:layout_marginEnd="@dimen/_6sdp"
         android:background="@drawable/ic_dialog_nlremake"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/iiii"
+        app:layout_constraintBottom_toBottomOf="@+id/server_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/btn_back">
@@ -122,13 +122,13 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/btn_cr_male"
+                android:id="@+id/btn_male"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_25sdp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:background="@drawable/ic_dialog_nl_input_bg"
-                android:backgroundTint="#fff">
+                android:backgroundTint="#ffffffff">
 
                 <ImageView
                     android:id="@+id/imagemale"
@@ -152,7 +152,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/btn_cr_female"
+                android:id="@+id/btn_female"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_25sdp"
                 android:orientation="horizontal"
@@ -183,15 +183,14 @@
             </LinearLayout>
         </LinearLayout>
 
-        <View
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rec"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_70sdp"
             android:layout_marginTop="@dimen/_9sdp"
             android:layout_marginStart="@dimen/_15sdp"
-            android:background="@color/teal_200"
             tools:itemCount="10"
-            tools:listitem="@layout/chat_message"/>
+            tools:listitem="@layout/item_character"/>
 
         <LinearLayout
             android:layout_width="match_parent"
