@@ -133,7 +133,7 @@ public class LauncherLoader {
                 public void onResponse(Call<Api> call, Response<Api> response) {
                     if(response.isSuccessful()) {
                         if(response.body() != null) {
-                            if (launchMode == LaunchMode.WITH_GAME_LOADING && response.body().getLauncherVersion() != 76) {
+                            if (launchMode == LaunchMode.WITH_GAME_LOADING && response.body().getLauncherVersion() != 77) {
                                 dialogManager.showDialog("Доступна новая\nверсия клиента!", "Скачать обновление и продолжить играть", "Скачать обновление", "Отмена", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {

@@ -50,7 +50,7 @@ android {
         minSdk 26
         targetSdk 36
         versionCode 25
-        versionName "copymatrp-2.7.0.2.5"
+        versionName "copymatrp-2.7.0.2.5-TEST1-vanyavortex"
 
         multiDexEnabled true
         /*externalNativeBuild {

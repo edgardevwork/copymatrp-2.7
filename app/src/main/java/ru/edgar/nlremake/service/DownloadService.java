@@ -258,7 +258,12 @@ public class DownloadService extends Service {
                     protected void completed(BaseDownloadTask task) {
                         super.completed(task);
                         int idF = i - 1;
-                        String basePath = unnZip.get(idF);
+                        String basePath;
+                        if(isApk) {
+                            basePath = path;
+                        } else {
+                            basePath = unnZip.get(idF);
+                        }
                         Set<PosixFilePermission> filePermissions = new HashSet<>();
                         filePermissions.add(PosixFilePermission.OWNER_READ);
                         filePermissions.add(PosixFilePermission.OWNER_WRITE);

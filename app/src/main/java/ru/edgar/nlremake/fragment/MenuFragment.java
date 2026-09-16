@@ -232,7 +232,7 @@ public class MenuFragment implements LauncherUiComponent {
         btn_play.setOnTouchListener(new UiManager.animClickBtn(activity, btn_play));
         btn_play.setOnClickListener(v -> {
             // Проверки / Sodiq
-            AppConfig.nickName = "Vanek_Kitok";// AdminPass 1488 / 2013
+            AppConfig.nickName = "Vanya_Vortex";// AdminPass 1234 / 1488 / Vanek_Kitok - Мой
             SAMP.getInstance().connectEdgar();
             hide();
         });
