@@ -63,7 +63,8 @@
 
         <service
             android:name="ru.edgar.nlremake.service.DownloadService"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

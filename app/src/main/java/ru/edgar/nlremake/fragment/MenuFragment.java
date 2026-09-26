@@ -224,8 +224,9 @@ public class MenuFragment implements LauncherUiComponent {
         frame_server.setOnClickListener(v -> {
             // Переход в выбор сервера
             hide();
-            DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
-            dialogManager.showCreateChesterDialog();
+            /*DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+            dialogManager.showCreateChesterDialog();*/
+            UiManager.getUiManager().getTyped(UiManager.SERVERS).show();
         });
 
         btn_play = viewGroup.findViewById(R.id.btn_play);

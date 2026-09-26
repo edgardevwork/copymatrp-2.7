@@ -25,6 +25,7 @@ import ru.edgar.nlremake.fragment.LoadingFragment;
 import ru.edgar.nlremake.fragment.MenuFragment;
 import ru.edgar.nlremake.fragment.NotyManager;
 import ru.edgar.nlremake.fragment.ProfileFragment;
+import ru.edgar.nlremake.fragment.ServersFragment;
 import ru.edgar.nlremake.fragment.dialogs.CreateChasterFragment;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Main;
@@ -83,7 +84,7 @@ public class UiManager {
         launcherUi[MENU] = new MenuFragment();
         launcherUi[PROFILE] = new ProfileFragment();
         //launcherUi[2] = new NewsFragment();
-        //launcherUi[3] = new ServersFragment();
+        launcherUi[SERVERS] = new ServersFragment();
         launcherUi[DIALOG] = new DialogManager();
         launcherUi[NOTY] = new NotyManager();
         launcherUi[LOADING] = new LoadingFragment();

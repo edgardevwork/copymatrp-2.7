@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_marginBottom="@dimen/_10sdp"
-    android:layout_marginRight="@dimen/_22sdp"
+    android:layout_marginEnd="@dimen/_22sdp"
     app:layout_constraintStart_toStartOf="@+id/linearLayout4"
     app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 

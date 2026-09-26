@@ -3,61 +3,87 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="@dimen/_52sdp"
-    android:layout_marginEnd="14dp">
-
-    <ImageView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/server_bg"
-        tools:ignore="MissingConstraints" />
+    android:layout_width="@dimen/_200sdp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/_12sdp"
+    android:layout_marginBottom="@dimen/_8sdp"
+    android:background="@drawable/server_bg">
 
     <View
         android:id="@+id/line"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/_2sdp"
         android:background="#ffff00"
-        app:layout_constraintDimensionRatio="451:7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView7"
+    <LinearLayout
+        android:id="@+id/linearLayout5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/geologica_semibold"
-        android:text="SPACE MOBILE #1"
-        android:textColor="#c1c1c9"
-        android:textSize="@dimen/_12sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.180"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.68" />
+        app:layout_constraintTop_toBottomOf="@+id/line">
 
-    <TextView
-        android:id="@+id/textView10"
+        <ImageView
+            android:layout_width="@dimen/_6sdp"
+            android:layout_height="@dimen/_6sdp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:src="@drawable/ic_star" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/geologica_semibold"
+            android:layout_marginBottom="@dimen/_1sdp"
+            android:text="Рекомендуем"
+            android:letterSpacing="0.08"
+            android:textColor="#56B877"
+            android:textSize="@dimen/_6sdp" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat_bold"
-        android:text="Статус"
-        android:textColor="#17CA17"
-        android:textSize="7dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView7"
-        app:layout_constraintEnd_toEndOf="@+id/imageView4"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView7"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:layout_marginBottom="@dimen/_6sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout5"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:layout_marginStart="@dimen/_1sdp"
+            android:includeFontPadding="false"
+            android:alpha="0.4"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:fontFamily="@font/geologica_semibold"
+            android:text="#"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/_9sdp" />
+
+        <TextView
+            android:id="@+id/server_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/geologica_semibold"
+            android:includeFontPadding="false"
+            android:text="32"
+            android:textColor="#c1c1c9"
+            android:textSize="@dimen/_24sdp"
+            android:visibility="visible" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

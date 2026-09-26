@@ -32,6 +32,7 @@ public class ProfileFragment implements LauncherUiComponent {
     private ViewGroup viewGroup;
     private LinearLayout btn_settings, btn_back, btn_payment, btn_promo;
     private RecyclerView recyclerView;
+    private Activity context;
 
     @Override
     public void init(Activity activity) {
@@ -45,7 +46,7 @@ public class ProfileFragment implements LauncherUiComponent {
         layoutParams.height = -1;
         viewGroup.setLayoutParams(layoutParams);
 
-        DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+        context = activity;
 
         btn_back = viewGroup.findViewById(R.id.btn_back);
         btn_settings = viewGroup.findViewById(R.id.btn_settings);
@@ -61,11 +62,13 @@ public class ProfileFragment implements LauncherUiComponent {
 
         btn_settings.setOnTouchListener(new UiManager.animClickBtn(activity, btn_settings));
         btn_settings.setOnClickListener(v -> {
+            DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
             dialogManager.showAccountDialog();
         });
 
         btn_payment.setOnTouchListener(new UiManager.animClickBtn(activity, btn_payment));
         btn_payment.setOnClickListener(v -> {
+            DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
             dialogManager.showDialog("Упс! Данная функиця\nвременно не доступна!", "Но это не повод переживать!\nВозможно уже в ближайщее время ее сделают рабочей :)", "Хорошо", null, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -76,6 +79,7 @@ public class ProfileFragment implements LauncherUiComponent {
 
         btn_promo.setOnTouchListener(new UiManager.animClickBtn(activity, btn_promo));
         btn_promo.setOnClickListener(v -> {
+            DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
             dialogManager.showPromoDialog();
         });
 
@@ -95,7 +99,7 @@ public class ProfileFragment implements LauncherUiComponent {
 
     @Override
     public void show() {
-        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(SAMP.getInstance());
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(context);
         layoutManager.setFlexDirection(FlexDirection.ROW);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
         recyclerView.setLayoutManager(layoutManager);

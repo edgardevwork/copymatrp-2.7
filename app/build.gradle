@@ -50,7 +50,7 @@ android {
         minSdk 26
         targetSdk 36
         versionCode 26
-        versionName "copymatrp-2.7.0.2.6"
+        versionName "copymatrp-2.7.0.2.61"
 
         multiDexEnabled true
         /*externalNativeBuild {
