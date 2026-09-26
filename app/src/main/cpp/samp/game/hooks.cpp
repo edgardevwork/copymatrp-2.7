@@ -590,9 +590,123 @@ void CHud__Draw_hook()
 
     CHud__Draw();
 }
+// EDGAR ANIM
+// === ОПРЕДЕЛЕНИЯ (без static — иначе линкер не найдёт) ===
+CVector CAM_NORMAL_POS (1724.4135f, -2347.7783f, 11.3886f);
+CVector CAM_NORMAL_LOOK(1729.0125f, -2359.1579f, 11.1705f);
+
+CVector CAM_ZOOM_POS   (1724.2695f, -2349.0033f, 11.3886f);
+CVector CAM_ZOOM_LOOK  (1727.1745f, -2360.3829f, 11.1614f);
+
+bool     g_CamAnimActive = false;
+bool     g_CamAnimToZoom = true;
+uint32_t g_CamAnimStart  = 0;
+uint32_t g_CamAnimDur    = 1000;
+
+// ---------- helpers ----------
+
+static inline float SmoothStep(float t)
+{
+    // ease-in-out: 3t^2 - 2t^3
+    return t * t * (3.0f - 2.0f * t);
+}
+
+void StartCamAnim(bool toZoom, uint32_t durationMs)
+{
+    g_CamAnimToZoom = toZoom;
+    g_CamAnimDur    = durationMs;
+    g_CamAnimStart  = CTimer::GetTimeInMS();
+    g_CamAnimActive = true;
+}
+
+void StopCamAnim()
+{
+    g_CamAnimActive = false;
+}
+
+// ---------- покадровое обновление ----------
+
+static void UpdateCamAnim()
+{
+    if (!g_CamAnimActive) return;
+
+    const uint32_t now     = CTimer::GetTimeInMS();
+    const uint32_t elapsed = now - g_CamAnimStart;
+
+    float t = (g_CamAnimDur > 0)
+              ? static_cast<float>(elapsed) / static_cast<float>(g_CamAnimDur)
+              : 1.0f;
+
+    if (t > 1.0f) t = 1.0f;
+
+    const float s = SmoothStep(t);
+
+    const CVector& fromPos  = g_CamAnimToZoom ? CAM_NORMAL_POS  : CAM_ZOOM_POS;
+    const CVector& toPos    = g_CamAnimToZoom ? CAM_ZOOM_POS    : CAM_NORMAL_POS;
+    const CVector& fromLook = g_CamAnimToZoom ? CAM_NORMAL_LOOK : CAM_ZOOM_LOOK;
+    const CVector& toLook   = g_CamAnimToZoom ? CAM_ZOOM_LOOK   : CAM_NORMAL_LOOK;
+
+    // В твоём SDK уже есть глобальный Lerp(CVector, CVector, float)
+    const CVector pos  = Lerp(fromPos,  toPos,  s);
+    const CVector look = Lerp(fromLook, toLook, s);
+
+    CCamera::SetPosition(pos.x, pos.y, pos.z, 0.0f, 0.0f, 0.0f);
+    CCamera::LookAtPoint(look.x, look.y, look.z, 2);
+
+    if (t >= 1.0f) {
+        // финальная жёсткая фиксация — без неё возможен "дожим" за 1 кадр
+        CCamera::SetPosition(toPos.x, toPos.y, toPos.z, 0.0f, 0.0f, 0.0f);
+        CCamera::LookAtPoint(toLook.x, toLook.y, toLook.z, 2);
+        g_CamAnimActive = false;
+    }
+}
+
+extern "C" {
+    JNIEXPORT void JNICALL Java_ru_edgar_space_SAMP_zoomToPerson(JNIEnv *pEnv, jobject thiz, jboolean isZoom)
+    {
+        int interpolationTime = 500;
+
+        if (isZoom) {
+            /*CCamera::InterpolateCameraPos(&CAM_NORMAL_POS, &CAM_ZOOM_POS, interpolationTime, mode);
+            CCamera::InterpolateCameraLookAt(&CAM_NORMAL_LOOK, &CAM_ZOOM_LOOK, interpolationTime, mode);*/
+            StartCamAnim(isZoom/* == JNI_TRUE*/, interpolationTime);
+        } else {
+            CCamera::SetPosition(CAM_NORMAL_POS.x, CAM_NORMAL_POS.y, CAM_NORMAL_POS.z, 0.0f, 0.0f, 0.0f);
+            CCamera::LookAtPoint(CAM_NORMAL_LOOK.x, CAM_NORMAL_LOOK.y, CAM_NORMAL_LOOK.z, 2);
+        }
+    }
+};
+
 bool edgarkarta = false;
 void Render2dStuff()
 {
+    // Получаем инстанс камеры по адресу из g_libGTASA
+    /*CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
+
+    // Берем активную камеру (индекс m_nActiveCam)
+    CCam& activeCam = TheCamera.m_aCams[TheCamera.m_nActiveCam];
+
+    // Извлекаем координаты
+    float posX = activeCam.Source.x;
+    float posY = activeCam.Source.y;
+    float posZ = activeCam.Source.z;
+
+    float lookAtX = activeCam.Front.x; // Front — это вектор направления от Source
+    float lookAtY = activeCam.Front.y;
+    float lookAtZ = activeCam.Front.z;
+
+    // ВАЖНО: Если тебе нужны абсолютные мировые координаты точки LookAtPoint,
+    // их нужно сложить: float worldLookX = activeCam.Source.x + activeCam.Front.x;
+
+    // Формируем строку для лога
+    char buffer[256];
+    sprintf(buffer, "[CAM] Pos: %.4f, %.4f, %.4f | LookDir: %.4f, %.4f, %.4f",
+            posX, posY, posZ, lookAtX, lookAtY, lookAtZ);
+
+    // Записываем в ваш FLog
+    FLog("%s", buffer);*/
+
+    UpdateCamAnim();
 
     if(edgarmap) {
         //pUI->ShowMap(xmap, ymap, zmap);

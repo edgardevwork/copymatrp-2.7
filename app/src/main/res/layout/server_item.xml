@@ -8,6 +8,7 @@
     android:layout_marginEnd="@dimen/_12sdp"
     android:layout_marginBottom="@dimen/_8sdp"
     android:background="@drawable/server_bg">
+    <!-- android:layout_marginEnd="@dimen/_14sdp" у мт так -->
 
     <View
         android:id="@+id/line"
@@ -19,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayout5"
+        android:id="@+id/server_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_14sdp"
@@ -29,6 +30,7 @@
         app:layout_constraintTop_toBottomOf="@+id/line">
 
         <ImageView
+            android:id="@+id/server_status_image"
             android:layout_width="@dimen/_6sdp"
             android:layout_height="@dimen/_6sdp"
             android:layout_gravity="center"
@@ -36,7 +38,7 @@
             android:src="@drawable/ic_star" />
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/server_status_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/geologica_semibold"
@@ -55,8 +57,8 @@
         android:layout_marginTop="@dimen/_1sdp"
         android:layout_marginBottom="@dimen/_6sdp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout5"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+        app:layout_constraintStart_toStartOf="@+id/server_status"
+        app:layout_constraintTop_toBottomOf="@+id/server_status">
 
         <TextView
             android:layout_width="wrap_content"

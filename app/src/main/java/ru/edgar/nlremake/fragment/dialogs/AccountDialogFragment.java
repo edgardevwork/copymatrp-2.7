@@ -79,6 +79,8 @@ public class AccountDialogFragment {
             // 2. Сбрасываем авторизацию
             AppConfig.mAuth.signOut();
             AppConfig.isAuth = false;
+            AppConfig.nickName = "";
+            AppConfig.serverId = -1;
             SAMP.getInstance().startGameFromButton();// FAKE LAUNCHER - без загрузки.
         });
 

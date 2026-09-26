@@ -328,6 +328,13 @@ std::string jstringToString(JNIEnv* env, jstring jstr) {
     env->ReleaseStringUTFChars(jstr, chars);
     return str;
 }
+// Глобальные константы (живут вечно, никаких new!)
+/*static CVector CAM_NORMAL_POS(1724.4135f, -2347.7783f, 11.3886f);
+static CVector CAM_NORMAL_LOOK(1729.0125f, -2359.1579f, 11.1705f);
+
+static CVector CAM_ZOOM_POS(1724.2695f, -2349.0033f, 11.3886f);
+static CVector CAM_ZOOM_LOOK(1727.1745f, -2360.3829f, 11.1614f);*/
+
 
 extern "C" {
 	JNIEXPORT void JNICALL Java_ru_edgar_space_SAMP_initializeSAMP(JNIEnv *pEnv, jobject thiz)
@@ -348,6 +355,15 @@ extern "C" {
         pEnv->ReleaseStringUTFChars(host, host_char);
         pEnv->ReleaseStringUTFChars(nickName, edgar_char);
     }
+	/*
+	cameraPosX:      -0.144
+	cameraPosY:      -1.225
+	cameraPosZ:       0.0
+	cameraLookX:     -1.838
+	cameraLookY:     -1.225
+	cameraLookZ:     -0.0091
+	cameraFOV:        0.0
+	*/
 	JNIEXPORT void JNICALL Java_ru_edgar_space_SAMP_onInputEnd(JNIEnv *pEnv, jobject thiz, jbyteArray str)
 	{
 		if(pUI)

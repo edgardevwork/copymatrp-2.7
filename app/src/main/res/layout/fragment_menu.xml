@@ -60,7 +60,7 @@
                     android:src="@drawable/ic_nopremium" />
 
                 <TextView
-                    android:id="@+id/nick_name_servers"
+                    android:id="@+id/nick_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|center"

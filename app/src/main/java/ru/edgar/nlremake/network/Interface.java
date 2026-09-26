@@ -26,10 +26,11 @@ public interface Interface {
     Call<Main> getMain(@Url String url);
 
     @GET
-    Call<List<Server>> getServers(@Url String url);
-
-    @GET
     Call<List<Stories>> getStories(@Url String url);
+
+    @POST
+    @FormUrlEncoded
+    Call<List<Server>> getServers(@Url String url, @Field("uid") String uid);
 
     @POST
     @FormUrlEncoded

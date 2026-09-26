@@ -14,16 +14,20 @@ import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.invoke.ConstantCallSite;
 import java.util.ArrayList;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.adapter.GenderAdapter;
 import ru.edgar.nlremake.fragment.MenuFragment;
 import ru.edgar.nlremake.model.Gender;
+import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.network.AppConfig;
+import ru.edgar.space.SAMP;
 import ru.edgar.space.UiManager;
 
 public class CreateChasterFragment {
@@ -31,6 +35,8 @@ public class CreateChasterFragment {
     private ViewGroup viewGroup;
     private Activity context;
     private LinearLayout btn_back, btn_male, btn_female;
+    private ConstraintLayout serverLayout;
+    private TextView serverNumber;
 
     ArrayList<Gender> mGender = new ArrayList<>();
 
@@ -57,6 +63,8 @@ public class CreateChasterFragment {
         layoutParams.height = -1;
         viewGroup.setLayoutParams(layoutParams);
 
+        serverLayout = viewGroup.findViewById(R.id.server_layout);
+        serverNumber = viewGroup.findViewById(R.id.server_number);
         recycler = (RecyclerView) viewGroup.findViewById(R.id.rec);
 
         recycler.setHasFixedSize(true);
@@ -67,8 +75,6 @@ public class CreateChasterFragment {
         btn_back.setOnTouchListener(new UiManager.animClickBtn(context, btn_back));
         btn_back.setOnClickListener(v -> {
             hideCreateChasterDialog();
-            MenuFragment menuFragment = UiManager.getUiManager().getTyped(UiManager.MENU);
-            menuFragment.show();
         });
 
         ImageView imagemale = viewGroup.findViewById(R.id.imagemale);
@@ -128,7 +134,10 @@ public class CreateChasterFragment {
     }
 
     public void showCreateChasterDialog() {
+        SAMP.getInstance().zoomToPerson(true);
         UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
+        serverLayout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#" + AppConfig.serverSelect.getColor())));
+        serverNumber.setText(AppConfig.serverSelect.getName());
         mGender.clear();
         mGender.add(new Gender("98"));
         mGender.add(new Gender("97"));
@@ -140,6 +149,8 @@ public class CreateChasterFragment {
     }
 
     public void hideCreateChasterDialog() {
+        SAMP.getInstance().zoomToPerson(false);
         UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
+        UiManager.getUiManager().getTyped(UiManager.SERVERS).show();
     }
 }

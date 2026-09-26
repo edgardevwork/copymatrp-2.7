@@ -6,6 +6,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -39,18 +41,29 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.vk.id.VKID;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
+import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.nlremake.loader.LauncherLoader;
+import ru.edgar.nlremake.network.Interface;
 import ru.edgar.nlremake.other.Utils;
 import ru.edgar.nlremake.service.DownloadService;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
 import ru.edgar.nlremake.utils.CacheChecker;
 import ru.edgar.nlremake.utils.FileUtils;
 import ru.edgar.matrp.R;
+import ru.edgar.space.EdgarConectV2;
 import ru.edgar.space.SAMP;
 import ru.edgar.space.UiManager;
 
@@ -196,9 +209,86 @@ public class MainScreenActivity extends AppCompatActivity {
         launcherLoader = new LauncherLoader(this, dialogManager);
         launcherLoader.setCallback(new LauncherLoader.LauncherLoadCallback() {
             @Override
-            public void onLoaded(LauncherLoader.LaunchMode mode) {
+            public void onLoaded(LauncherLoader.LaunchMode mode) { // ДО АКТИВАЦИИ ИГРЫ
                 if (mode == LauncherLoader.LaunchMode.WITH_GAME_LOADING) {
-                    onRequestPermissions();
+                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.getValue() != null) {
+                                AppConfig.serverId = snapshot.child("serverId").getValue(Integer.class);
+                            }
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("https://google.com/") // Рекомендуется вынести базовый URL в AppConfig
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+
+                            Interface sInterface = retrofit.create(Interface.class);
+
+                            sInterface.getServers(AppConfig.serversUrl, AppConfig.mAuth.getUid()).enqueue(new Callback<List<Server>>() {
+                                @Override
+                                public void onResponse(Call<List<Server>> call, Response<List<Server>> response) {
+                                    if (response.body() == null) return;
+
+                                    for (Server server : response.body()) {
+                                        if (server.getId() == AppConfig.serverId) {
+                                            HashMap<String, Object> Info = new HashMap<>();
+                                            Info.put("serverId", server.getId());
+                                            Info.put("serverName", server.getName());
+                                            Info.put("serverColor", server.getColor());
+                                            Info.put("personName", server.getPersonName());
+                                            FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+
+                                            EdgarConectV2.host = server.getIp();
+                                            EdgarConectV2.port = server.getPort();
+                                            AppConfig.nickName = server.getPersonName();
+                                            break;
+                                        }
+                                    }
+                                    onRequestPermissions(); // ПРОДОЛЖЕНИЕ
+                                }
+
+                                @Override
+                                public void onFailure(Call<List<Server>> call, Throwable t) {
+                                    DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+                                    dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(dialogManager.getIsChecked()) {
+                                                CrashReporter.sendBugReport(
+                                                        MainScreenActivity.getInstance(),
+                                                        AppConfig.mAuth.getUid(),
+                                                        "[MainScreenActivity] getServers(..)...",
+                                                        t.toString()
+                                                );
+                                            }
+                                            dialogManager.hideDialog();
+                                            launcherLoader.load(LauncherLoader.LaunchMode.WITH_GAME_LOADING);
+                                        }
+                                    }, true, "Сообщить об ошибке");
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+                            dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(dialogManager.getIsChecked()) {
+                                        CrashReporter.sendBugReport(
+                                                MainScreenActivity.getInstance(),
+                                                AppConfig.mAuth.getUid(),
+                                                "[MainScreenActivity] setupLauncherLoader()",
+                                                error.getMessage().toString()
+                                        );
+                                    }
+                                    dialogManager.hideDialog();
+                                    launcherLoader.load(LauncherLoader.LaunchMode.WITH_GAME_LOADING);
+                                }
+                            }, true, "Сообщить об ошибке");
+                        }
+                    });
                 }
             }
 
@@ -310,24 +400,6 @@ public class MainScreenActivity extends AppCompatActivity {
 
         CacheChecker cacheChecker = new CacheChecker(this, AppConfig.archives, AppConfig.deleted);
         CacheChecker.CacheCheckResult result = cacheChecker.checkCache();
-
-        FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).child("nick").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.e("edgar", "pon" + snapshot.getValue(String.class));
-                if (snapshot.getValue(String.class) == null) {
-                    HashMap<String, String> serversInfo = new HashMap<>();
-                    serversInfo.put("nick", "ERYHB_hjdcb");// TODO: Null исправить ник! когда буду делать регу
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-servers").child("Server_0").child(FirebaseAuth.getInstance().getUid()).setValue(serversInfo);
-                } else {
-                    AppConfig.nickName = snapshot.getValue(String.class);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
 
         if (result.needsDownload()) {
             long finalSi = result.totalSize;

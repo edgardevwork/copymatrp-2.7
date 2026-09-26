@@ -16,7 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.joom.paranoid.Obfuscate;
 import com.nvidia.devtech.HeightProvider;
 import com.nvidia.devtech.InputManager;
@@ -26,13 +32,26 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.xml.parsers.SAXParser;
 
 import kotlin.jvm.internal.Intrinsics;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.fragment.MenuFragment;
+import ru.edgar.nlremake.fragment.ServersFragment;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.loader.LauncherLoader;
+import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.network.AppConfig;
+import ru.edgar.nlremake.network.CrashReporter;
+import ru.edgar.nlremake.network.Interface;
 import ru.edgar.nlremake.other.LauncherUiComponent;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
 import ru.edgar.nlremake.utils.VideoUtils;
@@ -76,6 +95,8 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     public native void SetRadarEnabled(boolean tf);
 
     // edgar games
+
+    public native void zoomToPerson(boolean isZoom);
 
     public native void sendJsonData(int guiId, JSONObject jsonObject);
 
@@ -461,28 +482,143 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
     public void updateSplash(int percent, int pon) { runOnUiThread(() -> { /*InterfacesManager.getInterfacesManager().getChooseServerManager().Update(percent, pon); */} ); }
 
-    public void hideSplash() { runOnUiThread(() -> {
-        MenuFragment menuFragment = UiManager.getUiManager().getTyped(UiManager.MENU);
-        menuFragment.show();
-        mVideoView.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-                VideoUtils.releaseVideoPlayer(mVideoView);
-                mVideoView.setVisibility(View.GONE);
+    public void hideSplash(boolean isCheck) { runOnUiThread(() -> {
+        if (isCheck) {
+            AppConfig.serverList.clear();
+            FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    System.out.println(snapshot.getValue());
+                    if (snapshot.getValue() != null) {
+                        AppConfig.serverId = snapshot.child("serverId").getValue(Integer.class);
+                    }
+                    System.out.println(AppConfig.nickName);
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("https://google.com/") // Рекомендуется вынести базовый URL в AppConfig
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    Interface sInterface = retrofit.create(Interface.class);
+
+                    sInterface.getServers(AppConfig.serversUrl, AppConfig.mAuth.getUid()).enqueue(new Callback<List<Server>>() {
+                        @Override
+                        public void onResponse(Call<List<Server>> call, Response<List<Server>> response) {
+                            if (response.body() == null) return;
+
+                            for (Server server : response.body()) {
+                                if (server.getId() == AppConfig.serverId) {
+                                    HashMap<String, Object> Info = new HashMap<>();
+                                    Info.put("serverId", server.getId());
+                                    Info.put("serverName", server.getName());
+                                    Info.put("serverColor", server.getColor());
+                                    Info.put("personName", server.getPersonName());
+                                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+
+                                    EdgarConectV2.host = server.getIp();
+                                    EdgarConectV2.port = server.getPort();
+                                    AppConfig.nickName = server.getPersonName();
+                                    break;
+                                }
+                            }
+
+                            ServersFragment serversFragment = UiManager.getUiManager().getTyped(UiManager.SERVERS);
+                            if (AppConfig.nickName.isEmpty()) {
+                                serversFragment.show();
+                            } else {
+                                MenuFragment menuFragment = UiManager.getUiManager().getTyped(UiManager.MENU);
+                                menuFragment.show();
+                                serversFragment.updateServers();
+                            }
+                            mVideoView.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    VideoUtils.releaseVideoPlayer(mVideoView);
+                                    mVideoView.setVisibility(View.GONE);
+                                }
+                            }).start();
+                            progressBar.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            }).start();
+                            logoBig.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    logoBig.setVisibility(View.GONE);
+                                }
+                            }).start();
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<Server>> call, Throwable t) {
+                            DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+                            dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(dialogManager.getIsChecked()) {
+                                        CrashReporter.sendBugReport(
+                                                SAMP.getInstance(),
+                                                AppConfig.mAuth.getUid(),
+                                                "[SAMP] getServers(..)...",
+                                                t.toString()
+                                        );
+                                    }
+                                    dialogManager.hideDialog();
+                                }
+                            }, true, "Сообщить об ошибке");
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
+                    dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(dialogManager.getIsChecked()) {
+                                CrashReporter.sendBugReport(
+                                        SAMP.getInstance(),
+                                        AppConfig.mAuth.getUid(),
+                                        "[SAMP] hideSplash()",
+                                        error.getMessage().toString()
+                                );
+                            }
+                            dialogManager.hideDialog();
+                        }
+                    }, true, "Сообщить об ошибке");
+                }
+            });
+        } else {
+            ServersFragment serversFragment = UiManager.getUiManager().getTyped(UiManager.SERVERS);
+            if (AppConfig.nickName.isEmpty()) {
+                serversFragment.show();
+            } else {
+                MenuFragment menuFragment = UiManager.getUiManager().getTyped(UiManager.MENU);
+                menuFragment.show();
+                serversFragment.updateServers();
             }
-        }).start();
-        progressBar.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.GONE);
-            }
-        }).start();
-        logoBig.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-                logoBig.setVisibility(View.GONE);
-            }
-        }).start();
+            mVideoView.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    VideoUtils.releaseVideoPlayer(mVideoView);
+                    mVideoView.setVisibility(View.GONE);
+                }
+            }).start();
+            progressBar.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }).start();
+            logoBig.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    logoBig.setVisibility(View.GONE);
+                }
+            }).start();
+        }
     });
     }
     //BY EDGAR 3.0
@@ -551,7 +687,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
                 public void onLoaded(LauncherLoader.LaunchMode mode) {
                     runOnUiThread(() -> {
                         dialogManager.hideAuthDialog();
-                        hideSplash();
+                        hideSplash(true);
                         //launcherLoader.destroy();
                     });
                 }

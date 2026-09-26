@@ -274,11 +274,24 @@ public class AuthEmailFragment {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
+                                        FirebaseUser currentUser = AppConfig.mAuth.getCurrentUser();
+                                        if(currentUser != null) {
+                                            AppConfig.isAuth = true;
+                                        } else {
+                                            AppConfig.isAuth = false;
+                                        }
+
+                                        HashMap<String, Object> Info = new HashMap<>();
+                                        Info.put("email", email_layout_email_input.getText().toString().trim());
+                                        Info.put("way", 1);
+                                        FirebaseDatabase.getInstance().getReference().child("Users").child("User-info").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+                                        // EDGAR 3.0 NLRemake version от 27.09.2026
+
                                         hideAuthEmailDialog();
                                         if(!AppConfig.isStartGame) {
                                             MainScreenActivity.getInstance().onRequestPermissions();
                                         } else {
-                                            SAMP.getInstance().hideSplash();
+                                            SAMP.getInstance().hideSplash(true);
                                         }
                                     } else {
                                         email_pass_error_text.setText("Введен неправильный пароль");
@@ -415,7 +428,7 @@ public class AuthEmailFragment {
                                         if(!AppConfig.isStartGame) {
                                             MainScreenActivity.getInstance().onRequestPermissions();
                                         } else {
-                                            SAMP.getInstance().hideSplash();
+                                            SAMP.getInstance().hideSplash(true);
                                         }
                                     } else {
                                         dialogManager.hideAuthEmailDialog();

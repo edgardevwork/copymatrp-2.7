@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
@@ -21,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +31,11 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -49,8 +57,8 @@ public class MenuFragment implements LauncherUiComponent {
     private FrameLayout nick_name_layout, news, btn_vk, btn_telegram, btn_settings;
     private FrameLayout btn_support, btn_balance, btn_donate, frame_server, btn_play;
     private LinearLayout btn_shop, gift_window;
-    private TextView news_date, news_date_two;
-    private ImageView news_image, news_image_two;
+    private TextView news_date, news_date_two, serverNumber, nick_name;
+    private ImageView news_image, news_image_two, serverBg;
     private boolean isFirstImageVisible = true;
     private int currentStoryIndex = 0;
     View[] bars;
@@ -73,6 +81,11 @@ public class MenuFragment implements LauncherUiComponent {
         layoutParams.height = -1;
 
         storiesList = AppConfig.storyList;
+
+        nick_name = viewGroup.findViewById(R.id.nick_name);
+
+        serverNumber = viewGroup.findViewById(R.id.tv_server_num);
+        serverBg = viewGroup.findViewById(R.id.imageView28);
 
         news_date = viewGroup.findViewById(R.id.news_date);
         news_date_two = viewGroup.findViewById(R.id.news_date_two);
@@ -305,6 +318,35 @@ public class MenuFragment implements LauncherUiComponent {
             handler.post(carouselStoryRunnable);
             isCarouselRunning = true;
         }
+        nick_name.setText(AppConfig.nickName);
+        FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    serverBg.setVisibility(View.VISIBLE);
+                    serverNumber.setVisibility(View.VISIBLE);
+                    String sName = snapshot.child("serverName").getValue(String.class);
+                    serverBg.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#" + snapshot.child("serverColor").getValue(String.class))));
+                    if (sName.contains("#")) {
+                        String result = sName.substring(sName.indexOf("#")).trim();
+                        serverNumber.setText(result);
+                    } else {
+                        serverNumber.setText(sName);
+                    }
+                    nick_name.setText(snapshot.child("personName").getValue(String.class));
+                } else {
+                    serverBg.setVisibility(View.GONE);
+                    serverNumber.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                serverBg.setVisibility(View.GONE);
+                serverNumber.setVisibility(View.GONE);
+
+            }
+        });
 
         UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
     }

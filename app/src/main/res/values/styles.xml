@@ -12,7 +12,7 @@
     <style name="AppTheme.FastStart" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowDisablePreview">true</item>
-        <item name="android:windowBackground">#000</item>
+        <item name="android:windowBackground">#FF000000</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
@@ -21,7 +21,7 @@
     </style>
 
     <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">#000</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
         <item name="colorPrimaryDark">#ff161D20</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">false</item>

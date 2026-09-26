@@ -210,7 +210,7 @@ public class AuthFragment {
                                                         if(!AppConfig.isStartGame) {
                                                             MainScreenActivity.getInstance().onRequestPermissions();/// загрузка игры после входа
                                                         } else {
-                                                            SAMP.getInstance().hideSplash();
+                                                            SAMP.getInstance().hideSplash(true);
                                                         }
                                                     } else {
                                                         //ошибка
@@ -254,7 +254,7 @@ public class AuthFragment {
                                                 if(!AppConfig.isStartGame) {
                                                     MainScreenActivity.getInstance().onRequestPermissions();
                                                 } else {
-                                                    SAMP.getInstance().hideSplash();
+                                                    SAMP.getInstance().hideSplash(true);
                                                 }
                                             } else {
                                                 dialogManager.hideAuthDialog();

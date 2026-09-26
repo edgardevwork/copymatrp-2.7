@@ -178,141 +178,45 @@ public class LauncherLoader {
                                     @Override
                                     public void onResponse(Call<Main> call, Response<Main> response) {
                                         String storiesLink = response.body().getStories();
+                                        AppConfig.serversUrl = response.body().getServers();
+                                        AppConfig.characterUrl = response.body().getCharacter();
                                         AppConfig.verifyAuthUrl = response.body().getVerifyAuth();
                                         AppConfig.resetPassword = response.body().getResetPassword();
-                                        AppConfig.characterUrl = response.body().getCharacter();
                                         AppConfig.accountDetailsUrl = response.body().getAccountDetails();
                                         AppConfig.isAccUrl = response.body().getIsAcc();
                                         AppConfig.skinsCDNUrl = response.body().getSkinsCDN();
                                         AppConfig.crashReportUrl = response.body().getCrashReport();
                                         AppConfig.deleteAcc = response.body().getDeleteAcc();
 
-                                        sInterface.getServers(response.body().getServers()).enqueue(new Callback<List<Server>>() {
+                                        sInterface.getStories(storiesLink).enqueue(new Callback<List<Stories>>() {
                                             @Override
-                                            public void onResponse(Call<List<Server>> call, Response<List<Server>> response) {
-                                                List<Server> servers = response.body();
-                                                for (Server server : servers) {
-                                                    AppConfig.serverList.add(new Server(
-                                                            server.getId(),
-                                                            server.getName(),
-                                                            server.getColor(),
-                                                            server.getIp(),
-                                                            server.getPort(),
-                                                            server.isRecommended(),
-                                                            server.isTest(),
-                                                            server.isEnterLock(),
-                                                            server.getPersonId(),
-                                                            server.getPersonName()
-                                                    ));
+                                            public void onResponse(Call<List<Stories>> call, Response<List<Stories>> response) {
+                                                List<Stories> Stories = response.body();
+                                                for (Stories story : Stories) {
+                                                    AppConfig.storyList.add(new Stories(story.getImageUrl(), story.getMiniDate()));
                                                 }
 
-                                                ArrayList<Server> serversItem = AppConfig.serverList;
-                                                ArrayList<Server> serversrec = new ArrayList<>();
-                                                ArrayList<Server> serversnew = new ArrayList<>();
-                                                ArrayList<Server> serversbce = new ArrayList<>();
-                                                ArrayList<Server> serverss = new ArrayList<>();
-
-                                                boolean s = false;
-                                                boolean n = false;
-                                                int i;
-
-                                                /*for (i = 0; i < serversItem.size(); i++) {
-                                                    Server serversss = serversItem.get(i);
-                                                    if (!serversss.isRecommended()) {
-                                                        serversbce.add(serversss);
+                                                if(AppConfig.isAuth) {
+                                                    if(callback != null) {
+                                                        callback.onLoaded(launchMode);
                                                     }
-                                                }*/
-
-                                                /*for (i = 0; i < serversItem.size(); i++) {
-                                                    Server serversss = serversItem.get(i);
-                                                    if (!serversss.getNewStatus() && serversss.getRecommend()) {
-                                                        if (!s) {
-                                                            serversrec.add(serversss);
-                                                            serversItem.remove(i);
-                                                            s = true;
-                                                            i--;
-                                                        } else {
-                                                            serversbce.add(serversss);
-                                                        }
+                                                } else {
+                                                    if(callback != null) {
+                                                        callback.onAuthRequired();
                                                     }
                                                 }
-
-                                                for (i = 0; i < serversItem.size(); i++) {
-                                                    Server serversss = serversItem.get(i);
-                                                    if (serversss.getNewStatus() && serversss.getRecommend()) {
-                                                        if (!n) {
-                                                            serversnew.add(serversss);
-                                                            serversItem.remove(i);
-                                                            n = true;
-                                                            i--;
-                                                        } else {
-                                                            serversbce.add(serversss);
-                                                        }
-                                                    }
-                                                }*/
-                                                /*if (serversrec.size() >= 1) {
-                                                    serverss.addAll(serversrec);
-                                                }
-                                                if (serversnew.size() >= 1) {
-                                                    serverss.addAll(serversnew);
-                                                }*/
-                                                //serverss.addAll(serversbce);
-                                                //AppConfig.serverList = serverss;
-
-                                                sInterface.getStories(storiesLink).enqueue(new Callback<List<Stories>>() {
-                                                    @Override
-                                                    public void onResponse(Call<List<Stories>> call, Response<List<Stories>> response) {
-                                                        Server item = (Server) AppConfig.serverList.get(0);
-                                                        EdgarConectV2.host = item.getIp();
-                                                        EdgarConectV2.port = item.getPort();
-
-                                                        List<Stories> Stories = response.body();
-                                                        for (Stories story : Stories) {
-                                                            AppConfig.storyList.add(new Stories(story.getImageUrl(), story.getMiniDate()));
-                                                        }
-
-                                                        if(AppConfig.isAuth) {
-                                                            if(callback != null) {
-                                                                callback.onLoaded(launchMode);
-                                                            }
-                                                        } else {
-                                                            if(callback != null) {
-                                                                callback.onAuthRequired();
-                                                            }
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onFailure(Call<List<Stories>> call, Throwable t) {
-                                                        dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                if(dialogManager.getIsChecked()) {
-                                                                    CrashReporter.sendBugReport(
-                                                                            (MainScreenActivity) context,
-                                                                            AppConfig.mAuth.getUid(),
-                                                                            "sInterface.getStories(..)...",
-                                                                            t.toString()
-                                                                    );
-                                                                }
-                                                                dialogManager.hideDialog();
-                                                                loadSettings();
-                                                            }
-                                                        }, true, "Сообщить об ошибке");
-                                                    }
-                                                });
                                             }
 
                                             @Override
-                                            public void onFailure(Call<List<Server>> call, Throwable t) {
+                                            public void onFailure(Call<List<Stories>> call, Throwable t) {
                                                 dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {
                                                         if(dialogManager.getIsChecked()) {
                                                             CrashReporter.sendBugReport(
-                                                                    (MainScreenActivity) context,
+                                                                    context,
                                                                     AppConfig.mAuth.getUid(),
-                                                                    "sInterface.getServers(..)...",
+                                                                    "sInterface.getStories(..)...",
                                                                     t.toString()
                                                             );
                                                         }
@@ -331,7 +235,7 @@ public class LauncherLoader {
                                             public void onClick(View v) {
                                                 if(dialogManager.getIsChecked()) {
                                                     CrashReporter.sendBugReport(
-                                                            (MainScreenActivity) context,
+                                                            context,
                                                             AppConfig.mAuth.getUid(),
                                                             "sInterface.getMain(..)...",
                                                             t.toString()
@@ -350,7 +254,7 @@ public class LauncherLoader {
                                 public void onClick(View v) {
                                     if(dialogManager.getIsChecked()) {
                                         CrashReporter.sendBugReport(
-                                                (MainScreenActivity) context,
+                                                context,
                                                 AppConfig.mAuth.getUid(),
                                                 "sInterface.getApi(..)... Response == NULL",
                                                 "Ошибка: " + response.code() + " - " + response.message()
@@ -367,7 +271,7 @@ public class LauncherLoader {
                             public void onClick(View v) {
                                 if(dialogManager.getIsChecked()) {
                                     CrashReporter.sendBugReport(
-                                            (MainScreenActivity) context,
+                                            context,
                                             AppConfig.mAuth.getUid(),
                                             "sInterface.getApi(..)... response.isSuccessful()",
                                             "Ошибка: " + response.code() + " - " + response.message()
@@ -385,7 +289,7 @@ public class LauncherLoader {
                         public void onClick(View v) {
                             if(dialogManager.getIsChecked()) {
                                 CrashReporter.sendBugReport(
-                                        (MainScreenActivity) context,
+                                        context,
                                         AppConfig.mAuth.getUid(),
                                         "sInterface.getApi(..)... onFailure",
                                         th.toString()

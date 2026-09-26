@@ -8,14 +8,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.nlremake.model.Server;
 
 public class AppConfig {
 	//public static String androidPath = "/storage/emulated/0/Android/data/ru.edgar.space/files"; // (const char*)(g_libGTASA+0x63C4B8);
 	public static String getAndroidPath(Activity activity) {
 		return activity.getExternalFilesDir("").getAbsolutePath(); // (const char*)(g_libGTASA+0x63C4B8);
 	}
+
+	public static int serverId = -1;
 	public static String nickName = "";
 	public static boolean isAuth = false;
+	public static Server serverSelect = null;
 	public static boolean isStartGame = false;
 
 	public static FirebaseAuth mAuth;
@@ -27,6 +31,7 @@ public class AppConfig {
 	public static ArrayList storyList = new ArrayList<>();
 	public static ArrayList serverList = new ArrayList<>();
 
+	public static String serversUrl;
 	public static String characterUrl;
 	public static String verifyAuthUrl;//добавь ид код реги авторизации и т д
 	public static String resetPassword;

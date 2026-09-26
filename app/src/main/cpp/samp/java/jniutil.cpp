@@ -1064,7 +1064,7 @@ void CJavaWrapper::hideSplash() {
         return;
     }
 
-    env->CallVoidMethod(this->activity, this->s_hideSplash);
+    env->CallVoidMethod(this->activity, this->s_hideSplash, false);
 }
 
 void CJavaWrapper::UpdateSplash(int percent, int i) {
@@ -1200,7 +1200,7 @@ CJavaWrapper::CJavaWrapper(JNIEnv* env, jobject activity)
     s_setPauseState = env->GetMethodID(nvEventClass, "setPauseState", "(Z)V");
 
     s_updateSplash = env->GetMethodID(nvEventClass, "updateSplash", "(II)V");
-    s_hideSplash = env->GetMethodID(nvEventClass, "hideSplash", "()V");
+    s_hideSplash = env->GetMethodID(nvEventClass, "hideSplash", "(Z)V");
 
     env->DeleteLocalRef(nvEventClass);
 }
