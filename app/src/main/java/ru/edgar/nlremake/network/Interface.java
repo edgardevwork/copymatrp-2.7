@@ -11,9 +11,8 @@ import retrofit2.http.Url;
 import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Details;
 import ru.edgar.nlremake.model.Main;
-import ru.edgar.nlremake.model.Servers;
+import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.model.Stories;
-import ru.edgar.nlremake.model.edgar;
 
 public interface Interface {
 
@@ -27,7 +26,7 @@ public interface Interface {
     Call<Main> getMain(@Url String url);
 
     @GET
-    Call<List<Servers>> getServers(@Url String url);
+    Call<List<Server>> getServers(@Url String url);
 
     @GET
     Call<List<Stories>> getStories(@Url String url);

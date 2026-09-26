@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.adapter.ServerAdapter;
-import ru.edgar.nlremake.model.Servers;
+import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.other.LauncherUiComponent;
 import ru.edgar.space.UiManager;
@@ -56,7 +56,7 @@ public class ServersFragment implements LauncherUiComponent {
         recommended_recycler = activity.findViewById(R.id.recommended_recycler);
         recommended_recycler.setLayoutManager(layoutManager1); // Применяем первый
 
-        ArrayList<Servers> servers = AppConfig.serverList;
+        ArrayList<Server> servers = AppConfig.serverList;
 
         ServerAdapter serverAdapter = new ServerAdapter(activity, servers);
         recommended_recycler.setAdapter(serverAdapter);

@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import ru.edgar.nlremake.activity.MainScreenActivity;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Api;
 import ru.edgar.nlremake.model.Main;
-import ru.edgar.nlremake.model.Servers;
+import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.model.Stories;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.network.CrashReporter;
@@ -188,42 +187,44 @@ public class LauncherLoader {
                                         AppConfig.crashReportUrl = response.body().getCrashReport();
                                         AppConfig.deleteAcc = response.body().getDeleteAcc();
 
-                                        sInterface.getServers(response.body().getServers()).enqueue(new Callback<List<Servers>>() {
+                                        sInterface.getServers(response.body().getServers()).enqueue(new Callback<List<Server>>() {
                                             @Override
-                                            public void onResponse(Call<List<Servers>> call, Response<List<Servers>> response) {
-                                                List<Servers> servers = response.body();
-                                                for (Servers server : servers) {
-                                                    AppConfig.serverList.add(new Servers(
+                                            public void onResponse(Call<List<Server>> call, Response<List<Server>> response) {
+                                                List<Server> servers = response.body();
+                                                for (Server server : servers) {
+                                                    AppConfig.serverList.add(new Server(
+                                                            server.getId(),
                                                             server.getName(),
                                                             server.getColor(),
-                                                            server.getStatus(),
-                                                            server.getRecommend(),
-                                                            server.getNewStatus(),
-                                                            server.getEdgarHost(),
-                                                            server.getEdgarPort(),
-                                                            server.getId()
+                                                            server.getIp(),
+                                                            server.getPort(),
+                                                            server.isRecommended(),
+                                                            server.isTest(),
+                                                            server.isEnterLock(),
+                                                            server.getPersonId(),
+                                                            server.getPersonName()
                                                     ));
                                                 }
 
-                                                ArrayList<Servers> serversItem = AppConfig.serverList;
-                                                ArrayList<Servers> serversrec = new ArrayList<>();
-                                                ArrayList<Servers> serversnew = new ArrayList<>();
-                                                ArrayList<Servers> serversbce = new ArrayList<>();
-                                                ArrayList<Servers> serverss = new ArrayList<>();
+                                                ArrayList<Server> serversItem = AppConfig.serverList;
+                                                ArrayList<Server> serversrec = new ArrayList<>();
+                                                ArrayList<Server> serversnew = new ArrayList<>();
+                                                ArrayList<Server> serversbce = new ArrayList<>();
+                                                ArrayList<Server> serverss = new ArrayList<>();
 
                                                 boolean s = false;
                                                 boolean n = false;
                                                 int i;
 
-                                                for (i = 0; i < serversItem.size(); i++) {
-                                                    Servers serversss = serversItem.get(i);
-                                                    if (!serversss.getRecommend()) {
+                                                /*for (i = 0; i < serversItem.size(); i++) {
+                                                    Server serversss = serversItem.get(i);
+                                                    if (!serversss.isRecommended()) {
                                                         serversbce.add(serversss);
                                                     }
-                                                }
+                                                }*/
 
-                                                for (i = 0; i < serversItem.size(); i++) {
-                                                    Servers serversss = serversItem.get(i);
+                                                /*for (i = 0; i < serversItem.size(); i++) {
+                                                    Server serversss = serversItem.get(i);
                                                     if (!serversss.getNewStatus() && serversss.getRecommend()) {
                                                         if (!s) {
                                                             serversrec.add(serversss);
@@ -237,7 +238,7 @@ public class LauncherLoader {
                                                 }
 
                                                 for (i = 0; i < serversItem.size(); i++) {
-                                                    Servers serversss = serversItem.get(i);
+                                                    Server serversss = serversItem.get(i);
                                                     if (serversss.getNewStatus() && serversss.getRecommend()) {
                                                         if (!n) {
                                                             serversnew.add(serversss);
@@ -248,22 +249,22 @@ public class LauncherLoader {
                                                             serversbce.add(serversss);
                                                         }
                                                     }
-                                                }
-                                                if (serversrec.size() >= 1) {
+                                                }*/
+                                                /*if (serversrec.size() >= 1) {
                                                     serverss.addAll(serversrec);
                                                 }
                                                 if (serversnew.size() >= 1) {
                                                     serverss.addAll(serversnew);
-                                                }
-                                                serverss.addAll(serversbce);
-                                                AppConfig.serverList = serverss;
+                                                }*/
+                                                //serverss.addAll(serversbce);
+                                                //AppConfig.serverList = serverss;
 
                                                 sInterface.getStories(storiesLink).enqueue(new Callback<List<Stories>>() {
                                                     @Override
                                                     public void onResponse(Call<List<Stories>> call, Response<List<Stories>> response) {
-                                                        Servers item = (Servers) AppConfig.serverList.get(0);
-                                                        EdgarConectV2.host = item.getEdgarHost();
-                                                        EdgarConectV2.port = item.getEdgarPort();
+                                                        Server item = (Server) AppConfig.serverList.get(0);
+                                                        EdgarConectV2.host = item.getIp();
+                                                        EdgarConectV2.port = item.getPort();
 
                                                         List<Stories> Stories = response.body();
                                                         for (Stories story : Stories) {
@@ -303,7 +304,7 @@ public class LauncherLoader {
                                             }
 
                                             @Override
-                                            public void onFailure(Call<List<Servers>> call, Throwable t) {
+                                            public void onFailure(Call<List<Server>> call, Throwable t) {
                                                 dialogManager.showErrorDialog("Не удаётся установить соединение с сервером!\nПовторите попытку позже.", null, "Повторить", new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {

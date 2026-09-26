@@ -7,20 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import ru.edgar.matrp.R;
-import ru.edgar.nlremake.model.Servers;
+import ru.edgar.nlremake.model.Server;
 
 public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerViewHolder> {
     Context context;
-    ArrayList<Servers> slist;
+    ArrayList<Server> slist;
 
-    public ServerAdapter(Context context, ArrayList<Servers> slist) {
+    public ServerAdapter(Context context, ArrayList<Server> slist) {
         this.context = context;
         this.slist = slist;
     }
@@ -34,7 +33,7 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerView
 
     @Override
     public void onBindViewHolder(@NonNull ServerViewHolder holder, int position) {
-        Servers server = slist.get(position);
+        Server server = slist.get(position);
         holder.line.setBackgroundColor(Color.parseColor("#" + server.getColor()));
         holder.serverText.setText(server.getName());
     }
