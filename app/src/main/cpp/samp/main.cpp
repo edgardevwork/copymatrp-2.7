@@ -372,11 +372,14 @@ extern "C" {
 
 		if (fufy != nullptr) {
 			//fufy->m_pPed->Remove();
+            //fufy->m_pPed->DeleteRwObject();
 			CWorld::Remove(fufy->m_pPed);
 			//CStreaming::RemoveModel(oldModel);
 			delete fufy;
+
 			fufy = nullptr;
 			fufy = new CPlayerPed(value + skin, skin, 1725.1f, -2352.7f, 11.00f, 7.0f);
+			CStreaming::RemoveModelIfNoRefs(oldModel);
 			g_lastSkinChangeTime = now;
 		}
 	}

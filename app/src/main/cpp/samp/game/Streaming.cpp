@@ -365,7 +365,7 @@ void CStreaming::Update() {
 
     if(!CStreaming::GetInfo(MODEL_MALE01).IsLoaded()) {
         RequestModel(MODEL_MALE01, STREAMING_KEEP_IN_MEMORY);
-        CStreaming::LoadAllRequestedModels(false);
+        CStreaming::LoadAllRequestedModels(false); // ?
     }
     CModelInfo::GetModelInfo(MODEL_MALE01)->m_nRefCount = 999;
 
