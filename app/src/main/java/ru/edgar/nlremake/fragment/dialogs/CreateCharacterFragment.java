@@ -4,18 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.provider.Contacts;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,12 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.lang.invoke.ConstantCallSite;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,16 +33,18 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.adapter.GenderAdapter;
-import ru.edgar.nlremake.fragment.MenuFragment;
+import ru.edgar.nlremake.data.PlayerData;
 import ru.edgar.nlremake.model.Gender;
 import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.network.AppConfig;
+import ru.edgar.nlremake.network.CrashReporter;
+import ru.edgar.nlremake.network.FirebaseRepository;
 import ru.edgar.nlremake.network.Interface;
 import ru.edgar.space.EdgarConectV2;
 import ru.edgar.space.SAMP;
 import ru.edgar.space.UiManager;
 
-public class CreateChasterFragment {
+public class CreateCharacterFragment {
 
     private ViewGroup viewGroup;
     private Activity context;
@@ -76,11 +71,11 @@ public class CreateChasterFragment {
 
     int iSex = 0;
 
-    private static final int[] maleSkins = {98, 97, 35, 71, 113};
+    private static final int[] maleSkins = {98, 97, 35, 71/*, 113*/};
 
     private static final int[] femaleSkins = {40, 63};
 
-    public CreateChasterFragment(Activity activity) {
+    public CreateCharacterFragment(Activity activity) {
         if (viewGroup != null && !AppConfig.isStartGame) {
             return;
         }
@@ -187,20 +182,112 @@ public class CreateChasterFragment {
 
                                                 if (response.body() != null && response.isSuccessful()) {
                                                     if (response.body().equals("ycpex!")) {
+                                                        UiManager.getUiManager().getTyped(UiManager.LOADING).show();
                                                         Server server = AppConfig.serverSelect;
-                                                        HashMap<String, Object> Info = new HashMap<>();
-                                                        Info.put("serverId", server.getId());
-                                                        Info.put("serverName", server.getName());
-                                                        Info.put("serverColor", server.getColor());
-                                                        Info.put("personName", nickName);
-                                                        FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+                                                        FirebaseRepository.saveServerInfo(server.getId(), server.getName(), server.getColor(), nickName);
 
                                                         EdgarConectV2.host = server.getIp();
                                                         EdgarConectV2.port = server.getPort();
                                                         AppConfig.nickName = nickName;
 
-                                                        hideCreateChasterDialog(false);
-                                                        UiManager.getUiManager().getTyped(UiManager.MENU).show();
+                                                        Retrofit retrofitAccount = new Retrofit.Builder()
+                                                                .baseUrl("https://google.com/")
+                                                                .addConverterFactory(GsonConverterFactory.create())
+                                                                .build();
+
+                                                        Interface accountInterface = retrofitAccount.create(Interface.class);
+
+                                                        accountInterface.getAccountDetails(AppConfig.accountDetailsUrl, AppConfig.mAuth.getUid(),
+                                                                AppConfig.serverId).enqueue(new Callback<PlayerData>() {
+
+                                                            @Override
+                                                            public void onResponse(Call<PlayerData> call, Response<PlayerData> response) {
+                                                                if (response.isSuccessful() && response.body() != null) {
+
+                                                                    PlayerData data = response.body();
+
+                                                                    // PlayerData
+                                                                    AppConfig.playerData = data;
+                                                                    //System.out.println(data.toString());
+
+                                                                    // ProfileData
+                                                                    AppConfig.profileData.clear();
+
+                                                                    if (data.getStatsList() != null) {
+                                                                        AppConfig.profileData.addAll(data.getStatsList());
+                                                                    }
+
+                                                                    // Данные получены, продолжаем загрузку
+                                                                    UiManager.getUiManager().getTyped(UiManager.LOADING).hide();
+
+                                                                    hideCreateCharacterDialog(false);
+                                                                    UiManager.getUiManager().getTyped(UiManager.MENU).show();
+                                                                } else {
+                                                                    DialogManager dialogManager =
+                                                                            UiManager.getUiManager().getTyped(UiManager.DIALOG);
+
+                                                                    dialogManager.showErrorDialog(
+                                                                            "Не удалось получить данные аккаунта!\nПовторите попытку позже.",
+                                                                            null,
+                                                                            "Ок",
+                                                                            new View.OnClickListener() {
+                                                                                @Override
+                                                                                public void onClick(View v) {
+                                                                                    if (dialogManager.getIsChecked()) {
+                                                                                        CrashReporter.sendBugReport(
+                                                                                                activity,
+                                                                                                AppConfig.mAuth.getUid(),
+                                                                                                "[CreateChasterFragment] getAccountDetails(..)...",
+                                                                                                "if (response.isSuccessful()) {} else { ME }"
+                                                                                        );
+                                                                                    }
+                                                                                    dialogManager.hideDialog();
+                                                                                    UiManager.getUiManager().getTyped(UiManager.LOADING).hide();
+
+                                                                                    UiManager.getUiManager().getTyped(UiManager.SERVERS).hide();
+                                                                                    UiManager.getUiManager().getTyped(UiManager.MENU).show();
+
+                                                                                }
+                                                                            },
+                                                                            true,
+                                                                            "Сообщить об ошибке"
+                                                                    );
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onFailure(Call<PlayerData> call, Throwable t) {
+                                                                DialogManager dialogManager =
+                                                                        UiManager.getUiManager().getTyped(UiManager.DIALOG);
+
+                                                                dialogManager.showErrorDialog(
+                                                                        "Не удаётся получить данные аккаунта!\nПовторите попытку позже.",
+                                                                        null,
+                                                                        "Ок",
+                                                                        new View.OnClickListener() {
+                                                                            @Override
+                                                                            public void onClick(View v) {
+                                                                                if (dialogManager.getIsChecked()) {
+                                                                                    CrashReporter.sendBugReport(
+                                                                                            activity,
+                                                                                            AppConfig.mAuth.getUid(),
+                                                                                            "[CreateChasterFragment] getAccountDetails(..)...",
+                                                                                            t.toString()
+                                                                                    );
+                                                                                }
+                                                                                dialogManager.hideDialog();
+
+                                                                                UiManager.getUiManager().getTyped(UiManager.LOADING).hide();
+
+                                                                                UiManager.getUiManager().getTyped(UiManager.SERVERS).hide();
+                                                                                UiManager.getUiManager().getTyped(UiManager.MENU).show();
+                                                                            }
+                                                                        },
+                                                                        true,
+                                                                        "Сообщить об ошибке"
+                                                                );
+                                                            }
+                                                        });
                                                     }
                                                     System.out.println(response.body());
                                                 }
@@ -369,7 +456,7 @@ public class CreateChasterFragment {
         btn_back = viewGroup.findViewById(R.id.btn_back);
         btn_back.setOnTouchListener(new UiManager.animClickBtn(context, btn_back));
         btn_back.setOnClickListener(v -> {
-            hideCreateChasterDialog(true);
+            hideCreateCharacterDialog(true);
         });
 
         ImageView imagemale = viewGroup.findViewById(R.id.imagemale);
@@ -385,7 +472,7 @@ public class CreateChasterFragment {
             mGender.add(new Gender("97"));
             mGender.add(new Gender("35"));
             mGender.add(new Gender("71"));
-            mGender.add(new Gender("113"));
+            //mGender.add(new Gender("113")); / Крашит!
             genderAdapter = new GenderAdapter(context, mGender);
             recycler.setAdapter(genderAdapter);
             iSex = 0;
@@ -428,7 +515,7 @@ public class CreateChasterFragment {
         viewGroup.setVisibility(View.GONE);
     }
 
-    public void showCreateChasterDialog() {
+    public void showCreateCharacterDialog() {
         SAMP.getInstance().zoomToPerson(true);
         UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
         serverLayout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#" + AppConfig.serverSelect.getColor())));
@@ -441,12 +528,12 @@ public class CreateChasterFragment {
         mGender.add(new Gender("97"));
         mGender.add(new Gender("35"));
         mGender.add(new Gender("71"));
-        mGender.add(new Gender("113"));
+        //mGender.add(new Gender("113")); / Крашит!
         genderAdapter = new GenderAdapter(context, mGender);
         recycler.setAdapter(genderAdapter);
     }
 
-    public void hideCreateChasterDialog(boolean isShowServers) {
+    public void hideCreateCharacterDialog(boolean isShowServers) {
         SAMP.getInstance().zoomToPerson(false);
         UiManager.getUiManager().AnimVisibale(viewGroup, View.GONE);
         if (isShowServers) {

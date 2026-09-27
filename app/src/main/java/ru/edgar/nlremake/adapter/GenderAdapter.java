@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.model.Gender;
 import ru.edgar.nlremake.network.AppConfig;
+import ru.edgar.space.SAMP;
 import ru.edgar.space.UiManager;
 
 public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.GenderViewHolder> {
@@ -49,7 +50,7 @@ public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.GenderView
 
         int sdpMargin = 0;
         if (position == selectedPosition) {
-            //SAMP.getInstance().setSkin(Integer.parseInt(slist.get(selectedPosition).getSkin()));
+            SAMP.getInstance().setSkin(Integer.parseInt(glist.get(selectedPosition).getSkin()));
             holder.back.setImageResource(R.drawable.auth_bg_selected);
             sdpMargin = holder.view.getResources().getDimensionPixelSize(R.dimen._1sdp);
         } else {

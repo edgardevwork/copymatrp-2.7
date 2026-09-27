@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.nlremake.data.PlayerData;
 import ru.edgar.nlremake.model.Server;
 
 public class AppConfig {
@@ -30,6 +31,9 @@ public class AppConfig {
 	public static ArrayList msglist = new ArrayList<>();
 	public static ArrayList storyList = new ArrayList<>();
 	public static ArrayList serverList = new ArrayList<>();
+
+	public static PlayerData playerData;
+	public static ArrayList profileData = new ArrayList<>();
 
 	public static String serversUrl;
 	public static String characterUrl;

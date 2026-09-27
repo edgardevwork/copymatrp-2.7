@@ -8,8 +8,8 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Url;
+import ru.edgar.nlremake.data.PlayerData;
 import ru.edgar.nlremake.model.Api;
-import ru.edgar.nlremake.model.Details;
 import ru.edgar.nlremake.model.Main;
 import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.model.Stories;
@@ -45,8 +45,7 @@ public interface Interface {
     Call<String> character(@Url String url, @Field("uid") String uid, @Field("server_id") Integer server_id, @Field("nick") String nick, @Field("sex") String sex, @Field("skin") String skin, @Field("promo") String promo);
 
     @POST
-    @FormUrlEncoded
-    Call<List<Details>> getAccountDetails(@Url String url, @Field("name") String name);
+    @FormUrlEncoded Call<PlayerData> getAccountDetails(@Url String url, @Field("uid") String uid, @Field("server_id") Integer server_id);
 
     @POST
     @FormUrlEncoded

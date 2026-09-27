@@ -27,7 +27,7 @@ bool CStreaming::TryLoadModel(int modelId) {
         FLog("TryLoadModel 1");
         CStreaming::RequestModel(modelId, STREAMING_GAME_REQUIRED | STREAMING_KEEP_IN_MEMORY);
         FLog("TryLoadModel 11");
-        CStreaming::LoadAllRequestedModels(false);
+        CStreaming::LoadAllRequestedModels(true); // Тру чтобы не крашило!
         FLog("TryLoadModel 2");
         uint32 count = 0;
         while (!CStreaming::GetInfo(modelId).IsLoaded()) {
@@ -35,7 +35,7 @@ bool CStreaming::TryLoadModel(int modelId) {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
             if (count > 30) {
-                pUI->chat()->addDebugMessage("{ff0000} Error loading model %d", modelId);
+                //pUI->chat()->addDebugMessage("{ff0000} Error loading model %d", modelId);
                 return false;
             }
         }

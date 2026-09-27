@@ -51,11 +51,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.edgar.nlremake.data.PlayerData;
+import ru.edgar.nlremake.fragment.ServersFragment;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.network.CrashReporter;
 import ru.edgar.nlremake.loader.LauncherLoader;
+import ru.edgar.nlremake.network.FirebaseRepository;
 import ru.edgar.nlremake.network.Interface;
 import ru.edgar.nlremake.other.Utils;
 import ru.edgar.nlremake.service.DownloadService;
@@ -211,12 +214,15 @@ public class MainScreenActivity extends AppCompatActivity {
             @Override
             public void onLoaded(LauncherLoader.LaunchMode mode) { // ДО АКТИВАЦИИ ИГРЫ
                 if (mode == LauncherLoader.LaunchMode.WITH_GAME_LOADING) {
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+                    FirebaseRepository.loadUserServerInfo(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.getValue() != null) {
                                 AppConfig.serverId = snapshot.child("serverId").getValue(Integer.class);
                             }
+                            ServersFragment serversFragment = UiManager.getUiManager().getTyped(UiManager.SERVERS);
+                            serversFragment.updateServers(); // Загрузка серверов заранее!
+
                             Retrofit retrofit = new Retrofit.Builder()
                                     .baseUrl("https://google.com/") // Рекомендуется вынести базовый URL в AppConfig
                                     .addConverterFactory(GsonConverterFactory.create())
@@ -231,12 +237,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
                                     for (Server server : response.body()) {
                                         if (server.getId() == AppConfig.serverId) {
-                                            HashMap<String, Object> Info = new HashMap<>();
-                                            Info.put("serverId", server.getId());
-                                            Info.put("serverName", server.getName());
-                                            Info.put("serverColor", server.getColor());
-                                            Info.put("personName", server.getPersonName());
-                                            FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+                                            FirebaseRepository.saveServerInfo(server.getId(), server.getName(), server.getColor(), server.getPersonName());
 
                                             EdgarConectV2.host = server.getIp();
                                             EdgarConectV2.port = server.getPort();
@@ -247,23 +248,109 @@ public class MainScreenActivity extends AppCompatActivity {
                                     if (AppConfig.nickName.isEmpty()) {
                                         for (Server server : response.body()) {
                                             if (server.getPersonId() != -1) {
-                                                HashMap<String, Object> Info = new HashMap<>();
-                                                Info.put("serverId", server.getId());
-                                                Info.put("serverName", server.getName());
-                                                Info.put("serverColor", server.getColor());
-                                                Info.put("personName", server.getPersonName());
-                                                FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+                                                FirebaseRepository.saveServerInfo(server.getId(), server.getName(), server.getColor(), server.getPersonName());
 
                                                 EdgarConectV2.host = server.getIp();
                                                 EdgarConectV2.port = server.getPort();
                                                 AppConfig.nickName = server.getPersonName();
-                                                System.out.println("YESyes");
                                                 break;
                                             }
                                         }
                                     }
-                                    System.out.println("GAZ");
-                                    onRequestPermissions(); // ПРОДОЛЖЕНИЕ
+
+                                    // AccountDetails.php
+
+                                    if (!AppConfig.nickName.isEmpty()) {
+
+                                        Retrofit retrofitAccount = new Retrofit.Builder()
+                                                .baseUrl("https://google.com/")
+                                                .addConverterFactory(GsonConverterFactory.create())
+                                                .build();
+
+                                        Interface accountInterface = retrofitAccount.create(Interface.class);
+
+                                        accountInterface.getAccountDetails(AppConfig.accountDetailsUrl, AppConfig.mAuth.getUid(),
+                                                AppConfig.serverId).enqueue(new Callback<PlayerData>() {
+
+                                            @Override
+                                            public void onResponse(Call<PlayerData> call, Response<PlayerData> response) {
+                                                if (response.isSuccessful() && response.body() != null) {
+
+                                                    PlayerData data = response.body();
+
+                                                    // PlayerData
+                                                    AppConfig.playerData = data;
+                                                    //System.out.println(data.toString());
+
+                                                    // ProfileData
+                                                    AppConfig.profileData.clear();
+
+                                                    if (data.getStatsList() != null) {
+                                                        AppConfig.profileData.addAll(data.getStatsList());
+                                                    }
+
+                                                    // Данные получены, продолжаем загрузку
+                                                    onRequestPermissions();
+                                                } else {
+                                                    DialogManager dialogManager =
+                                                            UiManager.getUiManager().getTyped(UiManager.DIALOG);
+
+                                                    dialogManager.showErrorDialog(
+                                                            "Не удалось получить данные аккаунта!\nПовторите попытку позже.",
+                                                            null,
+                                                            "Повторить",
+                                                            new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    dialogManager.hideDialog();
+                                                                    launcherLoader.load(
+                                                                            LauncherLoader.LaunchMode.WITH_GAME_LOADING
+                                                                    );
+                                                                }
+                                                            },
+                                                            true,
+                                                            "Сообщить об ошибке"
+                                                    );
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<PlayerData> call, Throwable t) {
+                                                DialogManager dialogManager =
+                                                        UiManager.getUiManager().getTyped(UiManager.DIALOG);
+
+                                                dialogManager.showErrorDialog(
+                                                        "Не удаётся получить данные аккаунта!\nПовторите попытку позже.",
+                                                        null,
+                                                        "Повторить",
+                                                        new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+
+                                                                if (dialogManager.getIsChecked()) {
+                                                                    CrashReporter.sendBugReport(
+                                                                            MainScreenActivity.getInstance(),
+                                                                            AppConfig.mAuth.getUid(),
+                                                                            "[MainScreenActivity] getAccountDetails(..)...",
+                                                                            t.toString()
+                                                                    );
+                                                                }
+
+                                                                dialogManager.hideDialog();
+
+                                                                launcherLoader.load(
+                                                                        LauncherLoader.LaunchMode.WITH_GAME_LOADING
+                                                                );
+                                                            }
+                                                        },
+                                                        true,
+                                                        "Сообщить об ошибке"
+                                                );
+                                            }
+                                        });
+                                    } else {
+                                        onRequestPermissions(); // ПРОДОЛЖЕНИЕ
+                                    }
                                 }
 
                                 @Override
@@ -414,7 +501,7 @@ public class MainScreenActivity extends AppCompatActivity {
     }
 
     public void checkGameCache() {
-        System.out.println("checkGameCache()");
+        System.out.println("checkGameCache();");
         downloadBar.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
 

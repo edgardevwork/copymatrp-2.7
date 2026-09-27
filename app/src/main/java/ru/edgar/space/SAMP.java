@@ -51,6 +51,7 @@ import ru.edgar.nlremake.loader.LauncherLoader;
 import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.network.CrashReporter;
+import ru.edgar.nlremake.network.FirebaseRepository;
 import ru.edgar.nlremake.network.Interface;
 import ru.edgar.nlremake.other.LauncherUiComponent;
 import ru.edgar.nlremake.ui.FullHeightVideoView;
@@ -97,6 +98,8 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     // edgar games
 
     public native void zoomToPerson(boolean isZoom);
+
+    public native void setSkin(int skin);
 
     public native void sendJsonData(int guiId, JSONObject jsonObject);
 
@@ -485,8 +488,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     public void hideSplash(boolean isCheck) { runOnUiThread(() -> {
         System.out.println("HIDEsPLASH");
         if (isCheck) {
-            AppConfig.serverList.clear();
-            FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+            FirebaseRepository.loadUserServerInfo(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     System.out.println(snapshot.getValue());
@@ -501,19 +503,14 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
                     Interface sInterface = retrofit.create(Interface.class);
 
-                    sInterface.getServers(AppConfig.serversUrl, AppConfig.mAuth.getUid()).enqueue(new Callback<List<Server>>() {
+                    sInterface.getServers(AppConfig.serversUrl, FirebaseAuth.getInstance().getUid()).enqueue(new Callback<List<Server>>() {
                         @Override
                         public void onResponse(Call<List<Server>> call, Response<List<Server>> response) {
                             if (response.body() == null) return;
 
                             for (Server server : response.body()) {
                                 if (server.getId() == AppConfig.serverId) {
-                                    HashMap<String, Object> Info = new HashMap<>();
-                                    Info.put("serverId", server.getId());
-                                    Info.put("serverName", server.getName());
-                                    Info.put("serverColor", server.getColor());
-                                    Info.put("personName", server.getPersonName());
-                                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+                                    FirebaseRepository.saveServerInfo(server.getId(), server.getName(), server.getColor(), server.getPersonName());
 
                                     EdgarConectV2.host = server.getIp();
                                     EdgarConectV2.port = server.getPort();
@@ -592,22 +589,16 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
                 }
             });
         } else {
-
-            System.out.println("HIDEsPLASH1");
             ServersFragment serversFragment = UiManager.getUiManager().getTyped(UiManager.SERVERS);
             if (AppConfig.nickName.isEmpty()) {
+                serversFragment.updateItems();
                 serversFragment.show();
-
-                System.out.println("HIDEsPLASH2");
             } else {
                 MenuFragment menuFragment = UiManager.getUiManager().getTyped(UiManager.MENU);
                 menuFragment.show();
-                serversFragment.updateServers();
-
-                System.out.println("HIDEsPLASH3");
+                serversFragment.updateItems();
+                //serversFragment.updateServers();
             }
-
-            System.out.println("HIDEsPLASH4");
             mVideoView.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
                 @Override
                 public void run() {

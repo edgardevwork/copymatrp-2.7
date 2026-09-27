@@ -13,11 +13,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.google.firebase.database.annotations.NotNull;
-import com.nvidia.devtech.NvEventQueueActivity;
 
 import org.json.JSONObject;
-
-import java.io.FileReader;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.activity.MainScreenActivity;
@@ -26,9 +23,7 @@ import ru.edgar.nlremake.fragment.MenuFragment;
 import ru.edgar.nlremake.fragment.NotyManager;
 import ru.edgar.nlremake.fragment.ProfileFragment;
 import ru.edgar.nlremake.fragment.ServersFragment;
-import ru.edgar.nlremake.fragment.dialogs.CreateChasterFragment;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
-import ru.edgar.nlremake.model.Main;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.other.LauncherUiComponent;
 import ru.edgar.space.core.ui.chatedgar.ChatManager;
@@ -171,12 +166,12 @@ public class UiManager {
 
                 viewGroup.animate()
                         .alpha(1.0f)
-                        .setDuration(300)
+                        .setDuration(150)
                         .setListener(null); // Слушатель здесь больше не нужен для установки видимости
             } else {
                 viewGroup.animate()
                         .alpha(0.0f)
-                        .setDuration(300)
+                        .setDuration(150)
                         .setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {

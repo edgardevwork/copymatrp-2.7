@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,10 +124,33 @@ public class ServersFragment implements LauncherUiComponent {
         UiManager.getUiManager().AnimVisibale(viewGroup, View.VISIBLE);
     }
 
+    public void updateItems() {
+        if (!AppConfig.serverList.isEmpty()) {
+            int totalCount = AppConfig.serverList.size();
+            ArrayList<Server> allServers = new ArrayList<>(totalCount);
+            ArrayList<Server> personServers = new ArrayList<>(totalCount);
+            ArrayList<Server> recommendedServers = new ArrayList<>(totalCount);
+
+            // Распределяем сервера по категориям
+            for (Server server : (ArrayList<Server>) AppConfig.serverList) {
+                if (server.getPersonId() != -1) {
+                    personServers.add(server);
+                } else if (server.isRecommended()) {
+                    recommendedServers.add(server);
+                } else {
+                    allServers.add(server);
+                }
+            }
+
+            // Скорость х3: Отрисовка UI
+            updateRecyclerVisibility(persons, persons_recycler, personServers);
+            updateRecyclerVisibility(recommended, recommended_recycler, recommendedServers);
+            updateRecyclerVisibility(all, all_recycler, allServers);
+        }
+    }
+
     public void updateServers() {
         if (AppConfig.isAuth) {
-            AppConfig.serverList.clear();
-
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://google.com/") // Рекомендуется вынести базовый URL в AppConfig
                     .addConverterFactory(GsonConverterFactory.create())
@@ -134,33 +158,15 @@ public class ServersFragment implements LauncherUiComponent {
 
             Interface sInterface = retrofit.create(Interface.class);
 
-            sInterface.getServers(AppConfig.serversUrl, AppConfig.mAuth.getUid()).enqueue(new Callback<List<Server>>() {
+            sInterface.getServers(AppConfig.serversUrl, FirebaseAuth.getInstance().getUid()).enqueue(new Callback<List<Server>>() {
                 @Override
                 public void onResponse(Call<List<Server>> call, Response<List<Server>> response) {
                     if (response.body() == null) return;
 
+                    AppConfig.serverList.clear();
                     AppConfig.serverList.addAll(response.body());
 
-                    int totalCount = AppConfig.serverList.size();
-                    ArrayList<Server> allServers = new ArrayList<>(totalCount);
-                    ArrayList<Server> personServers = new ArrayList<>(totalCount);
-                    ArrayList<Server> recommendedServers = new ArrayList<>(totalCount);
-
-                    // Распределяем сервера по категориям
-                    for (Server server : (ArrayList<Server>) AppConfig.serverList) {
-                        if (server.getPersonId() != -1) {
-                            personServers.add(server);
-                        } else if (server.isRecommended()) {
-                            recommendedServers.add(server);
-                        } else {
-                            allServers.add(server);
-                        }
-                    }
-
-                    // Скорость х3: Отрисовка UI
-                    updateRecyclerVisibility(persons, persons_recycler, personServers);
-                    updateRecyclerVisibility(recommended, recommended_recycler, recommendedServers);
-                    updateRecyclerVisibility(all, all_recycler, allServers);
+                    updateItems();
                 }
 
                 @Override

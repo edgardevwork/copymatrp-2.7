@@ -26,6 +26,8 @@
 #include "clientrpc/CRpc.h"
 #include "game/Collision/ColStore.h"
 #include "game/IplStore.h"
+#include "game/Streaming.h"
+#include "game/World.h"
 
 /*
 Peerapol Unarak
@@ -296,7 +298,7 @@ void DoInitStuff()
 		pGame->DisplayHUD(false);
 		pPlayerPed->TogglePlayerControllable(false);
 		if(!fufy) {
-			fufy = new CPlayerPed(34, 98, 1725.1f, -2352.7f, 11.00f, 7.0f);
+			fufy = new CPlayerPed(34, 97, 1725.1f, -2352.7f, 11.00f, 7.0f);
 		}
 		//pNetGame = new CNetGame("80.242.59.112", 1969, "Edgar_Tgg", pSettings->Get().szPassword);
         pJavaWrapper->hideSplash();
@@ -335,6 +337,7 @@ static CVector CAM_NORMAL_LOOK(1729.0125f, -2359.1579f, 11.1705f);
 static CVector CAM_ZOOM_POS(1724.2695f, -2349.0033f, 11.3886f);
 static CVector CAM_ZOOM_LOOK(1727.1745f, -2360.3829f, 11.1614f);*/
 
+static uint32_t g_lastSkinChangeTime = 0;
 
 extern "C" {
 	JNIEXPORT void JNICALL Java_ru_edgar_space_SAMP_initializeSAMP(JNIEnv *pEnv, jobject thiz)
@@ -355,6 +358,28 @@ extern "C" {
         pEnv->ReleaseStringUTFChars(host, host_char);
         pEnv->ReleaseStringUTFChars(nickName, edgar_char);
     }
+	JNIEXPORT void JNICALL Java_ru_edgar_space_SAMP_setSkin(JNIEnv *env, jobject thiz, jint skin) {
+		// TODO: implement setSkin()
+		int oldModel = fufy->m_pPed->m_nModelIndex;
+		uint32_t now = CTimer::m_snTimeInMilliseconds;
+
+		int value = rand() % 10 + 1;
+
+		// Задержка 200 мс
+		if (now - g_lastSkinChangeTime < 300) return;
+
+		//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+		if (fufy != nullptr) {
+			//fufy->m_pPed->Remove();
+			CWorld::Remove(fufy->m_pPed);
+			//CStreaming::RemoveModel(oldModel);
+			delete fufy;
+			fufy = nullptr;
+			fufy = new CPlayerPed(value + skin, skin, 1725.1f, -2352.7f, 11.00f, 7.0f);
+			g_lastSkinChangeTime = now;
+		}
+	}
 	/*
 	cameraPosX:      -0.144
 	cameraPosY:      -1.225

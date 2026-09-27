@@ -34,7 +34,7 @@
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_2sdp"
-            android:alpha="0.6"
+            android:alpha="0.4"
             android:fontFamily="@font/geologica_semibold"
             android:text="Выбери сервер"
             android:textColor="@color/white"

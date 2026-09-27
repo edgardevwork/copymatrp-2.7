@@ -20,10 +20,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import ru.edgar.matrp.R;
+import ru.edgar.nlremake.activity.MainScreenActivity;
+import ru.edgar.nlremake.data.PlayerData;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
+import ru.edgar.nlremake.loader.LauncherLoader;
 import ru.edgar.nlremake.model.Server;
 import ru.edgar.nlremake.network.AppConfig;
+import ru.edgar.nlremake.network.CrashReporter;
+import ru.edgar.nlremake.network.FirebaseRepository;
+import ru.edgar.nlremake.network.Interface;
 import ru.edgar.space.EdgarConectV2;
 import ru.edgar.space.UiManager;
 
@@ -97,21 +108,113 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerView
                     AppConfig.serverSelect = server;
                     UiManager.getUiManager().getTyped(UiManager.SERVERS).hide();
                     DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
-                    dialogManager.showCreateChesterDialog();
+                    dialogManager.showCreateCharacterDialog();
                 } else {
-                    HashMap<String, Object> Info = new HashMap<>();
-                    Info.put("serverId", server.getId());
-                    Info.put("serverName", server.getName());
-                    Info.put("serverColor", server.getColor());
-                    Info.put("personName", server.getPersonName());
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+                    UiManager.getUiManager().getTyped(UiManager.LOADING).show();
+                    FirebaseRepository.saveServerInfo(server.getId(), server.getName(), server.getColor(), server.getPersonName());
 
                     EdgarConectV2.host = server.getIp();
                     EdgarConectV2.port = server.getPort();
                     AppConfig.nickName = server.getPersonName();
-                    UiManager.getUiManager().getTyped(UiManager.SERVERS).hide();
-                    UiManager.getUiManager().getTyped(UiManager.MENU).show();
-                    // Получение данных и замена их в MenuFragment / Что-то типо updateUi
+
+                    Retrofit retrofitAccount = new Retrofit.Builder()
+                            .baseUrl("https://google.com/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    Interface accountInterface = retrofitAccount.create(Interface.class);
+
+                    accountInterface.getAccountDetails(AppConfig.accountDetailsUrl, AppConfig.mAuth.getUid(),
+                            AppConfig.serverId).enqueue(new Callback<PlayerData>() {
+
+                        @Override
+                        public void onResponse(Call<PlayerData> call, Response<PlayerData> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+
+                                PlayerData data = response.body();
+
+                                // PlayerData
+                                AppConfig.playerData = data;
+                                //System.out.println(data.toString());
+
+                                // ProfileData
+                                AppConfig.profileData.clear();
+
+                                if (data.getStatsList() != null) {
+                                    AppConfig.profileData.addAll(data.getStatsList());
+                                }
+
+                                // Данные получены, продолжаем загрузку
+                                UiManager.getUiManager().getTyped(UiManager.LOADING).hide();
+
+                                UiManager.getUiManager().getTyped(UiManager.SERVERS).hide();
+                                UiManager.getUiManager().getTyped(UiManager.MENU).show();
+                            } else {
+                                DialogManager dialogManager =
+                                        UiManager.getUiManager().getTyped(UiManager.DIALOG);
+
+                                dialogManager.showErrorDialog(
+                                        "Не удалось получить данные аккаунта!\nПовторите попытку позже.",
+                                        null,
+                                        "Ок",
+                                        new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (dialogManager.getIsChecked()) {
+                                                    CrashReporter.sendBugReport(
+                                                            context,
+                                                            AppConfig.mAuth.getUid(),
+                                                            "[ServerAdapter] getAccountDetails(..)...",
+                                                            "if (response.isSuccessful()) {} else { ME }"
+                                                    );
+                                                }
+                                                dialogManager.hideDialog();
+                                                UiManager.getUiManager().getTyped(UiManager.LOADING).hide();
+
+                                                UiManager.getUiManager().getTyped(UiManager.SERVERS).hide();
+                                                UiManager.getUiManager().getTyped(UiManager.MENU).show();
+
+                                            }
+                                        },
+                                        true,
+                                        "Сообщить об ошибке"
+                                );
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<PlayerData> call, Throwable t) {
+                            DialogManager dialogManager =
+                                    UiManager.getUiManager().getTyped(UiManager.DIALOG);
+
+                            dialogManager.showErrorDialog(
+                                    "Не удаётся получить данные аккаунта!\nПовторите попытку позже.",
+                                    null,
+                                    "Ок",
+                                    new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (dialogManager.getIsChecked()) {
+                                                CrashReporter.sendBugReport(
+                                                        context,
+                                                        AppConfig.mAuth.getUid(),
+                                                        "[ServerAdapter] getAccountDetails(..)...",
+                                                        t.toString()
+                                                );
+                                            }
+                                            dialogManager.hideDialog();
+
+                                            UiManager.getUiManager().getTyped(UiManager.LOADING).hide();
+
+                                            UiManager.getUiManager().getTyped(UiManager.SERVERS).hide();
+                                            UiManager.getUiManager().getTyped(UiManager.MENU).show();
+                                        }
+                                    },
+                                    true,
+                                    "Сообщить об ошибке"
+                            );
+                        }
+                    });
                 }
             });
         }

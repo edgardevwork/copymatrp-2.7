@@ -6,7 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextClock;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,23 +18,27 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.edgar.matrp.R;
 import ru.edgar.nlremake.adapter.ProfileDataAdapter;
+import ru.edgar.nlremake.data.PlayerData;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
-import ru.edgar.nlremake.fragment.dialogs.PromoDialogFragment;
-import ru.edgar.nlremake.model.ProfileData;
+import ru.edgar.nlremake.data.ProfileData;
 import ru.edgar.nlremake.network.AppConfig;
 import ru.edgar.nlremake.other.LauncherUiComponent;
 import ru.edgar.space.UiManager;
-import ru.edgar.space.SAMP;
 
 public class ProfileFragment implements LauncherUiComponent {
 
     private ViewGroup viewGroup;
     private LinearLayout btn_settings, btn_back, btn_payment, btn_promo;
+    private TextView tv_balance, tv_donate, player_level, nick_name, exp, maxExp;
+    private ImageView nick_name_status;
+    private ProgressBar progress;
     private RecyclerView recyclerView;
     private Activity context;
 
@@ -47,6 +55,18 @@ public class ProfileFragment implements LauncherUiComponent {
         viewGroup.setLayoutParams(layoutParams);
 
         context = activity;
+
+        exp = viewGroup.findViewById(R.id.exp);
+        maxExp = viewGroup.findViewById(R.id.max_exp);
+
+        progress = viewGroup.findViewById(R.id.progress);
+
+        tv_balance = viewGroup.findViewById(R.id.tv_balance);
+        tv_donate = viewGroup.findViewById(R.id.tv_donate);
+        player_level = viewGroup.findViewById(R.id.player_level);
+        nick_name_status = viewGroup.findViewById(R.id.nick_name_status);
+
+        nick_name = viewGroup.findViewById(R.id.nick_name_servers);
 
         btn_back = viewGroup.findViewById(R.id.btn_back);
         btn_settings = viewGroup.findViewById(R.id.btn_settings);
@@ -99,19 +119,32 @@ public class ProfileFragment implements LauncherUiComponent {
 
     @Override
     public void show() {
+        PlayerData playerData = AppConfig.playerData;
+        progress.setMax(playerData.getMaxExp());
+        progress.setProgress(playerData.getExp());
+        exp.setText(String.valueOf(playerData.getExp()));
+        maxExp.setText("/ " + playerData.getMaxExp());
+
+        DecimalFormat formatter=new DecimalFormat();
+        DecimalFormatSymbols symbols= DecimalFormatSymbols.getInstance();
+        symbols.setGroupingSeparator(' ');
+        formatter.setDecimalFormatSymbols(symbols);
+        String s= formatter.format(playerData.getMoney());
+        tv_balance.setText(s);
+        s= formatter.format(playerData.getRub());
+        tv_donate.setText(s);
+
+        player_level.setText(String.valueOf(playerData.getLevel()));
+        nick_name_status.setImageResource(playerData.isVip() ? R.drawable.ic_premium : R.drawable.ic_nopremium);
+        //nick_name.setText(AppConfig.nickName);
+        nick_name.setText(playerData.getNickname());
+
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(context);
         layoutManager.setFlexDirection(FlexDirection.ROW);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
         recyclerView.setLayoutManager(layoutManager);
 
-        List<ProfileData> profileData = new ArrayList<>();
-
-        profileData.add(new ProfileData("Денег в банке", "4525", true));
-        profileData.add(new ProfileData("Дом", "Нет", false));
-        profileData.add(new ProfileData("Телефон", "2229070", false));
-        profileData.add(new ProfileData("Семья", "Нет", false));
-        profileData.add(new ProfileData("Фракция", "Нет", false));
-        profileData.add(new ProfileData("Бизнес", "Нет", false));
+        List<ProfileData> profileData = AppConfig.profileData;
 
         ProfileDataAdapter adapter = new ProfileDataAdapter(profileData);
         recyclerView.setAdapter(adapter);

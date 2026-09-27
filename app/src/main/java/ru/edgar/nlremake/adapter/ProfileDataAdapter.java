@@ -3,14 +3,13 @@ package ru.edgar.nlremake.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import ru.edgar.matrp.R;
-import ru.edgar.nlremake.model.ProfileData;
+import ru.edgar.nlremake.data.ProfileData;
 
 public class ProfileDataAdapter extends RecyclerView.Adapter<ProfileDataAdapter.ViewHolder> {
 
@@ -32,21 +31,10 @@ public class ProfileDataAdapter extends RecyclerView.Adapter<ProfileDataAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ProfileData currentItem = dataList.get(position);
 
-        holder.tvStatLabel.setText(currentItem.getLabel());
+        holder.tvStatLabel.setText(currentItem.getCaption());
+        holder.tvStatValue.setText(currentItem.getText());
 
-        if (currentItem.isShowRubley()) {
-            holder.imRub.setVisibility(View.VISIBLE);
-            holder.tvStatValue.setText(currentItem.getValue());
-        } else {
-            holder.imRub.setVisibility(View.GONE);
-            holder.tvStatValue.setText(currentItem.getValue());
-        }
-
-        if (currentItem.getValue().equals("Нет") || currentItem.getValue().equals("0")) {
-            holder.tvStatValue.setAlpha(0.4f);
-        } else {
-            holder.tvStatValue.setAlpha(1.0f);
-        }
+        holder.tvStatValue.setAlpha(currentItem.getOpacity());
     }
 
     @Override
@@ -57,13 +45,11 @@ public class ProfileDataAdapter extends RecyclerView.Adapter<ProfileDataAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvStatLabel;
         TextView tvStatValue;
-        ImageView imRub;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvStatLabel = itemView.findViewById(R.id.tvStatLabel);
             tvStatValue = itemView.findViewById(R.id.tvStatValue);
-            imRub = itemView.findViewById(R.id.ic_rub);
         }
     }
 }

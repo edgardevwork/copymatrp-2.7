@@ -37,13 +37,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import ru.edgar.matrp.R;
+import ru.edgar.nlremake.data.PlayerData;
 import ru.edgar.nlremake.fragment.dialogs.DialogManager;
 import ru.edgar.nlremake.model.Stories;
 import ru.edgar.nlremake.network.AppConfig;
+import ru.edgar.nlremake.network.FirebaseRepository;
 import ru.edgar.nlremake.other.LauncherUiComponent;
 import ru.edgar.space.UiManager;
 import ru.edgar.space.SAMP;
@@ -57,8 +62,8 @@ public class MenuFragment implements LauncherUiComponent {
     private FrameLayout nick_name_layout, news, btn_vk, btn_telegram, btn_settings;
     private FrameLayout btn_support, btn_balance, btn_donate, frame_server, btn_play;
     private LinearLayout btn_shop, gift_window;
-    private TextView news_date, news_date_two, serverNumber, nick_name;
-    private ImageView news_image, news_image_two, serverBg;
+    private TextView news_date, news_date_two, serverNumber, nick_name, tv_balance, tv_donate, player_level;
+    private ImageView news_image, news_image_two, serverBg, nick_name_status;
     private boolean isFirstImageVisible = true;
     private int currentStoryIndex = 0;
     View[] bars;
@@ -67,7 +72,6 @@ public class MenuFragment implements LauncherUiComponent {
 
     private ArrayList<Stories> storiesList;
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void init(Activity activity) {
         if (viewGroup != null && !AppConfig.isStartGame) {
@@ -81,6 +85,11 @@ public class MenuFragment implements LauncherUiComponent {
         layoutParams.height = -1;
 
         storiesList = AppConfig.storyList;
+
+        tv_balance = viewGroup.findViewById(R.id.tv_balance);
+        tv_donate = viewGroup.findViewById(R.id.tv_donate);
+        player_level = viewGroup.findViewById(R.id.player_level);
+        nick_name_status = viewGroup.findViewById(R.id.nick_name_status);
 
         nick_name = viewGroup.findViewById(R.id.nick_name);
 
@@ -237,16 +246,14 @@ public class MenuFragment implements LauncherUiComponent {
         frame_server.setOnClickListener(v -> {
             // Переход в выбор сервера
             hide();
-            /*DialogManager dialogManager = UiManager.getUiManager().getTyped(UiManager.DIALOG);
-            dialogManager.showCreateChesterDialog();*/
             UiManager.getUiManager().getTyped(UiManager.SERVERS).show();
         });
 
         btn_play = viewGroup.findViewById(R.id.btn_play);
         btn_play.setOnTouchListener(new UiManager.animClickBtn(activity, btn_play));
         btn_play.setOnClickListener(v -> {
-            // Проверки / Sodiq
-            AppConfig.nickName = "Vanek_Kitok";// AdminPass  1488 / Vanek_Kitok - Мой
+            // Проверки ?
+            // AppConfig.nickName = "Vanek_Kitok";// AdminPass  1488 / Vanek_Kitok - Мой
             SAMP.getInstance().connectEdgar();
             hide();
         });
@@ -318,8 +325,24 @@ public class MenuFragment implements LauncherUiComponent {
             handler.post(carouselStoryRunnable);
             isCarouselRunning = true;
         }
-        nick_name.setText(AppConfig.nickName);
-        FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+        PlayerData playerData = AppConfig.playerData;
+
+        DecimalFormat formatter=new DecimalFormat();
+        DecimalFormatSymbols symbols= DecimalFormatSymbols.getInstance();
+        symbols.setGroupingSeparator(' ');
+        formatter.setDecimalFormatSymbols(symbols);
+        String s= formatter.format(playerData.getMoney());
+        tv_balance.setText(s);
+        s= formatter.format(playerData.getRub());
+        tv_donate.setText(s);
+
+        player_level.setText(String.valueOf(playerData.getLevel()));
+        nick_name_status.setImageResource(playerData.isVip() ? R.drawable.ic_premium : R.drawable.ic_nopremium);
+        //nick_name.setText(AppConfig.nickName);
+        nick_name.setText(playerData.getNickname());
+        SAMP.getInstance().setSkin(playerData.getSkin());
+
+        FirebaseRepository.loadUserServerInfo(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue() != null) {

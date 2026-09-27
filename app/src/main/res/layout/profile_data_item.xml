@@ -29,31 +29,15 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"/>
 
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvStatValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_8sdp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvStatValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="4525"
-                    android:fontFamily="@font/geologica_semibold"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_14sdp"/>
-
-                <ImageView
-                    android:id="@+id/ic_rub"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_1sdp"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@drawable/ic_rub" />
-            </LinearLayout>
+                android:text="4525 ₽"
+                android:fontFamily="@font/geologica_semibold"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sdp"/>
 
         </FrameLayout>
 

@@ -140,8 +140,19 @@ void CEntityGTA::DeleteRwObject()
 {
     if(!*(uintptr*)this) return;
 
-    (( void (*)(CEntityGTA*))(*(void**)(*(uintptr*)this + (VER_x32 ? 0x24 : 0x24*2))))(this);
+    CHook::CallFunction<void>("_ZN7CEntity14DeleteRwObjectEv", this);
+
+    //(( void (*)(CEntityGTA*))(*(void**)(*(uintptr*)this + (VER_x32 ? 0x24 : 0x24*2))))(this);
 }
+
+/*void CEntityGTA::CreateRwObject()
+{
+    if(!*(uintptr*)this) return;
+
+    CHook::CallFunction<void>("_ZN7CEntity14CreateRwObjectEv", this);
+
+    //(( void (*)(CEntityGTA*))(*(void**)(*(uintptr*)this + (VER_x32 ? 0x24 : 0x24*2))))(this);
+}*/
 
 void CEntityGTA::UpdateRW() {
     if (!m_pRwObject)

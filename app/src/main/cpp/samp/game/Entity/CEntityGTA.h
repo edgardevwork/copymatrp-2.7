@@ -132,6 +132,7 @@ public:
     RwMatrix* GetModellingMatrix();
 
     void DeleteRwObject();
+    //void CreateRwObject();
 
     auto GetModelId() const { return (eModelID)m_nModelIndex; }
     CBaseModelInfo* GetModelInfo() const;

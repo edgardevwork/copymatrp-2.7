@@ -4,12 +4,6 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.CheckBox;
 
-import com.google.android.material.slider.LabelFormatter;
-
-import org.checkerframework.checker.units.qual.A;
-
-import javax.annotation.Nullable;
-
 import ru.edgar.nlremake.other.LauncherUiComponent;
 
 public class DialogManager implements LauncherUiComponent {
@@ -18,7 +12,7 @@ public class DialogManager implements LauncherUiComponent {
     private AuthEmailFragment authEmailFragment;
     private AccountDialogFragment accountDialogFragment;
     private PromoDialogFragment promoDialogFragment;
-    private CreateChasterFragment createChasterFragment;
+    private CreateCharacterFragment createChasterFragment;
     private DialogFragment dialogFragment;
 
     @Override
@@ -27,7 +21,7 @@ public class DialogManager implements LauncherUiComponent {
         authEmailFragment = new AuthEmailFragment(activity);
         accountDialogFragment = new AccountDialogFragment(activity);
         promoDialogFragment = new PromoDialogFragment(activity);
-        createChasterFragment = new CreateChasterFragment(activity);
+        createChasterFragment = new CreateCharacterFragment(activity);
         dialogFragment = new DialogFragment(activity);
     }
 
@@ -83,12 +77,12 @@ public class DialogManager implements LauncherUiComponent {
         getPromoDialogFragment().hidePromoDialog();
     }
 
-    public void showCreateChesterDialog() {
-        getCreateChasterFragment().showCreateChasterDialog();
+    public void showCreateCharacterDialog() {
+        getCreateChasterFragment().showCreateCharacterDialog();
     }
 
-    public void hideCreateChesterDialog(boolean isShowServers) {
-        getCreateChasterFragment().hideCreateChasterDialog(isShowServers);
+    public void hideCreateCharacterDialog(boolean isShowServers) {
+        getCreateChasterFragment().hideCreateCharacterDialog(isShowServers);
     }
 
     private AuthFragment getAuthFragment() {
@@ -107,7 +101,7 @@ public class DialogManager implements LauncherUiComponent {
         return promoDialogFragment;
     }
 
-    private CreateChasterFragment getCreateChasterFragment() {
+    private CreateCharacterFragment getCreateChasterFragment() {
         return createChasterFragment;
     }
 
