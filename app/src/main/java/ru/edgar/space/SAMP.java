@@ -483,6 +483,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     public void updateSplash(int percent, int pon) { runOnUiThread(() -> { /*InterfacesManager.getInterfacesManager().getChooseServerManager().Update(percent, pon); */} ); }
 
     public void hideSplash(boolean isCheck) { runOnUiThread(() -> {
+        System.out.println("HIDEsPLASH");
         if (isCheck) {
             AppConfig.serverList.clear();
             FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
@@ -591,14 +592,22 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
                 }
             });
         } else {
+
+            System.out.println("HIDEsPLASH1");
             ServersFragment serversFragment = UiManager.getUiManager().getTyped(UiManager.SERVERS);
             if (AppConfig.nickName.isEmpty()) {
                 serversFragment.show();
+
+                System.out.println("HIDEsPLASH2");
             } else {
                 MenuFragment menuFragment = UiManager.getUiManager().getTyped(UiManager.MENU);
                 menuFragment.show();
                 serversFragment.updateServers();
+
+                System.out.println("HIDEsPLASH3");
             }
+
+            System.out.println("HIDEsPLASH4");
             mVideoView.animate().setDuration(300L).alpha(0.0f).withEndAction(new Runnable() {
                 @Override
                 public void run() {

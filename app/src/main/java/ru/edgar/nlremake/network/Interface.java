@@ -42,7 +42,7 @@ public interface Interface {
 
     @POST
     @FormUrlEncoded
-    Call<String> сharacter(@Url String url, @Field("nick") String nick, @Field("sex") String sex, @Field("skin") String skin, @Field("promo") String promo);
+    Call<String> character(@Url String url, @Field("uid") String uid, @Field("server_id") Integer server_id, @Field("nick") String nick, @Field("sex") String sex, @Field("skin") String skin, @Field("promo") String promo);
 
     @POST
     @FormUrlEncoded
@@ -50,7 +50,7 @@ public interface Interface {
 
     @POST
     @FormUrlEncoded
-    Call<String> getIsAcc(@Url String url, @Field("user_name") String user_name);
+    Call<String> getIsAcc(@Url String url, @Field("server_id") Integer server_id, @Field("user_name") String user_name);
 
     @POST
     @FormUrlEncoded

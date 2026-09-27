@@ -244,6 +244,25 @@ public class MainScreenActivity extends AppCompatActivity {
                                             break;
                                         }
                                     }
+                                    if (AppConfig.nickName.isEmpty()) {
+                                        for (Server server : response.body()) {
+                                            if (server.getPersonId() != -1) {
+                                                HashMap<String, Object> Info = new HashMap<>();
+                                                Info.put("serverId", server.getId());
+                                                Info.put("serverName", server.getName());
+                                                Info.put("serverColor", server.getColor());
+                                                Info.put("personName", server.getPersonName());
+                                                FirebaseDatabase.getInstance().getReference().child("Users").child("User-server").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(Info);
+
+                                                EdgarConectV2.host = server.getIp();
+                                                EdgarConectV2.port = server.getPort();
+                                                AppConfig.nickName = server.getPersonName();
+                                                System.out.println("YESyes");
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    System.out.println("GAZ");
                                     onRequestPermissions(); // ПРОДОЛЖЕНИЕ
                                 }
 
@@ -395,6 +414,7 @@ public class MainScreenActivity extends AppCompatActivity {
     }
 
     public void checkGameCache() {
+        System.out.println("checkGameCache()");
         downloadBar.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
 
@@ -454,7 +474,7 @@ public class MainScreenActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1234){
+        if(requestCode == 1234) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);

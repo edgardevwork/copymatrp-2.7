@@ -87,8 +87,8 @@ public class DialogManager implements LauncherUiComponent {
         getCreateChasterFragment().showCreateChasterDialog();
     }
 
-    public void hideCreateChesterDialog() {
-        getCreateChasterFragment().hideCreateChasterDialog();
+    public void hideCreateChesterDialog(boolean isShowServers) {
+        getCreateChasterFragment().hideCreateChasterDialog(isShowServers);
     }
 
     private AuthFragment getAuthFragment() {

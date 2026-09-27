@@ -46,12 +46,19 @@ public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.GenderView
         Glide.with(context).load(AppConfig.skinsCDNUrl + gen.getSkin() + ".png?edgar=1829top09").into(holder.col);
         holder.view.setOnTouchListener(new UiManager.animClickBtn(context, holder.view));
         // Устанавливаем фон в зависимости от того, выделен ли элемент
+
+        int sdpMargin = 0;
         if (position == selectedPosition) {
             //SAMP.getInstance().setSkin(Integer.parseInt(slist.get(selectedPosition).getSkin()));
             holder.back.setImageResource(R.drawable.auth_bg_selected);
+            sdpMargin = holder.view.getResources().getDimensionPixelSize(R.dimen._1sdp);
         } else {
             holder.back.setImageResource(R.drawable.auth_bg_skin);
         }
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.col.getLayoutParams();
+        params.setMargins(0, 0, 0, sdpMargin);
+        holder.col.setLayoutParams(params);
 
         holder.view.setOnClickListener(v -> {
             // 1. Сначала сбрасываем фон у предыдущего выделенного элемента
